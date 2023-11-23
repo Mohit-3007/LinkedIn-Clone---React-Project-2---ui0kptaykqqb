@@ -1,0 +1,34 @@
+{
+    post fetch
+
+    "title": "Data Science in Modern Business",
+
+    "title": "Exploring Python Libraries",
+
+    "title": "Node.js in Microservices",
+
+    "title": "Adventures in Cloud Computing",
+
+    "title": "React's New Update",
+}
+
+{
+    {
+      "_id": "64e354f367bbc0a8a19f27aa",
+      "author": {
+        "_id": "64df3febdef71b475f0afb14",  
+        "name": "Dr. Kenny Emmerich",
+        "profileImage": "https://newton-project-resume-backend.s3.amazonaws.com/profileImage/64df3febdef71b475f0afb14.com/u/38499781"
+      },
+      "title": "React's New Update",
+      "content": "Just explored React's latest update and I'm truly impressed with the performance improvements! The new hooks are a game-changer. Has anyone else had a chance to dive into it? Would love to hear thoughts. #ReactUpdate #WebDevelopment",
+      "channel": {
+        "_id": "64e33c653a5ba93801812ecc",
+        "name": "Machine Learning Zone",
+        "image": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/387.jpg",
+        "owner": "64df3febdef71b475f0afb09"
+      },
+      "likeCount": 3,
+      "commentCount": 44
+    },
+}

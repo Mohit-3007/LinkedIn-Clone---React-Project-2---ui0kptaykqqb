@@ -1,5 +1,9 @@
+'use client'
+import NavBar from './components/NavBar'
 import './globals.css'
 import { Inter } from 'next/font/google'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -9,9 +13,17 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname()
+
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={"max-w-full w-screen realtive overflow-y-scroll scrollbar-stable " + (inter.className)}>
+        
+        {pathname != '/signup' && (<NavBar />)}
+        {/* <NavBar /> */}
+        {children}  
+
+      </body>
     </html>
   )
 }
