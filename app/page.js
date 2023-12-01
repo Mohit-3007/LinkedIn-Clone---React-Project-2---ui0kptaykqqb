@@ -7,6 +7,8 @@ import { AiFillMessage } from "react-icons/ai";
 import { IoMdNotifications } from "react-icons/io";
 import { BsPeopleFill } from "react-icons/bs";
 import ProfilePopUp from "./components/ProfilePopUp";
+import Login from "./components/Login";
+
 
 
 export default function Home() {
@@ -14,7 +16,8 @@ export default function Home() {
   return (
     <>
       {/* Main Home -Content */}
-      <div className="w-[calc(100vw-17px)] h-[400vh] bg-[#F4F2EE]"></div>
+      {/* <div className="w-[calc(100vw-17px)] h-[400vh] bg-[#F4F2EE]"></div> */}
+      <Login />
 
     </>
   )

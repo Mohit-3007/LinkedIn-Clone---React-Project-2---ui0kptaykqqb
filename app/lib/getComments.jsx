@@ -1,12 +1,14 @@
 import React from 'react'
+    
 
-const getComments = async (postId) => {
+const getComments = async (postId, token) => {
 
-    console.log("postId for fetching comments ", postId)
+    // console.log("postId for fetching comments ", postId)
   
     const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/post/${postId}/comments`, {
+        cache: 'no-store',
         headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWM5MjFhNGIyOTJlNWRlMmVmMGRhNCIsImlhdCI6MTcwMDY1NTYwNywiZXhwIjoxNzMyMTkxNjA3fQ.UDOahWEw-Ajf9vjSfSwBRogs5oRzBRXKG3y7rRh7xdw',
+            Authorization: `Bearer ${token}`,
             projectID: 'ui0kptaykqqb',
         }     
       })

@@ -3,6 +3,7 @@ import React from 'react'
 const getPosts = async ({limit=20, page=1}) => {
 
     const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/post?limit=${limit}&page=${page}`, {
+      cache: 'no-store',
         headers: {
             projectID: 'ui0kptaykqqb',
         }     

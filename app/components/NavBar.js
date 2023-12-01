@@ -15,7 +15,7 @@ import ProfilePopUp from './ProfilePopUp';
 const NavBar = () => {
 
   return (
-    <header className="w-screen fixed top-0 left-0 right-[-17px] px-6 h-[3.25rem] z-30 bg-white border-b border-opacity-30 border-[#666666] outline-none shadow-sm">
+    <header className="w-screen fixed top-0 left-0 right-[-17px] px-6 h-[3.25rem] z-30 bg-white  border-b border-opacity-30 border-[#666666] outline-none shadow-sm">
       
         <div className="res-1176:mx-[calc((100%-1128px)/2)] w-full res-1176:w-[1128px] h-full  flex items-center">
 
@@ -41,35 +41,35 @@ const NavBar = () => {
             <ul className="w-full h-full flex">
               {/* Home */}
               <li className="w-20 h-full list-none">
-                <Link href="feed" className="w-full h-full flex flex-col justify-center items-center">
+                <Link href="/feed" className="w-full h-full flex flex-col justify-center items-center">
                   <div className="w-6 h-6"><ImHome3 className="w-full h-full fill-[#666666]" /></div>
                   <span className="h-4 text-[#666666] text-xs">Home</span>
                 </Link>
               </li>
               {/* Network */}
               <li className="w-20 h-full list-none">
-                <Link href="mynetwork" className="w-full h-full flex flex-col justify-center items-center">
+                <Link href="/mynetwork" className="w-full h-full flex flex-col justify-center items-center">
                   <div className="w-6 h-6"><BsPeopleFill className="w-full h-full fill-[#666666]" /></div>
                   <span className="h-4 text-[#666666] text-xs">My Network</span>
                 </Link>
               </li>
               {/* Jobs */}
               <li className="w-20 h-full list-none">
-                <Link href="jobs" className="w-full h-full flex flex-col justify-center items-center">
+                <Link href="/jobs" className="w-full h-full flex flex-col justify-center items-center">
                   <div className="w-6 h-6"><IoBagHandle className="w-full h-full fill-[#666666]" /></div>
                   <span className="h-4 text-[#666666] text-xs">Jobs</span>
                 </Link>
               </li>
               {/* Messaging */}
               <li className="w-20 h-full list-none">
-                <Link href="messaging" className="w-full h-full flex flex-col justify-center items-center">
+                <Link href="/messaging" className="w-full h-full flex flex-col justify-center items-center">
                   <div className="w-6 h-6"><AiFillMessage className="w-full h-full fill-[#666666]" /></div>
                   <span className="h-4 text-[#666666] text-xs">Messaging</span>
                 </Link>
               </li>
               {/* Notification */}
               <li className="w-20 h-full list-none">
-                <Link href="notification" className="w-full h-full flex flex-col justify-center items-center">
+                <Link href="/notification" className="w-full h-full flex flex-col justify-center items-center">
                   <div className="w-8 h-6"><IoMdNotifications className="w-full h-full fill-[#666666]" /></div>
                   <span className="h-4 text-[#666666] text-xs">Notification</span>
                 </Link>

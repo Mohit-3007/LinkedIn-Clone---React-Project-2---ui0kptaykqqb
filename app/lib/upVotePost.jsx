@@ -1,14 +1,14 @@
-
 import React from 'react'
 
-const upVotePost = async (postId) => {
+const upVotePost = async (postId, token) => {
     console.log("postId for upVoting Post ", postId)
+    console.log("token", token)
   
     const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/like/${postId}`, {
-        next: { revalidate: 10 },
+        cache: 'no-store',
         method: 'POST',
         headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWM5MjFhNGIyOTJlNWRlMmVmMGRhNCIsImlhdCI6MTcwMDY3NDc4MiwiZXhwIjoxNzMyMjEwNzgyfQ.BfORTzVwDaYJvWKgF7VBuaL_Sp_Bd1gTopvL_8QgCq8',
+            Authorization: `Bearer ${token}`,
             projectID: 'ui0kptaykqqb',
         }     
       })
@@ -17,6 +17,7 @@ const upVotePost = async (postId) => {
         console.log("UPVOTE ", resp)
 
       }
+
 
   return await resp.json()
 }

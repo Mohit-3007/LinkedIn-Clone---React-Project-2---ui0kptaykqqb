@@ -15,9 +15,12 @@ module.exports = {
   theme: {
     screens: {
       'res-1176': '1176px',
+      'res-1162': '1162px',
       'res-1128': '1128px',
+      'res-1000': '1000px',
       'res-1056': '1056px',
       'res-856': '856px',
+      'res-768': '768px',
     },
     extend: {},
   },

@@ -3,25 +3,33 @@ import React, { useState, useEfect } from 'react';
 import Logo from '../../public/logo.png'
 import Image from 'next/image';
 import Link from 'next/link';
-import loginUser from '../lib/loginUser';
+import  signUpUser  from '../lib/SignUpUser'
 import { useRouter } from 'next/navigation';
-
+import { useContextProvider } from '../ContextApi/AppContextProvider';
 
 
 const SignUp = () => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
+    const { setToken, setUserName, setUserEmail, handleLoginState } = useContextProvider()
 
     async function handleSubmit(e){
         e.preventDefault()
-        console.log("submit clicked");
-        console.log(email, password)
 
-        const result = await loginUser(email, password)
-        console.log("Login result ",result);
+        const result = await signUpUser(name, email, password)
+        console.log("SignUp result ",result);
         if(result.status == "success"){
             let token = result.token;
+            setToken(token)
+            setUserName(result?.data.name)
+            setUserEmail(result?.data.email)
+
+            document.cookie=`token=${token}`
+            document.cookie=`name=${result?.data.name}`
+            document.cookie=`email=${result?.data.email}`
+            handleLoginState()
             router.push("/feed");
         }
         // setEmail('')
@@ -63,9 +71,17 @@ const SignUp = () => {
                         {/* email & passowrd */}
                         <div className='w-full h-fit'>
 
+                            {/* name */}
+                            <label htmlFor='name' className='h-5 text-[#3F3F3F] text-sm font-semibold mb-1 block'>Name</label>
+                            <input id='name' type='text' value={name} 
+                                onChange={(e) => setName(e.target.value)} 
+                                className='text-[#1F1F1F] border border-[#404040] px-4 text-base w-full h-[30px] rounded-sm outline-1 hover:outline hover:outline-black'
+                            />
+                            <div className='w-full h-5 text-sm text-[#D11124] hidden'></div>
+
                             {/* email */}
-                            <label htmlFor='input' className='h-5 text-[#3F3F3F] text-sm font-semibold mb-1 block'>Email or phone number</label>
-                            <input id='input' type='text' value={email} 
+                            <label htmlFor='input' className='h-5 text-[#3F3F3F] text-sm font-semibold mt-4 mb-1 block'>Email</label>
+                            <input id='input' type='email' value={email} 
                                 onChange={(e) => setEmail(e.target.value)} 
                                 className='text-[#1F1F1F] border border-[#404040] px-4 text-base w-full h-[30px] rounded-sm outline-1 hover:outline hover:outline-black'
                             />
@@ -103,7 +119,7 @@ const SignUp = () => {
 
                 {/* already on linkedin */}
                 <p className='w-full px-4 h-[64px] pt-4 pb-6 text-center text-base text-[#1F1F1F]'>
-                    Already on Linkedin? <Link href={"#"} className='text-[#0A66CB] hover:underline text-base font-semibold'> Sign in</Link>
+                    Already on Linkedin? <Link href={"/"} className='text-[#0A66CB] hover:underline text-base font-semibold'> Sign in</Link>
                 </p>
             </div>
 

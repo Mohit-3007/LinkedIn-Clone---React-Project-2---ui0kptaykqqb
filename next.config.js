@@ -2,6 +2,9 @@
 const nextConfig = {
     images: {
         domains: ['newton-project-resume-backend.s3.amazonaws.com', 'cloudflare-ipfs.com'],
+    },
+    experimental: {
+        serverComponents: true,
     }
 }
 

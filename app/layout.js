@@ -1,4 +1,6 @@
 'use client'
+import { AlertGlobalContextProvider } from './ContextApi/AlertContextProvider';
+import { GlobalContextProvider } from './ContextApi/AppContextProvider';
 import NavBar from './components/NavBar'
 import './globals.css'
 import { Inter } from 'next/font/google'
@@ -17,12 +19,16 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={"max-w-full w-screen realtive overflow-y-scroll scrollbar-stable " + (inter.className)}>
-        
-        {pathname != '/signup' && (<NavBar />)}
-        {/* <NavBar /> */}
-        {children}  
-
+      <body className={"max-w-full w-screen relative overflow-y-auto scrollbar-stable" + (inter.className)}>
+          
+        <GlobalContextProvider>
+          <AlertGlobalContextProvider>
+            {pathname != '/signup' && (<NavBar />)}
+            {/* <NavBar /> */}
+            {children}
+          </AlertGlobalContextProvider>
+        </GlobalContextProvider>
+          
       </body>
     </html>
   )

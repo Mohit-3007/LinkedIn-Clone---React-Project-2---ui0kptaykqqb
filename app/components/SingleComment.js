@@ -1,10 +1,32 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { BsThreeDots } from "react-icons/bs";
+import getUser from '../lib/getUser';
 
-const SingleComment = ({data, key}) => {
 
+const SingleComment = ({data, key, token}) => {
+    const [userData, setUserData] = useState('')
+    const [firstLetter, setFirstLetter] = useState('')
+
+    useEffect( () => {
+        async function fetchUser(){
+            const result = await getUser(data?.author, token)
+            console.log("result ", result);
+            if(result.status === 'success') setUserData(result?.data)
+        }
+
+        fetchUser()
+    },[data])
+
+    useEffect(()=>{
+        if(userData){
+            const name = userData?.name.charAt(0)
+            setFirstLetter(name);
+        }
+    },[userData])
+
+// formatting comment date
     function getRelativeTime(timestamp) {
         const currentDate = new Date();
         const targetDate = new Date(timestamp);
@@ -44,11 +66,10 @@ const SingleComment = ({data, key}) => {
         } else {
           return '1y';
         }
-    }
-      
+    }   
     const timestamp = data?.createdAt;
     const relativeTime = getRelativeTime(timestamp);
-    console.log(relativeTime);
+    // console.log(relativeTime);
 
   return (
     <article key={key} className='w-[calc(100%-32px)] mx-4 mb-3 h-[6.5625rem]'>
@@ -57,8 +78,9 @@ const SingleComment = ({data, key}) => {
         <div className='w-full h-[53px] flex'>
 
             {/* pic div */}
-            <Link href={"#"} className='mt-[5px] w-10 h-10 rounded-[50%] bg-purple-500'>
+            <Link href={"#"} className='mt-[5px] w-10 h-10'>
                 {/* image-????? */}
+                <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center uppercase text-xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
             </Link>
 
             {/* name & other details & option PopUp div */}
@@ -69,7 +91,7 @@ const SingleComment = ({data, key}) => {
 
                     {/* name */}
                     <span className='w-full h-[21px] flex'>
-                        <span className='h-full mr-1 flex items-center text-[#181818] text-sm font-medium hover:underline hover:text-[#0A66C2]'>Abhay Pandey</span>
+                        <span className='h-full mr-1 flex items-center text-[#181818] text-sm font-medium hover:underline hover:text-[#0A66C2]'>{userData?.name}</span>
                         <span className='h-full flex items-center text-[#A3A3A3] text-xs'>He/Him . 3rd+</span>
                     </span>
 

@@ -1,17 +1,25 @@
 import React from 'react'
 
-const postComment = async (input, postId) => {
+const postComment = async (input, postId, token) => {
     console.log("Commnent for adding to post is :- ", input)
+
+    const formDataa = new FormData();
+    formDataa.append('content', input)
+    console.log("formDataa ", formDataa);
+
+    // const requestBody = {
+    //   content: input,
+    // };
   
     const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/comment/${postId}`, {
         method: 'POST',
         headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWM5MjFhNGIyOTJlNWRlMmVmMGRhNCIsImlhdCI6MTcwMDY2MTcwNSwiZXhwIjoxNzMyMTk3NzA1fQ.QSgIquO-xvlKA3gE6VC99ui7pdp5gPN6IG09-IVATjM',
+            // 'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
             projectID: 'ui0kptaykqqb',
         },
-        body: JSON.stringify({
-            content: input
-        })     
+        body: formDataa,
+            
       })
 
       if (!resp.ok) {

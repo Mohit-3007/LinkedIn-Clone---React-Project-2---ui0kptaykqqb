@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Premium from '../../public/premium.png'
+import { useContextProvider } from '../ContextApi/AppContextProvider';
 
 
 
@@ -18,6 +19,7 @@ export default function ProfilePopUp(){
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+    const { handleLoginState } = useContextProvider()
 
     useEffect(() => {
         if(popUp) setPopUp(false)
@@ -43,6 +45,15 @@ export default function ProfilePopUp(){
             document.removeEventListener('mousedown', handleWindowClick)
         }
     },[popUp])
+
+    function handleLogOut() {
+        console.log("Cookie remove");
+        handleLoginState()
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+      }
 
     return (
         <div className="w-full h-full relative">
@@ -120,8 +131,8 @@ export default function ProfilePopUp(){
                         </li>
 
                         {/* Signout */}
-                        <li className="w-full px-1 h-8 flex items-center">
-                            <Link href={"signup"} className="w- full h-full py-3 px-1 my-1 hover:underline text-[#636363] text-sm">Sign Out</Link>
+                        <li onClick={handleLogOut} className="w-full px-1 h-8 flex items-center">
+                            <Link href={"/"} className="w- full h-full py-3 px-1 my-1 hover:underline text-[#636363] text-sm">Sign Out</Link>
                         </li>
 
                     </ul>

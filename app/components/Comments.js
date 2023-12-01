@@ -3,39 +3,50 @@ import React, { useEffect, useState } from 'react'
 import { FaRegSmile } from "react-icons/fa";
 import { RiGalleryFill } from "react-icons/ri";
 import { FaSortDown } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
 import Link from 'next/link';
 import postComment from '../lib/postComment';
 import getComments from '../lib/getComments';
-import { comment } from 'postcss';
 import SingleComment from './SingleComment';
+import { useContextProvider } from '../ContextApi/AppContextProvider';
 
 
 
-export const preLoadComments = (postId) => {
-  void getComments(postId);
+export const preLoadComments = (postId, token) => {
+  void getComments(postId, token);
 }
 
 
 export const Comments = ({postId}) => {
+  const { token, userName } = useContextProvider()
   const [input, setInput] = useState('')
   const [commentData, setCommentData] = useState(null);
+  const [loadMore, setLoadMore] = useState(false)
 
+// getting comments from api 
   useEffect(() => {
     async function fetchComments(){
-      const commentData = await getComments(postId)
+      const commentData = await getComments(postId, token)
       console.log("commentData ", commentData.data);
       setCommentData(commentData.data);
     }
     fetchComments()
   },[postId])
 
-  async function handlePostComment(postId){
-    // console.log(input, postId)
-    const postRes = await postComment(input, postId);
+// posting a comment
+  async function handlePostComment(e, postId){
+    e.preventDefault()
+    console.log(input, postId, " posting a comment and token is ", token)
+    const postRes = await postComment(input, postId, token);
     console.log("is Comment added to post or not ?? ", postRes);
     // setInput('');
   }
+
+// getting the first leter of UserName
+const name = userName;
+const firstLetter = name.charAt(0);
+
+
+
 
   return (
     <>
@@ -45,11 +56,12 @@ export const Comments = ({postId}) => {
             {/* user-profile pic */}
             <div className='w-10 h-10 mt-1 mr-1'>
               {/* user letter */}
-              <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center text-xl font-bold text-white rounded-[50%]'>M</span>
+              <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center uppercase text-xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
             </div>
 
-            {/* input div for typing comment */}
+            {/* input div & button div for typing comment */}
             <div className='w-[calc(100%-44px)] h-full border-y-[3px] border-transparent'>
+
               <form className='w-full h-full flex flex-col'>
 
                 {/* input field div */}
@@ -88,13 +100,14 @@ export const Comments = ({postId}) => {
                 {/* Button Div for Post comment */}
                 {input && input.length && ( 
                    <div className='w-full h-9'>
-                      <button onClick={() => handlePostComment(postId)} className='w-[51px] h-6 mt-3 bg-[#0A66C2] rounded-[35px] text-sm text-white font-medium flex items-center justify-center'>
+                      <button onClick={(e) => handlePostComment(e, postId)} className='w-[51px] h-6 mt-3 bg-[#0A66C2] rounded-[35px] text-sm text-white font-medium flex items-center justify-center'>
                         <span>Post</span>
                       </button>
                    </div> 
                  )}
                 
               </form>
+
             </div>
 
         </div>
@@ -120,21 +133,26 @@ export const Comments = ({postId}) => {
 
         {/* view comments */}
         {/* h-[16.625rem] */}
-        <div className='w-full  flex flex-col'>   
+        <div className='w-full flex flex-col'>   
 
           {/* comments div- MAP FUNCTION */}
           <div className='w-full'>
 
             {commentData  && commentData.map((each, key) => {
-              return <SingleComment data={each} key={key} />            
-            })}
+              return (
+                (!loadMore && key < 2) || loadMore ? (
+                  <SingleComment data={each} key={key} token={token} />
+                ) : null
+              )           
+              })
+            }  
 
           </div>
 
           {/* load more div */}
           <div className='w-full h-8'>
-            <button className='w-[calc(100%-16px)] ml-4 px-2 h-[calc(100%-8px)] mb-2 py-0.5 rounded-md hover:bg-[#EBEBEB] flex justify-start '>
-              <span className='text-sm font-medium text-[#666666]'>Load more comments</span>
+            <button onClick={() => setLoadMore(!loadMore)} className='w-[calc(100%-16px)] ml-4 px-2 h-[calc(100%-8px)] mb-2 py-0.5 rounded-md hover:bg-[#EBEBEB] flex justify-start '>
+              <span className='text-sm font-medium text-[#666666]'>{loadMore ? "Load less comments" : "Load more comments"}</span>
             </button>
 
           </div>
