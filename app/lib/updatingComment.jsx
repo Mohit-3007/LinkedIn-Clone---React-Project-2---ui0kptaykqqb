@@ -1,18 +1,14 @@
 import React from 'react'
 
-const postComment = async (input, postId, token) => {
+const updatingComment = async (input, commentId, token) => {
     console.log("Commnent for adding to post is :- ", input)
-
-    const formDataa = new FormData();
-    formDataa.append('content', input)
-    console.log("formDataa ", formDataa);
 
     const requestBody = JSON.stringify({
       "content": input,
     });
   
-    const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/comment/${postId}`, {
-        method: 'POST',
+    const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/comment/${commentId}`, {
+        method: 'PATCH',
         headers: {
             "Content-Type": 'application/json',
             Authorization: `Bearer ${token}`,
@@ -31,4 +27,4 @@ const postComment = async (input, postId, token) => {
   return await resp.json()
 }
 
-export default postComment;
+export default updatingComment

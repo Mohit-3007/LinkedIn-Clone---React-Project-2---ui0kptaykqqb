@@ -1,12 +1,14 @@
 'use client'
 import { ImHome3 } from "react-icons/im";
-import { FaCaretDown } from "react-icons/fa";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Premium from '../../public/premium.png'
 import { useContextProvider } from '../ContextApi/AppContextProvider';
+import chip from '@/public/chip.png';
+import updatePassword from "../lib/updatePassword";
 
 
 
@@ -19,7 +21,7 @@ export default function ProfilePopUp(){
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const { handleLoginState } = useContextProvider()
+    const { handleLoginState, userName } = useContextProvider()
 
     useEffect(() => {
         if(popUp) setPopUp(false)
@@ -55,16 +57,29 @@ export default function ProfilePopUp(){
         
       }
 
+// getting the first leter of UserName
+  const name = userName;
+  const firstLetter = name?.charAt(0);
+
     return (
         <div className="w-full h-full relative">
+
             {/* Profile */}
             <button ref={profileDivRef} onClick={() => handleProfilePopUP()} className="w-full h-full flex flex-col justify-center items-center">
                 {/* Image */}
                 <div className="w-6 h-6"><ImHome3 className="w-full h-full fill-[#666666]" /></div>
-                <span className="h-4 text-[#666666] text-xs">Me <FaCaretDown className="inline w-4 h-4" /></span>
+                <span className="hidden res-856:block h-4 text-[#666666] text-xs">Me 
+                    {popUp ? (
+                            <FaCaretUp className="inline w-4 h-4" />
+                        )  :   (
+                            <FaCaretDown className="inline w-4 h-4" />
+                        )
+                    }
+                </span>
             </button>
+
             {/* Popup-Div */}
-            <div ref={profileRef} className={"w-[16.5rem] h-[24.6875rem] outline outline-1 outline-[#c0bbbb] z-30 bg-white absolute right-0 -bottom-[403px] rounded-tl-lg rounded-b-lg " 
+            <div ref={profileRef} className={"w-[16.5rem] h-[24.6875rem] outline outline-1 outline-[#c0bbbb] z-0 bg-white absolute right-0 -bottom-[403px] rounded-tl-lg rounded-b-lg " 
             + (popUp ? "" : "hidden")}>
                 <div className="w-full h-full">
 
@@ -75,11 +90,11 @@ export default function ProfilePopUp(){
                             <div className="w-full h-full flex items-center">
                                 {/* image */}
                                 <div className="w-14 h-14 rounded-[50%]">
-                                    <img src="#" alt="user pic" className=" w-full h-full rounded-[50%] bg-black"></img>
+                                    <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center uppercase text-3xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
                                 </div>
                                 {/* username */}
                                 <div className="w-[calc(100%-56px)] pl-2 h-11 flex flex-col justify-center items-center">
-                                   <div className="w-full h-6 flex items-center">Mohit Khurana</div> 
+                                   <div className="w-full h-6 flex items-center capitalize">{userName}</div> 
                                    <div className="w-full h-5">.</div> 
                                 </div>
                             </div>
@@ -95,25 +110,31 @@ export default function ProfilePopUp(){
                         <li className="w-full px-1 h-[9.5625rem] border-b border-opacity-30 border-[#666666]">
                             <h3 className="w-full px-3 pt-3 h-8 font-semibold text-base flex items-center">Account</h3>
                             <ul className="w-full h-[7.25rem] list-none flex flex-col">
+
                                 <li className="w-full px-1 h-8 flex items-center">
                                     <Link href={"#"} className="w-full h-full px-3 pt-1 flex items-center">
                                         <span className="h-full w-full flex items-center">
                                             {/* Icon*/}
-                                            <Image src="/../../public/premium" alt="premiumChip" width={20} height={20} className="mr-1"/>
+                                            <Image src={chip} alt="premiumChip" width={20} height={20} className="mr-1"/>
                                             {/* <FaMicrochip className="w-5 h-5 mr-1 fill-[#EAA142]" /> */}
-                                            <span className="w-[calc(100%-28px)] h-full text-[#8c8c8c] hover:underline hover:text-[#2c5f9d] font-medium text-sm">Retry Premium Free</span>
+                                            <span className="w-[calc(100%-28px)] h-full text-[#8c8c8c] hover:underline hover:text-[#2c5f9d] flex items-center font-medium text-sm">Retry Premium Free</span>
                                         </span>
                                     </Link>
                                 </li>
+
+                                {/* Change your  password */}
                                 <li className="w-full px-1 h-7 flex items-center">
-                                    <Link href={"#"} className="w-full h-full px-3 py-1 flex hover:underline text-[#636363] text-sm">Settings & Privacy</Link>
+                                    <Link href={"/updatepassword"} className="w-full h-full px-3 py-1 flex hover:underline text-[#636363] text-sm">Change your password</Link>
                                 </li>
+
                                 <li className="w-full px-1 h-7 flex items-center">
                                     <Link href={"#"} className="w-full h-full px-3 py-1 flex hover:underline text-[#636363] text-sm">Help</Link>
                                 </li>
+
                                 <li className="w-full px-1 h-7 flex items-center">
                                     <Link href={"#"} className="w-full h-full px-3 py-1 flex hover:underline text-[#636363] text-sm">Language</Link>
                                 </li>
+                                 
                             </ul>
                         </li>
 
@@ -139,7 +160,8 @@ export default function ProfilePopUp(){
 
                 </div>
              
-            </div>     
+            </div> 
+                
         </div>
     )
 }

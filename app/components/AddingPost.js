@@ -4,27 +4,62 @@ import { RxCross1 } from "react-icons/rx";
 import { useContextProvider } from '../ContextApi/AppContextProvider';
 import composePost from '../lib/ComposePost';
 import { MdDriveFolderUpload } from "react-icons/md";
+import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 
 
 
-const AddingPost = forwardRef((props, ref) => {
+const AddingPost = forwardRef(({ setShowAlertImg, setShowPostComment, setCheckLocal, setShowAlertPost }, ref) => {
     const [title, setTitle] = useState('')
     const [textArea, setTextArea] = useState('')
     const [isDisabled, setIsDisabled] = useState(true)
     const { token, userName } = useContextProvider()
     const [imageFile, setImageFile] = useState()
     const inputRef = useRef()
+    const { alertDispatch } = useAlertContextProvider()
 
     function handleCrossButton(){
-        props.setShowPostComment(false)
+        setShowPostComment(false)
         console.log("click")
     }
 
     async function handleAddPost(){
         console.log(`content for adding to post is ${textArea}`)
         const postRes = await composePost(title, textArea, imageFile, token)
-        if(postRes.status === 'success') props.setShowPostComment(false)
+        if(postRes.status === 'fail'){
+            // if(postRes.message === 'Channel with this name already exists') return
+        }
+        else{
+            const postObj = postRes?.data;
+
+            if(localStorage.getItem('postData')){
+                const storedData = JSON.parse(localStorage.getItem('postData'))
+                const newData = JSON.stringify([...storedData, postObj])
+
+                console.log("Post Data already existed")
+                localStorage.setItem( 'postData', newData )
+                alertDispatch({ type: "showPostCreAlert" })
+                setShowAlertPost(prev => !prev)
+                setShowPostComment(false)
+                setCheckLocal(prev => !prev)
+                setTitle('')
+                setTextArea('')
+                setImageFile('')
+            }
+            else{
+                const stringifyObj = JSON.stringify([postObj]);
+                console.log("New Post Data Created");
+                localStorage.setItem( 'postData' , stringifyObj );
+
+                alertDispatch({ type: "showPostCreAlert" })
+                setShowAlertPost(prev => !prev)
+                setShowPostComment(false)
+                setCheckLocal(prev => !prev)
+                setTitle('')
+                setTextArea('')
+                setImageFile('')
+            }
+        } 
 
         console.log("postRes ", postRes)
     } 
@@ -36,12 +71,21 @@ const AddingPost = forwardRef((props, ref) => {
     function handleImageChange(e){
         const file = e.target.files[0];
         console.log('Selected file:', file);
-        setImageFile(file);
-
-        // const reader = new FileReader();
-        // reader.onloadend = () => {  
-        //     console.log(reader.result)
-        // };
+        if (file) {
+            if (file.type.startsWith('image/')) {
+                setImageFile(file);
+                // const reader = new FileReader(); 
+                // reader.onload = function (e) {
+                //     console.log("e.target.result ",e.target.result);
+                //     setImgUrl(e.target.result)
+                // };
+                // reader.readAsDataURL(file);
+            }
+            else{
+                alertDispatch({ type: "imgAlertTrue" })
+                setShowAlertImg(prev => !prev)
+            }       
+        }   
     }
 
     function handleIconClick(){
@@ -49,7 +93,7 @@ const AddingPost = forwardRef((props, ref) => {
     }
 
     return (
-        <div  className='w-full h-[592px] z-40 absolute top-8'>
+        <div  className='w-full h-[592px] z-30 fixed top-[30px]'>
             <div ref={ref} className='w-[744px] h-full mx-[calc((100%-744px)/2)] bg-white shadow-xl rounded-xl'>
 
                 <div className='w-full h-full flex flex-col shadow-xl'>

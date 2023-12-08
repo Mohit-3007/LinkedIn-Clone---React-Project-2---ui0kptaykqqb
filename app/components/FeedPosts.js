@@ -1,12 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import Link from 'next/link';
 import Image from 'next/image'
-import { FaGlobeAmericas } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
-import { RxCross1 } from "react-icons/rx";
-import { FaPlus } from "react-icons/fa6";
-import { SlLike } from "react-icons/sl";
 import getPosts from '../lib/getPosts';
 import CommentReaction from './CommentReaction';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
@@ -16,6 +10,7 @@ import PostTopBar from './PostTopBar';
 
 export const FeedPosts =  () => { 
     const { res, page, setRes, setPage } = useContextProvider();
+    const [isDataFromLocal, setIsDataFromLocal] = useState(false);
     
     useEffect(()=> {      
         async function callFetch(){
@@ -50,6 +45,7 @@ export const FeedPosts =  () => {
 
   return (
     <div>
+
         {res && res.map( (each, index ) => {
             
             return (
@@ -58,13 +54,13 @@ export const FeedPosts =  () => {
                         <div className='w-full mb-3'>
 
                             {/* post-top-bar */}
-                            <PostTopBar each={each} />
+                            <PostTopBar each={each} isDataFromLocal={isDataFromLocal} />
                             
                             {/* post-Content */}
                             <PostContent content={each?.content} title={each?.title}/>
 
                             {/* Content- Pic or Video */}
-                            <div className='w-full h-[555px] mt-2 bg-slate-300'>
+                            <div className='w-full h-fit mt-2 bg-slate-300'>
                                 <div className='w-full h-full'>
                                     {/* Image Component */}
                                     <Image src={each.channel?.image} width={555} height={300} priority alt='pic' />
@@ -73,11 +69,7 @@ export const FeedPosts =  () => {
 
                             {/* Like, Comment and Post */}
                             <div className='w-full  flex flex-col'>
-
-                                
-
                                 <CommentReaction each={each} />
-                       
                             </div>
 
                         </div>

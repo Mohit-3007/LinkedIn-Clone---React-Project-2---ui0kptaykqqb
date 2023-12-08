@@ -9,6 +9,8 @@ const GlobalContextProvider = ({children}) => {
   const [token, setToken] = useState('');
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [owner, setOwner] = useState('');
+  const [isInputSlct, setIsInputSlct] = useState(false)
 
   const [res, setRes] = useState('')
   const [page, setPage] = useState(1)
@@ -16,6 +18,11 @@ const GlobalContextProvider = ({children}) => {
 
   function handleLoginState(){
     setLogin(!login)
+  }
+
+  // for search input of navbar
+  function handleSearchInput(val){ 
+    setIsInputSlct(val)
   }
 
   // console.log("isLogin ",login);
@@ -28,13 +35,18 @@ const GlobalContextProvider = ({children}) => {
     if(decodeURIComponent(document.cookie)){
       setLogin(true);
       console.log("decodeURIComponent(document.cookie) ", decodeURIComponent(document.cookie))
-      const token = decodeURIComponent(document.cookie).split(' ')[0].split("=")[1]
-      const name = decodeURIComponent(document.cookie).split(' ')[1].split("=")[1]
-      const email = decodeURIComponent(document.cookie).split(' ')[2].split("=")[1]
-      console.log(token, name, email);  
+      const owner = decodeURIComponent(document.cookie).split('; ')[0]?.split("=")[1]
+      const token = decodeURIComponent(document.cookie).split('; ')[1]?.split("=")[1]
+      const name = decodeURIComponent(document.cookie).split('; ')[2]?.split("=")[1]
+      const email = decodeURIComponent(document.cookie).split('; ')[3]?.split("=")[1]
+      console.log('token:- ',token,)
+      // console.log('name:- ',name,)
+      // console.log('email:- ',email,)
+      // console.log('owner:- ',owner,)
       setToken(token)
       setUserName(name)
       setUserEmail(email)
+      setOwner(owner)
     }
   },[])
 
@@ -47,12 +59,16 @@ const GlobalContextProvider = ({children}) => {
     page: page,
     userName: userName,
     userEmail: userEmail,
+    owner: owner,
+    isInputSlct:isInputSlct,
     setRes,
     setPage,
     setToken,
     setUserName,
     setUserEmail,
+    setOwner,
     handleLoginState,
+    handleSearchInput,
   }
 
   return  <AppContext.Provider value={initialValues}>{children}</AppContext.Provider>

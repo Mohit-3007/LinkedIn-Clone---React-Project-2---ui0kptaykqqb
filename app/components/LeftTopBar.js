@@ -7,14 +7,14 @@ import leftBg from '@/public/leftBg.jpg';
 import chip from '@/public/chip.png';
 import { FaBookmark } from "react-icons/fa";
 
-const LeftTopBar = () => {
+const LeftTopBar = ({showMore}) => {
   const { userName } = useContextProvider();
 
 
 // getting the first leter of UserName
   const name = userName;
-  const fullName = name.replace(';', '');
-  const firstLetter = name.charAt(0);
+  const fullName = name?.replace(';', '');
+  const firstLetter = name?.charAt(0);
 
   let profileViewers = Math.floor(Math.random() * (30 - 7 + 1)) + 7;
   let connections = Math.floor(Math.random() * (190 - 80 + 1)) + 80;
@@ -26,7 +26,7 @@ const LeftTopBar = () => {
         <div className='w-full h-fit px-3 pt-3 pb-4 border-b-[1px] border-[#E8E8E8]'>
 
             {/* image div */}
-            <div className='w-[225px] h-[56px] -mx-3 -mt-3'>
+            <div className='w-[576px] res-768:w-[225px] h-[56px] -mx-3 -mt-3'>
               <Image src={leftBg} alt='background' height={68} objectFit='cover' className='w-full h-[68px] ' />
             </div>
 
@@ -36,7 +36,7 @@ const LeftTopBar = () => {
                 {/* user pic */}
                 <div className='w-full h-[3.25rem] flex justify-center'>
                     <div className='w-[68px] h-[68px] z-10 border border-0.5 -mt-[38px] mb-3 rounded-[50%]'>
-                      <span className='w-full h-full  bg-[#7A1CA4] flex justify-center items-center uppercase text-2xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
+                      <span className='w-full h-full  bg-[#7A1CA4] flex justify-center items-center uppercase text-4xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@ const LeftTopBar = () => {
         </div>
 
         {/*  */}
-        <div className='w-full h-[5.5rem] py-3 border-b-[1px] border-[#E8E8E8]'>
+        <div className={'res-768:block w-full h-[5.5rem] py-3 border-b-[1px] border-[#E8E8E8] ' + (showMore ? '' : 'hidden')}>
           <div className='w-full h-full flex flex-col'>
 
             <div className='w-full h-6 flex items-center px-3 justify-between text-xs font-semibold'>
@@ -73,7 +73,7 @@ const LeftTopBar = () => {
         </div>
 
         {/*  */}
-        <Link href={"#"} className='w-full h-fit p-3 border-b-[1px] border-[#E8E8E8]'>
+        <Link href={"#"} className={'res-768:block w-full h-fit p-3 border-b-[1px] border-[#E8E8E8] ' + (showMore ? '' : 'hidden')}>
           <h1 className='w-full h-fit text-[#6E6E6E] text-xs'>
             Grow your career and get ahead.
           </h1>
@@ -84,7 +84,7 @@ const LeftTopBar = () => {
         </Link>
 
         {/*  */}
-        <Link href={"#"} className='w-full h-10 p-3'>
+        <Link href={"#"} className={'res-768:block w-full h-10 p-3 ' + (showMore ? '' : 'hidden')}>
           <span className='w-full h-full flex text-[#727272] text-xs font-semibold'>
             <FaBookmark className='w-4 h-4 mr-2' /> My items
           </span>

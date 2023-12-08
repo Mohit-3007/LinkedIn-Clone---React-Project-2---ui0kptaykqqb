@@ -13,7 +13,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
-    const { setToken, setUserName, setUserEmail, handleLoginState } = useContextProvider()
+    const { setToken, setUserName, setUserEmail, setOwner, handleLoginState } = useContextProvider()
     
 
     const  handleSubmit = async (e) => {
@@ -26,13 +26,16 @@ const Login = () => {
         console.log("Login result ",result);
         if(result.status == "success"){
             let token = result.token
+            console.log("token in login page ", token)
             setToken(token)
             setUserName(result?.data.name)
             setUserEmail(result?.data.email)
+            setOwner(result?.data._id)
             
             document.cookie=`token=${token}`
             document.cookie=`name=${result?.data.name}`
             document.cookie=`email=${result?.data.email}`
+            document.cookie=`owner=${result?.data._id}`
             handleLoginState()
             router.push("/feed");
         }

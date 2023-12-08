@@ -14,13 +14,18 @@ module.exports = {
   darkMode: 'class',
   theme: {
     screens: {
+      'res-1200': '1200px',
       'res-1176': '1176px',
       'res-1162': '1162px',
       'res-1128': '1128px',
       'res-1000': '1000px',
       'res-1056': '1056px',
+      'res-1036': '1036px',
+      'res-1024': '1024px',
+      'res-992': '992px',
       'res-856': '856px',
       'res-768': '768px',
+      'res-748': '748px',
     },
     extend: {},
   },
@@ -28,5 +33,6 @@ module.exports = {
     scrollbarGutter(), // no options to configure
     scrollbarWidth(), // no options to configure
     scrollbarColor(), // no options to configure
+    require('tailwind-scrollbar-hide')
   ],
 }

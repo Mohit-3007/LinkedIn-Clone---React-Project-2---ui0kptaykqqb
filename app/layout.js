@@ -1,10 +1,11 @@
 'use client'
-import { AlertGlobalContextProvider } from './ContextApi/AlertContextProvider';
+import { AlertGlobalContextProvider, useAlertContextProvider } from './ContextApi/AlertContextProvider';
 import { GlobalContextProvider } from './ContextApi/AppContextProvider';
 import NavBar from './components/NavBar'
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,13 +18,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   const pathname = usePathname()
 
+
+
   return (
     <html lang="en">
-      <body className={"max-w-full w-screen relative overflow-y-auto scrollbar-stable" + (inter.className)}>
+      <body className={"max-w-full w-screen relative " + (inter.className)}>
           
         <GlobalContextProvider>
           <AlertGlobalContextProvider>
-            {pathname != '/signup' && (<NavBar />)}
+            {( (pathname != '/signup') && (pathname != '/groups') && (pathname != '/feed') && (pathname != '/updatepassword') ) && (<NavBar />)}   
             {/* <NavBar /> */}
             {children}
           </AlertGlobalContextProvider>

@@ -16,6 +16,12 @@ import { BiSolidSchool } from "react-icons/bi";
 import { RxCross1 } from "react-icons/rx";
 import { BsPeopleFill, BsQuestionCircleFill } from "react-icons/bs";
 import work from '@/public/work.png'
+import AsidePremium from '@/app/components/AsidePremium';
+import AsideUsers from '@/app/components/AsideUsers';
+import Footer from '@/app/components/Footer';
+
+
+
 
 
 const UserPage =  ({params: {id}}) => {
@@ -28,13 +34,15 @@ const UserPage =  ({params: {id}}) => {
 
 // fetching user details
   useEffect(() => {
-    async function fetchUser(id, token){
-      const userdata = await getUser(id, token )
-      console.log("RESULT OF USER FETCH DATA ", userdata);
-      setUserData(userdata?.data);
+    if(token){
+      async function fetchUser(id, token){
+        const userdata = await getUser(id, token )
+        console.log("RESULT OF USER FETCH DATA ", userdata);
+        setUserData(userdata?.data);
+      }
+      fetchUser(id, token)
     }
-    fetchUser(id, token)
-  },[id])
+  },[token])
 
   // check user is being followed or not
   useEffect(() => {
@@ -59,13 +67,12 @@ const UserPage =  ({params: {id}}) => {
     if(userUnFollowRes.status === 'success') setIsFollowing(false)
   }
 
-  console.log("This User is followed or not ? ", isFollowing);
+  // console.log("This User is followed or not ? ", isFollowing);
 
 // user first name & last name
   function getName(fullName){
     const nameArray = fullName?.split(" ");
     return nameArray;
-  
   }
   const fullName = userData?.name;
   const nameArray = getName(fullName)
@@ -90,7 +97,6 @@ const UserPage =  ({params: {id}}) => {
   function handleWindowClick(e){
     if(!contactPopUpRef?.current?.contains(e.target)){
         setShowContact(false);
-
         // if(profileRef?.current?.contains(e.target)) return
         // else if(popUp && !profileRef?.current?.contains(e.target)) setPopUp(false)
     }    
@@ -105,7 +111,6 @@ const UserPage =  ({params: {id}}) => {
   
 
   function handleContactPopUp(){
-    // console.log("PopUp User Contact info ")
     setShowContact(!showContact);
   }
 
@@ -113,15 +118,17 @@ const UserPage =  ({params: {id}}) => {
   return (
     
     <div className="w-[calc(100vw-17px)] bg-[#F4F2EE] pt-[3.25rem] relative h-fit">
-      <div className="w-full h-full pt-6 flex flex-col">
+      <div className="w-full h-fit pt-6 flex flex-col">
 
         {/*  */}
-        <div className="w-full h-full">
-          <div className="w-[1128px] h-full mx-[calc((100%-1128px)/2)]">
-            <div className='w-full h-full flex justify-between'>
+        <div className="w-full h-fit flex justify-center">
+
+          {/* RESPONSIVENESS */}
+          <div className="w-[720px] mx-0 res-992:w-[960px] res-992:mx-[calc((100%-960px)/2)] res-1200:w-[1128px] h-fit res-1200:mx-[calc((100%-1128px)/2)]">
+            <div className='w-full h-fit flex flex-col res-768:flex-row items-center res-768:items-start justify-between'>
 
               {/* main */}
-              <main className='w-[50.25rem] h-full flex flex-col'>
+              <main className='w-[576px] res-768:w-[396px] res-992:w-[636px] res-1200:w-[50.25rem] mb-3 res-768:mb-0 h-fit flex flex-col'>
 
                 {/* User Profile details, address & contact */}
                 <section className='w-full h-fit'>
@@ -137,11 +144,13 @@ const UserPage =  ({params: {id}}) => {
                     {/* User profile pic */}
                     <div className='w-full h-[60px] flex flex-col'>
                       {/* pic */}
-                      <div className='w-[160px] h-[172px] -mt-[112px]'>
+                      <div className='w-[128px] res-992:w-[160px] h-[172px] -mt-[112px]'>
                        <div className='w-full h-[160px]'>
-                        <Image src={userData?.profileImage} alt='user profile pic'
-                         width={152} height={152} objectFit='cover'
-                          className='border-[4px] rounded-[50%]' />
+                        {userData && (
+                          <Image src={userData?.profileImage} alt='user profile pic'
+                           width={152} height={152} 
+                            className='border-[4px] rounded-[50%]' />
+                        )}
                        </div>
                       </div>
                       <div className='w-[37.25rem] h-full'></div>
@@ -155,14 +164,14 @@ const UserPage =  ({params: {id}}) => {
                       <div className='w-full h-fit flex items-start'>
 
                         {/* name & education */}
-                        <div className='w-[500px] h-full flex flex-col'>
+                        <div className='w-[72%] res-992:w-[66%] res-1200:w-[500px] h-full flex flex-col'>
                           {/* name */}
                           <div className='w-full h-[30px] flex items-center justify-start '>
-                            <span className='text-[#191919] text-2xl h-full py-1 font-semibold rounded-sm hover:bg-[#EBEBEB] flex items-center '>{userData?.name}</span>
+                            <span className='text-[#191919] text-lg res-992:text-2xl h-full py-1 font-semibold rounded-sm hover:bg-[#EBEBEB] flex items-center '>{userData?.name}</span>
                             <span className='text-[#666666] ml-1 text-sm'>{userData?.gender === 'male' ? '(He/Him)' : "(She/Her)"}</span>
                           </div>
                           {/* education ul */}
-                          <div className='w-full h-fit text-base text-[#595959] break-all flex'>
+                          <div className='w-full h-fit test-sm res-992:text-base text-[#595959] break-all flex'>
                             {userData?.education?.map((e, index) => {
                               return (
                                 <React.Fragment key={index}>
@@ -177,8 +186,8 @@ const UserPage =  ({params: {id}}) => {
                         </div>
 
                         {/* college or Institute */}
-                        <div className='w-[232px] h-[43px]'>
-                          <ul className='text-sm font-semibold text-[#191919] ml-10 '>
+                        <div className='w-[28%] res-992:w-[34%] res-1200:w-[232px] h-[43px]'>
+                          <ul className='text-sm font-semibold text-[#191919] ml-5 res-992:ml-10 '>
                             {userData?.education?.map((e, index) => {
                               return(
                                 <li className='mb-2 flex items-center hover:scale-105'>
@@ -193,7 +202,7 @@ const UserPage =  ({params: {id}}) => {
                       </div>
 
                       {/* address & contact */}
-                      <div className='mt-2 w-[500px] h-[18px] flex'>
+                      <div className='mt-2 w-[72%] res-992:w-fit h-fit res-992:h-[18px] flex'>
                         <span className='h-full text-[#9B9B9B] text-sm'>
                            {userData?.address && userData.address[0]
                               ? `${userData.address[0].city}, ${userData.address[0].state}, ${userData.address[0].country}`
@@ -364,7 +373,7 @@ const UserPage =  ({params: {id}}) => {
                                 <div className='w-full h-full flex flex-row'>
                                   {/* pic */}
                                   <div className='w-[56px] h-full'>
-                                    <Image src={work} alt='work pic' height={48} objectFit='cover' className='w-12 h-12' />
+                                    <Image src={work} alt='work pic' height={48} width={48} className='w-12 h-12' />
                                   </div>
 
                                   {/* work details */}
@@ -472,7 +481,7 @@ const UserPage =  ({params: {id}}) => {
                     <ul className='w-full h-full'>
                       {/* map function */}
                       {userData?.skills && userData.skills.map( (e, index) => { 
-                        console.log(userData?.skills)
+                        // console.log(userData?.skills)
 
                         return (
                           <li key={index} className='w-full h-max'>
@@ -509,147 +518,26 @@ const UserPage =  ({params: {id}}) => {
               </main>
 
               {/* Aside */}
-              <aside className='w-[18.75rem] bg-white rounded-md shadow-lg'>
+              <aside className='w-[576px] res-768:w-[18.75rem] h-fit'>
+                  
+                  {/* aside top bar */}
+                  <div className='w-full h-[250px] mb-2 bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
+                    <AsidePremium />
+                  </div>
+                  {/*  */}
+                  <div className='w-full h-fit mt-2 flex flex-col bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
+                    <AsideUsers />
+                  </div>
 
               </aside>
 
             </div>
           </div>
+
         </div>
+
         {/* footer */}
-        <footer className='w-full res-1128:w-[1128px] res-1128:mx-[calc((100%-1128px)/2)] h-fit my-6 pt-6'>
-          <div className='w-full h-fit'>
-
-            <div className='w-full h-full my-3 flex'>
-              
-              {/* left panel */}
-              <div className='w-[50%] h-fit'>
-                <ul className='w-full h-[134px] flex flex-row flex-wrap text-[#62615F] text-xs font-semibold'>
-
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://about.linkedin.com/"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2]'>About</Link>
-                    </li>
-
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://www.linkedin.com/accessibility?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B%2FsqeDHhHReySxNr7d0ZwSA%3D%3D"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Accessibility</Link>
-                    </li>
-
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://www.linkedin.com/uas/login-cap?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ftalent%2Fpost-a-job%3Flipi%3Durn%253Ali%253Apage%253Ad_flagship3_profile_view_base%253B%252FsqeDHhHReySxNr7d0ZwSA%253D%253D%26src%3Dli-footer%26trk%3Dfooter_jobs_home&source_app=tsweb&trk=tsweb_signin"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Talent Solutions</Link>
-                    </li>
-
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://www.linkedin.com/legal/professional-community-policies"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Community Guidelines</Link>
-                    </li>
-
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://careers.linkedin.com/"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Careers</Link>
-                    </li>
-
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://business.linkedin.com/marketing-solutions?trk=n_nav_lms_f&src=li-footer"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Marketing Solutions</Link>
-                    </li>
-                    
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"#"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Privacy & Terms</Link>
-                    </li>
-                                        
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://business.linkedin.com/marketing-solutions/ads?trk=n_nav_ads_f"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Ad Choices</Link>
-                    </li>
-                                        
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://www.linkedin.com/help/linkedin/answer/a1342443"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Advertising</Link>
-                    </li>
-                                        
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://business.linkedin.com/sales-solutions?trk=flagship_nav&veh=li-footer-lss-control&src=li-footer"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Solutions</Link>
-                    </li>
-                                        
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://mobile.linkedin.com/"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Mobile</Link>
-                    </li>
-                                        
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://business.linkedin.com/grow?&src=li-footer"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Small Buisness</Link>
-                    </li>
-                                        
-                    <li className='w-1/3 h-4 mb-3'>
-                      <Link href={"https://about.linkedin.com/transparency"} 
-                      target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Center</Link>
-                    </li>
-
-
-
-
-                </ul>
-              </div>
-
-              {/* right panel */}
-              <div className='w-[50%] h-fit'>
-                  <div className='w-full h-[156px] flex'>
-                    {/* left */}
-                    <div className='w-[50%] h-[156px] flex flex-col'>
-
-                      <li className='w-full h-9 mb-4 flex'>
-                        {/* svg */}
-                        <BsQuestionCircleFill className='text-[#3D3D3C] mr-2 w-5 h-5' />
-                        <div className='w-[calc(100%-32px)] h-full flex flex-col'>
-                          <Link href={"https://www.linkedin.com/help/linkedin?trk=d_flagship3_profile_view_base"} 
-                            target='_blank' className='text-sm font-semibold text-[#7D7C7A] h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Questions?
-                          </Link>
-                          <p className='h-4 flex items-center text-xs text-[#62615F]'>Vist our Help Center</p>
-                        </div>
-                      </li>
-                      
-                      <li className='w-full h-9 mb-4 flex'>
-                        {/* svg */}
-                        <IoMdSettings className='text-[#3D3D3C] mr-2 w-6 h-6' />
-                        <div className='w-[calc(100%-32px)] h-full flex flex-col'>
-                          <Link href={"https://www.linkedin.com/mypreferences/d/categories/account"} 
-                            target='_blank' className='text-sm font-semibold text-[#7D7C7A] h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Manage your account and privacy 
-                          </Link>
-                          <p className='h-4 flex items-center text-xs text-[#62615F]'>Go to your Settings</p>
-                        </div>
-                      </li>
-                                            
-                      <li className='w-full h-9 mb-4 flex'>
-                        {/* svg */}
-                        <IoShieldHalf className='text-[#3D3D3C] mr-2 w-6 h-6' />
-                        <div className='w-[calc(100%-32px)] h-full flex flex-col'>
-                          <Link href={"https://www.linkedin.com/help/linkedin/answer/a1339724"} 
-                            target='_blank' className='text-sm font-semibold text-[#7D7C7A] h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Recommendation tranparency 
-                          </Link>
-                          <p className='h-4 flex items-center text-xs text-[#62615F]'>Learn more about Recommended Content</p>
-                        </div>
-                      </li>
-
-                    </div>
-                    {/* right */}
-                    <div className='w-[50%] h-[156px]'>
-
-                    </div>
-                  </div>
-              </div>
-
-            </div>
-
-            <p className='w-full h-4 text-[#62615F] text-xs'>Linkedin Corporation &copy; 2023</p>
-
-          </div>
-        </footer>
+        <Footer />
 
       </div>
     </div>

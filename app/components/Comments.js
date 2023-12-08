@@ -6,46 +6,63 @@ import { FaSortDown } from "react-icons/fa";
 import Link from 'next/link';
 import postComment from '../lib/postComment';
 import getComments from '../lib/getComments';
+import updatingComment from '../lib/updatingComment';
 import SingleComment from './SingleComment';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
 
 
 
-export const preLoadComments = (postId, token) => {
-  void getComments(postId, token);
-}
+// export const preLoadComments = (postId, token) => {
+//   void getComments(postId, token);
+// }
 
 
-export const Comments = ({postId}) => {
-  const { token, userName } = useContextProvider()
-  const [input, setInput] = useState('')
+export const Comments = ({postId, setCommentCount, commentCount}) => {
+  const { token, userName } = useContextProvider();
+  const [input, setInput] = useState('');
   const [commentData, setCommentData] = useState(null);
-  const [loadMore, setLoadMore] = useState(false)
+  const [loadMore, setLoadMore] = useState(false);
+  const [isCommentId, setCommentId] = useState('');
+  const [fetchAgain, setFetchAgain] = useState(false);
 
 // getting comments from api 
   useEffect(() => {
     async function fetchComments(){
       const commentData = await getComments(postId, token)
       console.log("commentData ", commentData.data);
-      setCommentData(commentData.data);
+      setCommentData((commentData.data.reverse()));
     }
     fetchComments()
-  },[postId])
+  },[postId, fetchAgain])
 
 // posting a comment
   async function handlePostComment(e, postId){
     e.preventDefault()
-    console.log(input, postId, " posting a comment and token is ", token)
-    const postRes = await postComment(input, postId, token);
-    console.log("is Comment added to post or not ?? ", postRes);
-    // setInput('');
+    if(isCommentId){
+      const updatComRes = await updatingComment(input, isCommentId, token);
+      console.log(`Edit/Patching the comment with comment id ${isCommentId} & result is :- ${updatComRes}`)
+      console.log(updatComRes);
+      if(updatComRes.status === 'success'){
+        setInput('')
+        setCommentId('')
+        setFetchAgain(!fetchAgain)
+      }
+    }
+    else{
+      console.log("Making a request for new Comment")
+      const postRes = await postComment(input, postId, token);
+      console.log("is Comment added to post or not ?? ", postRes);
+      if(postRes.status === 'success'){
+        setInput('');
+        setFetchAgain(!fetchAgain)
+        setCommentCount(prev => prev + 1)
+      }
+    }   
   }
 
 // getting the first leter of UserName
 const name = userName;
 const firstLetter = name.charAt(0);
-
-
 
 
   return (
@@ -66,6 +83,7 @@ const firstLetter = name.charAt(0);
 
                 {/* input field div */}
                 <div className='w-full h-10 border-[1px] border-[#B2B2B2] rounded-[20px]'>
+
                   <div className='w-full h-full flex'>
                     {/* input area */}
                     <div className='w-[calc(100%-80px)] h-full p-[9.5px]'>
@@ -95,6 +113,7 @@ const firstLetter = name.charAt(0);
 
                     </div>
                   </div>
+
                 </div>
 
                 {/* Button Div for Post comment */}
@@ -112,27 +131,29 @@ const firstLetter = name.charAt(0);
 
         </div>
 
-        {/* div for dropdown - commnet sort by  */}
+        {/* div for dropdown - commnet sort by most relevant by  */}
         {/* pending???????????????????????  */}
-        <div className='ml-3 mr-2 w-[calc(100%-20px)] h-6 mb-2'>
-          <div className='w-full h-full flex items-center'>
+        {commentCount > 2 && (
+          <div className='ml-3 mr-2 w-[calc(100%-20px)] h-6 mb-2'>
+            <div className='w-full h-full flex items-center'>
 
-            {/* drop down Button */}
-            <div className='h-[17px] cursor-pointer'>
-              <span className='h-full flex items-center text-[13.33px] text-[#838383] font-medium relative' >
-                Most relevant<FaSortDown className='w-4 h-4 absolute -right-4 bottom-1 text-[#666666]' />
-              </span>
+              {/* drop down Button */}
+              <div className='h-[17px] cursor-pointer'>
+                <span className='h-full flex items-center text-[13.33px] text-[#838383] font-medium relative' >
+                  Most relevant<FaSortDown className='w-4 h-4 absolute -right-4 bottom-1 text-[#666666]' />
+                </span>
+              </div>
+
+              {/* drop down PopUp div */}
+              <div className='hidden'>
+
+              </div>
+
             </div>
-            {/* drop down PopUp div */}
-            <div className='hidden'>
-
-            </div>
-
           </div>
-        </div>
+        )}
 
         {/* view comments */}
-        {/* h-[16.625rem] */}
         <div className='w-full flex flex-col'>   
 
           {/* comments div- MAP FUNCTION */}
@@ -141,7 +162,7 @@ const firstLetter = name.charAt(0);
             {commentData  && commentData.map((each, key) => {
               return (
                 (!loadMore && key < 2) || loadMore ? (
-                  <SingleComment data={each} key={key} token={token} />
+                  <SingleComment data={each} key={key} setInput={setInput} input={input} setCommentId={setCommentId} />
                 ) : null
               )           
               })
@@ -150,12 +171,14 @@ const firstLetter = name.charAt(0);
           </div>
 
           {/* load more div */}
-          <div className='w-full h-8'>
-            <button onClick={() => setLoadMore(!loadMore)} className='w-[calc(100%-16px)] ml-4 px-2 h-[calc(100%-8px)] mb-2 py-0.5 rounded-md hover:bg-[#EBEBEB] flex justify-start '>
-              <span className='text-sm font-medium text-[#666666]'>{loadMore ? "Load less comments" : "Load more comments"}</span>
-            </button>
+          {commentCount > 2 && (
+            <div className='w-full h-8'>
+              <button onClick={() => setLoadMore(!loadMore)} className='w-[calc(100%-16px)] ml-4 px-2 h-[calc(100%-8px)] mb-2 py-0.5 rounded-md hover:bg-[#EBEBEB] flex justify-start '>
+                <span className='text-sm font-medium text-[#666666]'>{loadMore ? "Load less comments" : "Load more comments"}</span>
+              </button>
 
-          </div>
+            </div>
+          )}
 
         </div>
 

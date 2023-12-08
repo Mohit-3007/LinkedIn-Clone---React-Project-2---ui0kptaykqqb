@@ -1,17 +1,19 @@
-import Link from "next/link";
-import { GrLinkedin } from "react-icons/gr";
-import { HiOutlineSearch } from "react-icons/hi";
-import { ImHome3 } from "react-icons/im";
-import { IoBagHandle } from "react-icons/io5";
-import { AiFillMessage } from "react-icons/ai";
-import { IoMdNotifications } from "react-icons/io";
-import { BsPeopleFill } from "react-icons/bs";
-import ProfilePopUp from "./components/ProfilePopUp";
+`use client`
+import React from 'react'
+// import { useState } from "react";
 import Login from "./components/Login";
+import { useContextProvider } from "./ContextApi/AppContextProvider";
+
 
 
 
 export default function Home() {
+//   const { userName, login } = useContextProvider();
+//   const [hey, setHey] = React.useState(false)
+//   console.log("hey,", hey)
+//    console.log("MAIN PAGE && LOGIN STATUS IS :- ", login)
+//   const isClient = typeof window;
+//   console.log("isClient ", isClient)
  
   return (
     <>
@@ -20,5 +22,5 @@ export default function Home() {
       <Login />
 
     </>
-  )
+  )    
 }

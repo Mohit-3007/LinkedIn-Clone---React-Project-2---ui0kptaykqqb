@@ -3,9 +3,9 @@ import React from 'react'
 import { FaHashtag, FaPlus } from "react-icons/fa6";
 import Link from 'next/link';
 
-const LeftBottomBar = () => {
+const LeftBottomBar = ({showMore}) => {
   return (
-    <div className='w-full h-full pt-2 flex flex-col'>
+    <div className={'res-768:block w-full h-full pt-2 flex flex-col ' + (showMore ? '' : 'hidden')}>
         {/*  */}
         <div className='w-full h-20 mb-4 flex flex-col'>
             <div className='w-full h-8 flex items-center pl-3 text-xs text-[#191919]'>Recent</div>
@@ -29,14 +29,14 @@ const LeftBottomBar = () => {
         </div>
 
         {/* Groups */}
-        <Link href={"/groups"} className='w-full h-8 flex items-center text-xs text-[#0A66C2] font-semibold'>
+        <Link href={"/groups"} className='w-full h-8 flex items-center justify-between text-xs text-[#0A66C2] font-semibold'>
             <div className='w-[185px] h-full pl-3 mr-2 flex items-center hover:underline'>Groups</div>
             <div className='w-8 h-8 hover:bg-[#EBEBEB] rounded-[50%] flex items-center justify-center'>
                 <FaPlus className='w-4 h-4 text-[#191919]' />
             </div>
         </Link>
 
-        {/*  */}
+        {/* Events */}
         <div className='w-full h-8 flex items-center text-xs text-[#0A66C2] font-semibold'>
             <div className='w-[185px] h-full pl-3 mr-2 flex items-center hover:underline'>Events</div>
         </div>

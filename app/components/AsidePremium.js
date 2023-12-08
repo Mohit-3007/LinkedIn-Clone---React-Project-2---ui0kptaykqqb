@@ -9,8 +9,8 @@ const AsidePremium = () => {
 
 // getting the first leter of UserName
     const name = userName;
-    const fullName = name.replace(';', '');
-    const firstLetter = name.charAt(0);
+    const fullName = name?.replace(';', '');
+    const firstLetter = name?.charAt(0);
 
   return (
     <>

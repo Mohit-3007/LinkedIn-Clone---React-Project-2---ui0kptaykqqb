@@ -1,9 +1,8 @@
 import React from 'react'
 import { revalidatePath } from 'next/cache'
 
-const followUser = async (userId, token, path = '') => {
+const followUser = async (userId, token) => {
   
-  console.log(path)
     const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/follow/${userId}`, {
         cache: 'no-store',
         method: 'POST',
@@ -16,8 +15,6 @@ const followUser = async (userId, token, path = '') => {
       if (!resp.ok) {
         console.log('Failed to follow user')
       }
-
-      // revalidatePath(`${path}`)
 
   return await resp.json()
 }

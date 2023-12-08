@@ -4,25 +4,42 @@ import { BsFillSendFill } from "react-icons/bs";
 import { SlLike } from "react-icons/sl";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { BiRepost } from "react-icons/bi";
-import Comments, { preLoadComments } from './Comments';
+import Comments from './Comments';
 import upVotePost from '../lib/upVotePost';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
 import { BsFillHandThumbsUpFill } from "react-icons/bs";
+import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 
-const CommentReaction = ({each}) => {
+
+const CommentReaction = ({each, isDataFromLocal}) => {
   const { token } = useContextProvider()
   const [showCommnent, setShowComment] = useState(false);
   const [status, setStatus] = useState(false)
   const [likeBg, setLikeBg] = useState(false)
-  const [likeCount, setLikeCount] = useState();
+  const [likeCount, setLikeCount] = useState(0);
   const [countCheck, setCountCheck] = useState(1)
+  const [commentCount, setCommentCount] = useState(0);
+  const { alertDispatch } = useAlertContextProvider()
 
   useEffect ( () => {
-    const likeCountt = each?.likeCount;
-    setLikeCount(likeCountt-1)
+    if(!isDataFromLocal){
+      const likeCountt = each?.likeCount;
+      setLikeCount(likeCountt-1)
+    }   
   },[])
 
+  /////////////
+  useEffect( () => {
+    if(!isDataFromLocal){
+      
+      setCommentCount(each?.commentCount)
+    }
+    // if(each?.commentCount){
+    // }
+  },[])
+
+  /////////////
   function checkVoteStatus(){
     if(status){
       console.log("success like");
@@ -32,33 +49,16 @@ const CommentReaction = ({each}) => {
     else if(countCheck === 1){
       console.log("inside else if as count check is only  1")
       setLikeBg(true)
+      setStatus(false)
       setLikeCount((prev) => prev + 1)
       setCountCheck((prev) => prev + 1)
     }
   }
 
-  // useEffect( () => {
-  //   if(status){
-  //     setLikeCount((prev) => prev + 1)
-  //   }
-  //   else if(countCheck === 1){
-  //     console.log("inside else if as count check is only  1")
-  //     setLikeCount((prev) => prev + 1)
-  //     setCountCheck((prev) => prev + 1)
-  //   }
-
-
-  // },[status])
-
-
-  preLoadComments(each?._id, token)
-
   async function handleCommentsFetch(postId){
-    setShowComment(!showCommnent)
-    // if(!showCommnent){
-    //     const commentData = await getComments(postId)
-    //     console.log("commentData ", commentData);
-    // }
+    // {!isDataFromLocal && (
+      setShowComment(!showCommnent)
+    // )}
   }
 
   async function handleUpVotePost(postId, token){
@@ -69,30 +69,56 @@ const CommentReaction = ({each}) => {
       setStatus(true)
       checkVoteStatus()
     } 
-    if(upVote?.status === 'fail' && upVote?.message === "You already liked this post") checkVoteStatus()
+    else{
+      if(upVote?.status === 'fail' && upVote?.message === "You already liked this post") checkVoteStatus()
+    }
+  }
+
+  function handleComingSoon(){
+    alertDispatch({type: 'showComingSoon'})
+    setTimeout(()=>{
+      alertDispatch({type: 'hideComingSoon'})
+      console.log("successfull")
+    }, 2500)
   }
 
   return (
     <>
 
       {/* Total number of likes & comment */}
-      <div className='w-full h-[2.125rem] py-2 px-4 border-b border-yellow-500'>
+      <div className='w-full h-[2.125rem] py-2 px-4 border-b border-[#E8E8E8]'>
         <div className='w-full h-full'>
         
-          <ul className='w-full h-full flex list-none text-xs  text-[#666666]'>
+          <ul className='w-full h-full flex justify-between list-none text-xs  text-[#666666]'>
+
               {/* likes */}
               <li className='w-[25rem] h-full'>
                 <button className='h-full flex items-center'>
                   <SlLike className='w-4 h-4 mr-1 text-[#368EE7]' />
-                  <span className='hover:text-[#0A66C2] hover:underline'>Xvz and {likeCount} others</span>
+                  {likeCount != 0 && likeCount > 1 &&  (
+                    <span className='hover:text-[#0A66C2] hover:underline'>Xvz and {likeCount} others</span>
+                  )}
+                  {likeCount != 0 && likeCount < 2 && (
+                    <span className='hover:text-[#0A66C2] hover:underline'>{likeCount}</span>
+                  )}
                 </button>
               </li>
+
               {/* comment */}
               <li className='w-fit h-full'>
-                <button className='w-full h-full flex items-center'><span className='hover:text-[#0A66C2] hover:underline'>{each?.commentCount} comment</span></button>
+                <button className='w-full h-full flex items-center'>
+                  {!isDataFromLocal && (
+                    <span className='hover:text-[#0A66C2] hover:underline'>{commentCount} comment</span>
+                  )}
+                  {isDataFromLocal && (
+                    <span className='hover:text-[#0A66C2] hover:underline'>{commentCount} comment</span>
+                  )}
+                </button>
               </li>
+
               {/* repost */}
-              <li className='w-[3rem] h-full'></li>
+              {/* <li className='w-[3rem] h-full'></li> */}
+
           </ul>
 
         </div>
@@ -104,7 +130,7 @@ const CommentReaction = ({each}) => {
         {/* like */}
         <span onClick={() => handleUpVotePost(each?._id, token)} className='w-[7.0313rem] h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex justify-center items-center'> 
-              <BsFillHandThumbsUpFill className={'w-[26px] h-[26px] stroke-1  mr-1 ' + (likeBg ? "fill-[#368EE7]" : "fill-slate-400")} />
+              <BsFillHandThumbsUpFill className={'w-[26px] h-[26px] stroke-1 stroke-[#666666]  mr-1 ' + (likeBg ? "fill-[#368EE7]" : "fill-white")} />
               <span className='text-sm text-[#858585] h-full flex items-center'>Like</span>
           </button>
         </span>
@@ -118,7 +144,7 @@ const CommentReaction = ({each}) => {
         </span>
 
         {/* repost */}
-        <div className='w-[8.1875rem] h-full rounded-md hover:bg-[#EBEBEB]'>
+        <div onClick={() => handleComingSoon()} className='w-[8.1875rem] h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex items-center justify-center'>
             <BiRepost className='w-8 h-8 mr-1 text-[#666666]' />
             <span className='text-sm text-[#858585] h-full flex items-center'>Repost</span>
@@ -126,7 +152,7 @@ const CommentReaction = ({each}) => {
         </div>
 
         {/* send */} 
-        <div className='w-[7.3125rem] h-full rounded-md hover:bg-[#EBEBEB]'>
+        <div onClick={() => handleComingSoon()} className='w-[7.3125rem] h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex items-center justify-center'>
             <BsFillSendFill className='w-6 h-6 mr-1 text-[#666666]' />
             <span className='text-sm text-[#858585] h-full flex items-center'>Send</span>
@@ -136,7 +162,7 @@ const CommentReaction = ({each}) => {
       </div>
 
       {/* Posting & Viewing all comment Component */}
-      {showCommnent && <div className='w-full'><Comments postId={each?._id} /></div>}
+      {showCommnent && <div className='w-full'><Comments postId={each?._id} setCommentCount={setCommentCount} commentCount={commentCount} /></div>}
 
     </>
     )

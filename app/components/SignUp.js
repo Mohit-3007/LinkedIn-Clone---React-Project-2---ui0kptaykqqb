@@ -1,10 +1,10 @@
 'use client'
-import React, { useState, useEfect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import Logo from '../../public/logo.png'
 import Image from 'next/image';
 import Link from 'next/link';
 import  signUpUser  from '../lib/SignUpUser'
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
 
 
@@ -13,7 +13,20 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
-    const { setToken, setUserName, setUserEmail, handleLoginState } = useContextProvider()
+    const pathname = usePathname()
+    const { login, setToken, setUserName, setUserEmail, setOwner, handleLoginState } = useContextProvider()
+
+    console.log("login status ", login)
+
+    useLayoutEffect( () => {
+
+        console.log("inside useEffect function")
+        if(decodeURIComponent(document.cookie)){
+            console.log("Inside if condition");
+            router.replace('/feed')
+          }
+
+    },[])
 
     async function handleSubmit(e){
         e.preventDefault()
@@ -25,10 +38,12 @@ const SignUp = () => {
             setToken(token)
             setUserName(result?.data.name)
             setUserEmail(result?.data.email)
+            setOwner(result?.data._id)
 
             document.cookie=`token=${token}`
             document.cookie=`name=${result?.data.name}`
             document.cookie=`email=${result?.data.email}`
+            document.cookie=`owner=${result?.data._id}`
             handleLoginState()
             router.push("/feed");
         }

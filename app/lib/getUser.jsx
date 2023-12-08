@@ -1,6 +1,9 @@
 import React from 'react'
 
 const getUser = async (userId, token) => {
+
+  console.log("userId),",userId)
+  console.log("token),",token)
   
   
     const resp = await fetch(`https://academics.newtonschool.co/api/v1/linkedin/user/${userId}`, {
@@ -12,7 +15,7 @@ const getUser = async (userId, token) => {
       })
 
       if (!resp.ok) {
-        console.log('Failed to fetch commnets data')
+        console.log('Failed to fetch User data')
       }
 
   return await resp.json()
