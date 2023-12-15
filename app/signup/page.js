@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import SignUp from '../components/SignUp';
+import SignUp from '../_components/SignUp';
 import { redirect, useRouter } from 'next/navigation';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
 import session from '@/utils/session';

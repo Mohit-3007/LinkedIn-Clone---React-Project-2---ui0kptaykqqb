@@ -1,11 +1,11 @@
 'use client'
 import Image from 'next/image'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useContextProvider } from '@/app/ContextApi/AppContextProvider'
 import Link from 'next/link';
-import getUser from '@/app/lib/getUser'
-import followUser from '@/app/lib/FollowUser'
-import unfollowUser from '@/app/lib/UnfollowUser';
+import getUser from '@/app/_lib/getUser'
+import followUser from '@/app/_lib/FollowUser'
+import unfollowUser from '@/app/_lib/UnfollowUser';
 import backGround from '@/public/userBackGround.png'
 import { IoSchoolOutline, IoLogoLinkedin, IoShieldHalf } from "react-icons/io5";
 import { IoMdSettings } from "react-icons/io";
@@ -16,33 +16,105 @@ import { BiSolidSchool } from "react-icons/bi";
 import { RxCross1 } from "react-icons/rx";
 import { BsPeopleFill, BsQuestionCircleFill } from "react-icons/bs";
 import work from '@/public/work.png'
-import AsidePremium from '@/app/components/AsidePremium';
-import AsideUsers from '@/app/components/AsideUsers';
-import Footer from '@/app/components/Footer';
+import AsidePremium from '@/app/_components/AsidePremium';
+import AsideUsers from '@/app/_components/AsideUsers';
+import Footer from '@/app/_components/Footer';
+import userProfile from '@/public/userProfile.png'
+import getLocation from '@/app/_lib/getLocation';
+import { useRouter } from 'next/navigation';
+
 
 
 
 
 
 const UserPage =  ({params: {id}}) => {
-  const { token } = useContextProvider()
+  const { token, owner } = useContextProvider()
   const [userData, setUserData] = useState('');
   const [showContact, setShowContact] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isProfileData, setIsProfileData] = useState(false);
   const contactPopUpRef = useRef()
+  const router = useRouter();
+
+  
+  useLayoutEffect( () => {
+    if(!decodeURIComponent(document.cookie)){
+        console.log("You are not logged in, re-routing to login page")
+        router.replace('/')
+    }
+  },[])
 
 
-// fetching user details
+// fetching user details  ///////////////////////////////////
   useEffect(() => {
     if(token){
       async function fetchUser(id, token){
         const userdata = await getUser(id, token )
         console.log("RESULT OF USER FETCH DATA ", userdata);
-        setUserData(userdata?.data);
+
+        if(userdata?.status === 'success'){
+          // console.log(userdata?.data._id , ' === ', owner)
+          if(userdata?.data?._id === owner) {
+            // console.log('user data is of owner and it is his/her profile')
+            setIsProfileData(true)
+          }
+          setUserData(userdata?.data);
+        }
       }
       fetchUser(id, token)
     }
   },[token])
+
+{
+  // useEffect( () => {
+
+  //   function getIpAddress(){
+  //     // Create a dummy RTCPeerConnection
+  //     const pc = new RTCPeerConnection();
+
+  //     // Create a dummy data channel to trigger candidate gathering
+  //     pc.createDataChannel('');
+
+  //     // Create an empty offer to get local candidates
+  //     pc.createOffer()
+  //       .then(offer => pc.setLocalDescription(offer))
+  //       .catch(error => console.error('Error creating offer:', error));
+
+  //     // Listen for ICE candidates and extract the IP address
+  //     pc.onicecandidate = event => {
+  //       if (event.candidate) {
+  //         const ipAddress = extractIpAddress(event.candidate.candidate);
+  //         console.log(`Your IP address is ${ipAddress}`);
+          
+  //         // Stop listening for further candidates after the first one
+  //         pc.onicecandidate = null;
+  //       }
+  //     };
+  //   }
+
+  //   function extractIpAddress(candidate) {
+  //     const ipRegex1 = /(?:\d{1,3}(?:\.|\s|$)){4}/;
+  //     const ipRegex2 = /\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b/;
+
+  //     const match1 = candidate.match(ipRegex1);
+  //     const match2 = candidate.match(ipRegex2);
+
+  //     return match1 ? match1[0].trim() : (match2 ? match2[0] : null);
+  //   }
+
+  //   // async function fetchLocation(){
+  //   //   const location = await getLocation()
+  //   //   console.log("location ", location)
+  //   // }
+
+  //   if(isProfileData){
+  //     getIpAddress()
+  //     // fetchLocation()
+  //   }
+
+  // },[isProfileData])
+}
 
   // check user is being followed or not
   useEffect(() => {
@@ -146,12 +218,14 @@ const UserPage =  ({params: {id}}) => {
                       {/* pic */}
                       <div className='w-[128px] res-992:w-[160px] h-[172px] -mt-[112px]'>
                        <div className='w-full h-[160px]'>
-                        {userData && (
-                          <Image src={userData?.profileImage} alt='user profile pic'
-                           width={152} height={152} 
+                        {/* {userData && userData.profileImage && ( */}
+                          <Image src={( !isProfileData ?  
+                            ( userData?.profileImage ? userData.profileImage : userProfile )
+                            : userProfile)} alt='user profile pic'
+                            width={152} height={152} 
                             className='border-[4px] rounded-[50%]' />
-                        )}
-                       </div>
+                     
+                       </div>     
                       </div>
                       <div className='w-[37.25rem] h-full'></div>
 
@@ -165,22 +239,27 @@ const UserPage =  ({params: {id}}) => {
 
                         {/* name & education */}
                         <div className='w-[72%] res-992:w-[66%] res-1200:w-[500px] h-full flex flex-col'>
+
                           {/* name */}
                           <div className='w-full h-[30px] flex items-center justify-start '>
-                            <span className='text-[#191919] text-lg res-992:text-2xl h-full py-1 font-semibold rounded-sm hover:bg-[#EBEBEB] flex items-center '>{userData?.name}</span>
-                            <span className='text-[#666666] ml-1 text-sm'>{userData?.gender === 'male' ? '(He/Him)' : "(She/Her)"}</span>
+                            <span className='text-[#191919] text-lg res-992:text-2xl h-full py-1 font-semibold rounded-sm hover:bg-[#EBEBEB] flex items-center capitalize '>{userData?.name}</span>
+                            <span className='text-[#666666] ml-1 text-sm'>{ !isProfileData && (userData?.gender ? 
+                                (userData.gender === 'male' ? '(He/Him)' : "(She/Her)" ) 
+                                : "" ) }</span>
                           </div>
+
                           {/* education ul */}
                           <div className='w-full h-fit test-sm res-992:text-base text-[#595959] break-all flex'>
-                            {userData?.education?.map((e, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  {e?.degree}
-                                  {index < userData.education.length - 1 && ', '}
-                                </React.Fragment>
-                                
-                              )
-                            })}   
+                            { !isProfileData && ( userData?.education?.map((e, index) => {
+                                return (
+                                  <React.Fragment key={index}>
+                                    {e?.degree}
+                                    {index < userData.education.length - 1 && ', '}
+                                  </React.Fragment>
+                                  
+                                )
+                              })
+                            ) }   
                           </div>
 
                         </div>
@@ -209,7 +288,10 @@ const UserPage =  ({params: {id}}) => {
                               : ''
                           }
                         </span>
-                        <span className='h-full text-[#307ECB] text-sm font-semibold'><span>. </span><span onClick={handleContactPopUp} className='hover:underline cursor-pointer'>Contact info</span></span>
+                        <span className='h-full text-[#307ECB] text-sm font-semibold'>
+                          <span>{!isProfileData ? ". " : "" }</span>
+                          <span onClick={handleContactPopUp} className='hover:underline cursor-pointer'>Contact info</span>
+                        </span>
                       </div>
 
                       {/* Contact popUp window */}
@@ -219,7 +301,7 @@ const UserPage =  ({params: {id}}) => {
                           {/* name & cross */}
                           <div className='w-full h-11 pl-3 py-2 flex border-b border-[#E8E8E8]'>
                             {/* name */}
-                            <div className='w-[492px] h-full text-[#191919] font-semibold text-xl'>{userData?.name}</div>
+                            <div className='w-[492px] h-full text-[#191919] capitalize font-semibold text-xl'>{userData?.name}</div>
                             {/* cross */}
                             <div className='w-[calc(100%-492px)] h-full flex items-center justify-center'>
                               <button className='w-8 h-8 rounded-[50%] hover:bg-[#EBEBEB] flex items-center justify-center'><RxCross1 onClick={handleContactPopUp} className='w-5 h-5 text-[#666666]' /></button>
@@ -238,7 +320,7 @@ const UserPage =  ({params: {id}}) => {
                                   <div className='w-10 h-6 flex justify-center'><IoLogoLinkedin className='w-6 h-6 text-[#404040]' /></div>
                                   {/* details */}
                                   <div className='w-full h-full flex flex-col ml-2'>
-                                    <div className='w-full h-6 font-semibold text-base'>{firstName}'s Profile</div>
+                                    <div className='w-full h-6 capitalize font-semibold text-base'>{firstName}'s Profile</div>
                                     <div className='w-full h-5 mt-1 text-[#307ECB] font-semibold lowercase text-sm hover:underline'>
                                       linkedin.com/in/{firstName}-{lastName && lastName}-{id}
                                     </div>
@@ -253,7 +335,8 @@ const UserPage =  ({params: {id}}) => {
                                   <div className='w-full h-full flex flex-col ml-2'>
                                     <div className='w-full h-6 font-semibold text-base'>Phone</div>
                                     <div className='w-full h-5 mt-1 text-sm flex'>
-                                      {userData?.phone} <span className='text-[#9B9B9B] ml-1'>(Work)</span>
+                                      { !isProfileData ? (userData?.phone) : "91******** "} 
+                                      <span className='text-[#9B9B9B] ml-1'>(Work)</span>
                                     </div>
                                   </div>
                                 </section>
@@ -294,226 +377,236 @@ const UserPage =  ({params: {id}}) => {
                     </div>
 
                     {/* follow / Unfollow */}
-                    <div className='w-full h-8 mt-4'>
-                      <div className='h-full flex'>
+                    { !isProfileData && (
 
-                        {/* folowing or not */}
-                        {!isFollowing && (
-                          <div onClick={() => handleFollow(id, token)} className='w-[121px] h-full bg-white outline outline-1 outline-[#0A66C2] rounded-[35px] hover:outline-2 hover:bg-[#def2fd] hover:cursor-pointer py-1.5 px-4 flex items-center justify-center'>
-                            <button className='w-fit h-full text-base font-semibold text-[#0A66C2] flex items-center justify-center'>
-                              <FaPlus className='w-4 h-4 mr-1 ' />Follow
-                            </button>
+                      <div className='w-full h-8 mt-4'>
+                        <div className='h-full flex'>
+
+                          {/* folowing or not */}
+                          {!isFollowing && (
+                            <div onClick={() => handleFollow(id, token)} className='w-[121px] h-full bg-white outline outline-1 outline-[#0A66C2] rounded-[35px] hover:outline-2 hover:bg-[#def2fd] hover:cursor-pointer py-1.5 px-4 flex items-center justify-center'>
+                              <button className='w-fit h-full text-base font-semibold text-[#0A66C2] flex items-center justify-center'>
+                                <FaPlus className='w-4 h-4 mr-1 ' />Follow
+                              </button>
+                            </div>
+                          )}
+
+                          {isFollowing && (
+                          <div onClick={() => handleUnFollow(id, token)} className='w-[121px] h-full bg-[rgb(10,102,194)] rounded-[35px] hover:bg-[#053059] hover:cursor-pointer py-1.5 px-4 flex items-center justify-center'>
+                            <button className='w-fit h-full text-base font-semibold text-white flex items-center justify-center'>Following</button>
                           </div>
-                        )}
+                          )}
+                          
 
-                        {isFollowing && (
-                        <div onClick={() => handleUnFollow(id, token)} className='w-[121px] h-full bg-[rgb(10,102,194)] rounded-[35px] hover:bg-[#053059] hover:cursor-pointer py-1.5 px-4 flex items-center justify-center'>
-                          <button className='w-fit h-full text-base font-semibold text-white flex items-center justify-center'>Following</button>
+                          
                         </div>
-                        )}
-                        
-
-                        
                       </div>
-                    </div>
+
+                    )}
                     
                   </div> 
 
                 </section>
 
-                {/* experience */}
-                <section className='w-full h-fit mt-2 pb-3 text-[#191919] bg-white rounded-md shadow-lg flex flex-col'>
+                { !isProfileData && (
+                  <>
+                    {/* experience */}
+                    <section className='w-full h-fit mt-2 pb-3 text-[#191919] bg-white rounded-md shadow-lg flex flex-col'>
 
-                    {/* heading */}
-                    <div className='w-full h-[49px] px-3 py-3'>
-                      <h1 className='w-full h-full px-3 pt-3 font-semibold text-xl'>Experience</h1>
-                    </div>
-                    
-                    {/* work experience conatiner */}
-                    <div className='w-full h-full'>
-                        <ul className='w-full h-full'>
-                          {/* map function */}
-                          {userData?.workExperience && userData.workExperience.map( (e, index) => {
-                            const startDate = new Date(e?.startDate)
-                            const endDate = new Date(e?.endDate)   
-                            const options = {month: 'short', year: 'numeric'}
-                            const startTIme = startDate.toLocaleDateString("en-US", options)
-                            const endTIme = endDate.toLocaleDateString("en-US", options)
+                        {/* heading */}
+                        <div className='w-full h-[49px] px-3 py-3'>
+                          <h1 className='w-full h-full px-3 pt-3 font-semibold text-xl'>Experience</h1>
+                        </div>
+                        
+                        {/* work experience conatiner */}
+                        <div className='w-full h-full'>
+                            <ul className='w-full h-full'>
+                              {/* map function */}
+                              {userData?.workExperience && userData.workExperience.map( (e, index) => {
+                                const startDate = new Date(e?.startDate)
+                                const endDate = new Date(e?.endDate)   
+                                const options = {month: 'short', year: 'numeric'}
+                                const startTIme = startDate.toLocaleDateString("en-US", options)
+                                const endTIme = endDate.toLocaleDateString("en-US", options)
 
-                            function timeDiff(start, end){
-                              const yearDiff = end.getFullYear() - start.getFullYear();
-                              const monthDiff = end.getMonth() - start.getMonth();
-                              
-                              let result = '';
+                                function timeDiff(start, end){
+                                  const yearDiff = end.getFullYear() - start.getFullYear();
+                                  const monthDiff = end.getMonth() - start.getMonth();
+                                  
+                                  let result = '';
 
-                              if (yearDiff > 0) {
-                                if (monthDiff < 0) {
-                                  result += `${yearDiff-1} ${yearDiff-1 === 1 ? ' yr ' : ' yrs '}`;
-                                  const surplusMonth = 12 - (Math.abs(monthDiff));
-                                  result += ` ${surplusMonth} ${surplusMonth === 1 ? ' mo ' : ' mos '}`;
-                                }  
-                                
-                                if (monthDiff > 0) {
-                                  result += `${yearDiff} ${yearDiff === 1 ? ' yr ' : ' yrs '}`;
-                                  result += ` ${monthDiff} ${monthDiff === 1 ? ' mo ' : ' mos '}`;
-                                } 
-                              } else if (monthDiff > 0) {
-                                result += `${monthDiff} ${monthDiff === 1 ? ' mo ' : ' mos '}`;
-                              } else {
-                                result = 'Less than a month';
+                                  if (yearDiff > 0) {
+                                    if (monthDiff < 0) {
+                                      result += `${yearDiff-1} ${yearDiff-1 === 1 ? ' yr ' : ' yrs '}`;
+                                      const surplusMonth = 12 - (Math.abs(monthDiff));
+                                      result += ` ${surplusMonth} ${surplusMonth === 1 ? ' mo ' : ' mos '}`;
+                                    }  
+                                    
+                                    if (monthDiff > 0) {
+                                      result += `${yearDiff} ${yearDiff === 1 ? ' yr ' : ' yrs '}`;
+                                      result += ` ${monthDiff} ${monthDiff === 1 ? ' mo ' : ' mos '}`;
+                                    } 
+                                  } else if (monthDiff > 0) {
+                                    result += `${monthDiff} ${monthDiff === 1 ? ' mo ' : ' mos '}`;
+                                  } else {
+                                    result = 'Less than a month';
+                                  }
+
+                                  return result;
+
+                                }
+                                const workTime = timeDiff(startDate, endDate)                   
+                                return (
+                                  <li key={index} className='w-full h-max px-6 py-3 flex flex-col'>   
+
+                                    <div className='w-full h-full flex flex-row'>
+                                      {/* pic */}
+                                      <div className='w-[56px] h-full'>
+                                        <Image src={work} alt='work pic' height={48} width={48} className='w-12 h-12' />
+                                      </div>
+
+                                      {/* work details */}
+                                      <div className='w-[calc(100%-56px)] h-max'>
+                                        <div className='w-full h-full flex flex-col'>
+                                          {/* desigantion */}
+                                          <div className='w-full h-6 flex items-center text-base font-semibold'>{e?.designation}</div>
+                                          {/* co. name */}
+                                          <div className='h-5 flex items-center text-sm'>{e?.companyName}</div>
+                                          {/* experience in months & years */}
+                                          <div className='h-5 flex items-center text-sm text-[#A4A4A4]'>{startTIme} - {endTIme} . {workTime}</div>
+                                          {/* Location */}
+                                          <div className='h-5 flex items-center text-sm text-[#A4A4A4]'>{e?.location}</div>
+
+                                        </div>
+                                      </div>
+
+                                    </div>
+
+                                    {index != userData?.workExperience?.length-1 && (<div className='w-full h-[1px] bg-[#E8E8E8] mt-4 rounded-sm'></div>)}
+
+                                  </li>
+                                )
+                              })
                               }
+                            </ul>
+                        </div>
 
-                              return result;
+                    </section>
 
-                            }
-                            const workTime = timeDiff(startDate, endDate)                   
-                            return (
-                              <li key={index} className='w-full h-max px-6 py-3 flex flex-col'>   
+                    {/* education */}
+                    <section className='w-full h-fit mt-2 pb-3 text-[#191919] bg-white rounded-md shadow-lg flex flex-col'>
+                      
+                      {/* heading */}
+                      <div className='w-full h-[49px] px-3 py-3'>
+                          <h1 className='w-full h-full px-3 pt-3 font-semibold text-xl'>Education</h1>
+                      </div>
 
-                                <div className='w-full h-full flex flex-row'>
-                                  {/* pic */}
-                                  <div className='w-[56px] h-full'>
-                                    <Image src={work} alt='work pic' height={48} width={48} className='w-12 h-12' />
+                      {/* education container */}
+                      <div className='w-full h-full'>
+                          <ul className='w-full h-full'>
+                            {/* map function */}
+                            {userData?.education && userData.education.map( (e, index) => {
+                              const startYear = new Date(e?.startDate).getFullYear()
+                              const endYear = new Date(e?.endDate).getFullYear()
+
+                              return (
+                                <li key={index} className='w-full h-max'>
+                                  <div className='w-full h-max px-6 py-3 flex flex-col'>
+
+                                    <div className='w-full h-full flex flex-row'>
+                                      {/* icon */}
+                                      <div className='w-[56px] h-full'>
+                                        <BiSolidSchool className='w-12 h-12' />
+                                        {/* <Image src={work} alt='work pic' height={48} objectFit='cover' className='w-12 h-12' /> */}
+                                      </div>
+
+                                      {/* education details */}
+                                      <div className='w-[calc(100%-56px)] h-max'>
+
+                                        <div className='w-full h-fit flex flex-col'>
+                                          <div className='w-full h-fit flex flex-col'></div>
+                                          {/* College details */}
+                                          <div className='w-full h-fit flex flex-col'>
+                                            {/* name */}
+                                            <div className='text-base font-semibold w-full h-6 flex items-center'>{e?.schoolName}</div>
+                                            {/* degree */}
+                                            <div className='w-full h-5 flex items-center text-sm'>{e?.degree}</div>
+                                            {/* year */}
+                                            <div className='w-full h-5 flex items-center text-[#666666]'>{startYear} - {endYear}</div>
+                                          </div>
+
+                                          
+                                        </div>
+
+                                        <div className='w-full h-fit flex items-center break-words'>{e?.description}</div>
+
+                                      </div>
+                                    </div>
+
+                                    {index != userData?.education?.length-1 && (<div className='w-full h-[1px] bg-[#E8E8E8] mt-4 rounded-sm'></div>)}
+
                                   </div>
 
-                                  {/* work details */}
-                                  <div className='w-[calc(100%-56px)] h-max'>
-                                    <div className='w-full h-full flex flex-col'>
-                                      {/* desigantion */}
-                                      <div className='w-full h-6 flex items-center text-base font-semibold'>{e?.designation}</div>
-                                      {/* co. name */}
-                                      <div className='h-5 flex items-center text-sm'>{e?.companyName}</div>
-                                      {/* experience in months & years */}
-                                      <div className='h-5 flex items-center text-sm text-[#A4A4A4]'>{startTIme} - {endTIme} . {workTime}</div>
-                                      {/* Location */}
-                                      <div className='h-5 flex items-center text-sm text-[#A4A4A4]'>{e?.location}</div>
+                                  
 
+                                </li>
+                              )
+                            })}
+                          </ul>
+                      </div>
+
+                    </section>
+
+                    {/* skills */}
+                    <section className='w-full h-fit mt-2 pb-3 text-[#191919] bg-white rounded-md shadow-lg flex flex-col'>
+
+                      {/* heading */}
+                      <div className='w-full h-[49px] px-3 py-3'>
+                        <h1 className='w-full h-full px-3 pt-3 font-semibold text-xl'>Skills</h1>
+                      </div>
+
+                      {/* skills container */}
+                      <div className='w-full h-full'>
+                        <ul className='w-full h-full'>
+                          {/* map function */}
+                          {userData?.skills && userData.skills.map( (e, index) => { 
+                            // console.log(userData?.skills)
+
+                            return (
+                              <li key={index} className='w-full h-max'>
+                                <div className='w-full h-max px-6 py-3 flex flex-col'>
+
+                                  <div className='w-full h-full flex flex-row'>
+                                    {/* icon */}
+                                    <div className='w-[56px] h-full'>
+                                      <BsPeopleFill className='w-10 h-10' />
+                                      {/* <Image src={work} alt='work pic' height={48} objectFit='cover' className='w-12 h-12' /> */}
+                                    </div>
+
+                                    {/* skillls details */}
+                                    <div className='w-[calc(100%-56px)] h-max'>                             
+                                      <div className='w-full h-fit flex flex-col'>
+                                        {/* skill */}
+                                        <div className='text-base font-semibold w-full h-6 flex items-center'>{e}</div>
+                                      </div>                                       
                                     </div>
                                   </div>
 
+                                  {index != userData?.skills?.length-1 && (<div className='w-full h-[1px] bg-[#E8E8E8] mt-4 rounded-sm'></div>)}
+      
                                 </div>
-
-                                {index != userData?.workExperience?.length-1 && (<div className='w-full h-[1px] bg-[#E8E8E8] mt-4 rounded-sm'></div>)}
 
                               </li>
                             )
-                          })
-                          }
+                          })}
                         </ul>
-                    </div>
+                      </div>
 
-                </section>
+                    </section>
+                  </>
 
-                {/* education */}
-                <section className='w-full h-fit mt-2 pb-3 text-[#191919] bg-white rounded-md shadow-lg flex flex-col'>
-                  
-                  {/* heading */}
-                  <div className='w-full h-[49px] px-3 py-3'>
-                      <h1 className='w-full h-full px-3 pt-3 font-semibold text-xl'>Education</h1>
-                  </div>
+                )}
 
-                  {/* education container */}
-                  <div className='w-full h-full'>
-                      <ul className='w-full h-full'>
-                        {/* map function */}
-                        {userData?.education && userData.education.map( (e, index) => {
-                          const startYear = new Date(e?.startDate).getFullYear()
-                          const endYear = new Date(e?.endDate).getFullYear()
-
-                          return (
-                            <li key={index} className='w-full h-max'>
-                              <div className='w-full h-max px-6 py-3 flex flex-col'>
-
-                                <div className='w-full h-full flex flex-row'>
-                                  {/* icon */}
-                                  <div className='w-[56px] h-full'>
-                                    <BiSolidSchool className='w-12 h-12' />
-                                    {/* <Image src={work} alt='work pic' height={48} objectFit='cover' className='w-12 h-12' /> */}
-                                  </div>
-
-                                  {/* education details */}
-                                  <div className='w-[calc(100%-56px)] h-max'>
-
-                                    <div className='w-full h-fit flex flex-col'>
-                                      <div className='w-full h-fit flex flex-col'></div>
-                                      {/* College details */}
-                                      <div className='w-full h-fit flex flex-col'>
-                                        {/* name */}
-                                        <div className='text-base font-semibold w-full h-6 flex items-center'>{e?.schoolName}</div>
-                                        {/* degree */}
-                                        <div className='w-full h-5 flex items-center text-sm'>{e?.degree}</div>
-                                        {/* year */}
-                                        <div className='w-full h-5 flex items-center text-[#666666]'>{startYear} - {endYear}</div>
-                                      </div>
-
-                                      
-                                    </div>
-
-                                    <div className='w-full h-fit flex items-center break-words'>{e?.description}</div>
-
-                                  </div>
-                                </div>
-
-                                {index != userData?.education?.length-1 && (<div className='w-full h-[1px] bg-[#E8E8E8] mt-4 rounded-sm'></div>)}
-
-                              </div>
-
-                              
-
-                            </li>
-                          )
-                        })}
-                      </ul>
-                  </div>
-
-                </section>
-
-                {/* skills */}
-                <section className='w-full h-fit mt-2 pb-3 text-[#191919] bg-white rounded-md shadow-lg flex flex-col'>
-
-                  {/* heading */}
-                  <div className='w-full h-[49px] px-3 py-3'>
-                    <h1 className='w-full h-full px-3 pt-3 font-semibold text-xl'>Skills</h1>
-                  </div>
-
-                  {/* skills container */}
-                  <div className='w-full h-full'>
-                    <ul className='w-full h-full'>
-                      {/* map function */}
-                      {userData?.skills && userData.skills.map( (e, index) => { 
-                        // console.log(userData?.skills)
-
-                        return (
-                          <li key={index} className='w-full h-max'>
-                            <div className='w-full h-max px-6 py-3 flex flex-col'>
-
-                              <div className='w-full h-full flex flex-row'>
-                                {/* icon */}
-                                <div className='w-[56px] h-full'>
-                                  <BsPeopleFill className='w-10 h-10' />
-                                  {/* <Image src={work} alt='work pic' height={48} objectFit='cover' className='w-12 h-12' /> */}
-                                </div>
-
-                                {/* skillls details */}
-                                <div className='w-[calc(100%-56px)] h-max'>                             
-                                  <div className='w-full h-fit flex flex-col'>
-                                    {/* skill */}
-                                    <div className='text-base font-semibold w-full h-6 flex items-center'>{e}</div>
-                                  </div>                                       
-                                </div>
-                              </div>
-
-                              {index != userData?.skills?.length-1 && (<div className='w-full h-[1px] bg-[#E8E8E8] mt-4 rounded-sm'></div>)}
-  
-                            </div>
-
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-
-                </section>
 
               </main>
 

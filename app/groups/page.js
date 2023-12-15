@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useContextProvider } from '@/app/ContextApi/AppContextProvider'
 import Link from 'next/link';
 import disco from '@/public/disco.png';
@@ -10,18 +10,22 @@ import { HiCamera } from "react-icons/hi2";
 import { ImCheckboxChecked } from "react-icons/im";
 import uploadSamp from '@/public/uploadSamp.jpeg';
 import uploadBg from '@/public/uploadBg.jpeg';
-import creatingGroup from '../lib/creatingGroup';
+import creatingGroup from '../_lib/creatingGroup';
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 import { PiWarningOctagonFill } from "react-icons/pi";
-import NavBar from '../components/NavBar';
-import getPosts from '../lib/getPosts';
-import GroupLocalData from '../components/GroupLocalData';
+import NavBar from '../_components/NavBar';
+import getPosts from '../_lib/getPosts';
+import GroupLocalData from '../_components/GroupLocalData';
 import { Gi3DMeeple } from "react-icons/gi";
+import { useRouter } from 'next/navigation';
+import AlertBox from '../_components/AlertBox';
+
 
 
 
 
 const Groups = () => {
+    const router = useRouter();
     const { token } = useContextProvider();
     const [showGroupPopup, setShowGroupPopup ] = useState(false);
     const groupRef = useRef()
@@ -45,9 +49,16 @@ const Groups = () => {
     const [islocalData, setIsLocalData] = useState(false);
     const [checkLocal, setCheckLocal] = useState(false);
 
-    console.log("alertImageUpload ",alertImageUpload);   
-    console.log("alertGroupCreated ",alertGroupCreated);   
+    // console.log("alertImageUpload ",alertImageUpload);   
+    // console.log("alertGroupCreated ",alertGroupCreated);   
     // console.log("showAlert ",showAlert); 
+
+    useLayoutEffect( () => {
+        if(!decodeURIComponent(document.cookie)){
+            console.log("You are not logged in, re-routing to login page")
+            router.replace('/')
+        }
+      },[])
     
     useEffect( () => {
         if(localStorage.getItem('groupData')){
@@ -167,6 +178,8 @@ const Groups = () => {
                 setSelectCheck1(true)
                 setSelectCheck2(true)
                 setImgUrl('')
+                setTitle('')
+                setDescription('')
             }
             
         }
@@ -200,23 +213,33 @@ const Groups = () => {
         callFetch()
       },[]);
 
+    function handleAlert(){
+    alertDispatch({type:"showComingSoon"})
+    setTimeout(()=>{
+        alertDispatch({type: 'hideComingSoon'})
+    }, 2500)
+    }
+
 
   return (
     <>
-        <NavBar />
+        {/* <NavBar /> */}
 
-        <div className={'w-full bg-[#F4F2EE] pt-[3.25rem] z-20 relative h-screen scrollbar-stable ' + (
+        <div className="w-full h-fit z-10  pt-[3.25rem] ">
+
+        {/* <div className={'w-full bg-[#F4F2EE] pt-[3.25rem] z-20 relative h-screen scrollbar-stable ' + (
             showGroupPopup ? "overflow-y-hidden" : "overflow-y-scroll"
-        )}>
+        )}> */}
             <div className='w-[calc(100vw-17px)] h-full'>
 
                 {/* main group view & Aside bar */}
                 <div className='w-full h-full pt-6 flex flex-col'>
                     <div className='w-full h-full'>
-                        <div className='w-[1128px] h-full mx-[calc((100%-1128px)/2)] flex justify-between relative'>
+                        {/* Responsiveness */}
+                        <div className='w-full flex-col gap-4 res-768:gap-0 items-center res-768:items-start flex res-768:flex-row res-768:w-[720px] res-992:w-[960px] res-1200:w-[1128px] h-full res-768:mx-[calc((100%-720px)/2)] res-992:mx-[calc((100%-960px)/2)] res-1200:mx-[calc((100%-1128px)/2)] res-768:justify-between relative'>
 
                             {/* main */}
-                            <main className='w-[50.25rem] h-full '>
+                            <main className='w-[576px] res-768:w-[396px] res-992:w-[636px] res-1200:w-[50.25rem] h-full '>
                                 <div className='w-full h-[457px] bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl flex flex-col'>
 
                                     {/* heading */}
@@ -259,7 +282,7 @@ const Groups = () => {
                                                     </section>
 
                                                     {/* bottom */}
-                                                    <div className='w-full h-[64px] flex justify-center items-start'>
+                                                    <div onClick={handleAlert} className='w-full h-[64px] flex justify-center items-start'>
                                                         <Link href={"#"} className='h-8 py-1.5 px-4 w-fit outline outline-1 outline-[#0a66c2] text-[#0a66c2]
                                                             text-base font-semibold hover:outline-2 flex items-center rounded-3xl hover:bg-[#def2fd]'>
                                                                 Discover
@@ -278,7 +301,7 @@ const Groups = () => {
                             </main>
 
                             {/* aside */}
-                            <aside className='w-[18.75rem] h-fit overflow-hidden rounded-xl'>
+                            <aside className='w-[576px] res-768:w-[18.75rem] h-fit overflow-hidden rounded-xl'>
 
                                 {/* groups section */}
                                 <section className='w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg rounded-xl'>
@@ -293,7 +316,7 @@ const Groups = () => {
                                             const members = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
                                           
                                           return (
-                                            <li key={index} className='w-full h-fit py-4'>
+                                            <li onClick={handleAlert} key={index} className='w-full h-fit py-4'>
                                                 <Link href={'#'} className='w-full h-fit flex'>
 
                                                     <div className='w-12 h-full'>
@@ -402,8 +425,8 @@ const Groups = () => {
 
                 {/* create group div Popup on click */}
                 {showGroupPopup && (
-                    <div className='absolute top-8 left-[311px] z-30 w-[744px] h-[469px]  bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
-                        <div ref={groupRef} className='w-full h-[500px]'>
+                    <div className='fixed top-8 left-0- z-30 w-full h-full bg-[#666666] bg-opacity-70 overflow-hidden flex justify-center '>
+                        <div ref={groupRef} className='w-[744px] h-[500px] bg-white outline outline-1 outline-[#E8E8E8] shadow-lg rounded-xl relative'>
 
                             {/* top */}
                             <div className='w-full h-[52px] py-3 pl-3 flex items-center'>
@@ -590,6 +613,9 @@ const Groups = () => {
                         <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseAlert} className='w-4 h-4 text-[#666666] ' /></button>
                     </div>
                 )}
+
+                {/* Alert box */}
+                <AlertBox />
 
             </div>
         </div>

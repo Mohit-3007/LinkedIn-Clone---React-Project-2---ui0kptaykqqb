@@ -1,29 +1,33 @@
 'use client'
 import Link from 'next/link';
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import Image from 'next/image'
 import Media from '../../public/media.png'
 import Event from '../../public/event.png'
 import Article from '../../public/article.png'
-import getPosts from '../lib/getPosts';
-import FeedPosts from '../components/FeedPosts';
-import { usePathname } from 'next/navigation';
-import AddingPost from '../components/AddingPost';
+import getPosts from '../_lib/getPosts';
+import FeedPosts from '../_components/FeedPosts';
+import AddingPost from '../_components/AddingPost';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
-import LeftTopBar from '../components/LeftTopBar';
-import LeftBottomBar from '../components/LeftBottomBar';
-import AsidePremium from '../components/AsidePremium';
+import LeftTopBar from '../_components/LeftTopBar';
+import LeftBottomBar from '../_components/LeftBottomBar';
+import AsidePremium from '../_components/AsidePremium';
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 import { RxCross1 } from "react-icons/rx";
-import NavBar from '../components/NavBar';
+import NavBar from '../_components/NavBar';
 import { Gi3DMeeple } from "react-icons/gi";
 import { PiWarningOctagonFill } from "react-icons/pi";
-import PostTopBar from '../components/PostTopBar';
-import PostContent from '../components/PostContent';
-import CommentReaction from '../components/CommentReaction';
+import PostTopBar from '../_components/PostTopBar';
+import PostContent from '../_components/PostContent';
+import CommentReaction from '../_components/CommentReaction';
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
-import AlertBox from '../components/AlertBox';
+import AlertBox from '../_components/AlertBox';
+import alertTimeout from '../_lib/alertTimeout';
+import { useRouter } from 'next/navigation';
+import TopBottomNav from '../_components/MobileComponents/TopBottomNav';
+
+
 
 
 
@@ -31,13 +35,12 @@ import AlertBox from '../components/AlertBox';
 
 
 const Feed =  () => {
-  const pathName = usePathname();
-  const [fetchData, setFetchData] = useState('');
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [showPostComment, setShowPostComment] = useState(false);
+  const [showPostCompo, setShowPostCompo] = useState(false);
   const postCommentRef = useRef();
   const alertDivRef = useRef()
-  const { userName } = useContextProvider();
+  const { userName, owner } = useContextProvider();
   const [checkLocal, setCheckLocal] = useState(false);
   const [showAlertPost, setShowAlertPost] = useState(false)
   const [showAlertImg, setShowAlertImg] = useState(false)
@@ -49,22 +52,35 @@ const Feed =  () => {
   const [groupRes, setGroupRes] = useState('');
   const [firstRender, setFirstRender] = useState(true)
   const [showAlertLink, setShowAlertLink] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(0);
 
-  // console.log(`Alert boxes alertImageUpload status is ${alertImageUpload}`)
-  // console.log(`Alert boxes alertLinkCopied status is ${alertLinkCopied}`)
-  // console.log(`Alert boxes alertPostCreated status is ${alertPostCreated}`)
-  // console.log(`Alert boxes alertReportPost status is ${alertReportPost}`)
-  // console.log(`Alert boxes alertReportComment status is ${alertReportComment}`)
+  const logWindowWidth = () => {
+    setWindowWidth(window?.innerWidth);
+  };
+  // console.log("window.innerWidth ",windowWidth);
+  useEffect(() => {
+    logWindowWidth();
+    window.addEventListener('resize', logWindowWidth);
+    return () => {
+      window.removeEventListener('resize', logWindowWidth);
+    };
+  }, []);
+
+
+  useLayoutEffect( () => {
+    if(!decodeURIComponent(document.cookie)){
+        console.log("You are not logged in, re-routing to login page")
+        router.replace('/')
+    }
+  },[]) 
 
   useEffect(()=> {
     if(firstRender) {
-      console.log("rendering first")
       setFirstRender(false)
     }
     else{
       console.log("rendering second")
       if(showAlertLink){
-        // console.log("alertLinkCopied is true");
         setShowAlertLink(false)   
       }
       else{
@@ -80,14 +96,14 @@ const Feed =  () => {
     setTimeout(() => {
       console.log("Stop loading");
       setLoading(false);
-      setShowPostComment(true)
+      setShowPostCompo(true)
     }, 1250); 
   }
 
   function handleWindowClick(e){
-    if(showPostComment){
+    if(showPostCompo){
       if(!postCommentRef?.current?.contains(e.target)){
-        setShowPostComment(false)
+        setShowPostCompo(false)
       }
     } 
   }
@@ -97,7 +113,7 @@ const Feed =  () => {
       return () => {
           document.removeEventListener('mousedown', handleWindowClick)
       }
-  },[showPostComment])
+  },[showPostCompo])
 
 // getting the first leter of UserName
   const name = userName;
@@ -107,7 +123,7 @@ const Feed =  () => {
   useEffect( () => {
     if(localStorage.getItem('postData')){
         const storedData = JSON.parse(localStorage.getItem('postData'))
-        console.log(storedData)
+        // console.log(storedData)
         setLocalData(storedData);
         setIsDataFromLocal(true)
     }
@@ -133,6 +149,13 @@ const Feed =  () => {
     alertDispatch({ type: "hideReportComment" })
     // setShowAlertLink(false)                       
   }
+
+  function handleAlert(){
+    alertDispatch({type:"showComingSoon"})
+    setTimeout(()=>{
+      alertDispatch({type: 'hideComingSoon'})
+    }, 2500)
+  }
   ///////////////////////////////////////////////////////////////
 
 // when screen is below 768 
@@ -141,12 +164,13 @@ const Feed =  () => {
     setShowMore(!showMore)
   }
 
+  /////////////////////////////////////////////////////////////
   useEffect( () => {
     function handleScreenWidth() {
       const width = window.innerWidth;
       if(width < 768){
           if(checkOnce == true){
-            console.log("setShowMore false is done");
+            // console.log("setShowMore false is done");
             setCheckOnce(false)
             setShowMore(false)
         }
@@ -180,14 +204,18 @@ const Feed =  () => {
 
   return (
     <>
+      
 
-      <div className='w-full bg-[#F4F2EE] relative h-screen'>
+      <div className='w-full bg-[#F4F2EE] h-fit '>
 
-        <NavBar />
+        {/* <NavBar /> */}
 
-        <div className={"w-full h-screen z-10 scrollbar-stable fixed top-[3.25rem] " + (
-          showPostComment ? "overflow-y-hidden" : "overflow-y-scroll"
-        )}>
+        <div className="w-full h-fit z-10  pt-[3.25rem] ">
+
+        {/* <div className={"w-full h-[calc(100vh-52px)] z-10 scrollbar-stable fixed top-[3.25rem] " + (
+          showPostCompo ? "overflow-y-hidden" : "overflow-y-scroll"
+        )}> */}
+
           <div className='w-[calc(100vw-17px)] h-full'>
 
             {/* main content */}
@@ -246,7 +274,7 @@ const Feed =  () => {
                           <div className="mx-4 mt-2 w-[calc(100%-32px)] h-14 flex">
 
                             {/* profiile pic */}
-                            <Link href={"#"} className="w-14 h-12">
+                            <Link href={`/user/${owner}`} className="w-14 h-12">
                               <div className="w-12 h-12 mr-2">
                                 {/* Profile Pic */}
                                 <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center uppercase text-2xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
@@ -263,8 +291,9 @@ const Feed =  () => {
 
                           {/* Icons */}
                           <div className="w-full h-[52px] mb-1 flex justify-around">
+
                             {/* Media */}
-                            <button className="w-[98px] px-2 h-12 flex items-center hover:bg-[#EBEBEB] justify-start">
+                            <button onClick={handleAlert} className="w-[98px] px-2 h-12 flex items-center hover:bg-[#EBEBEB] justify-start">
                               {/* png */}
                               <Image
                                 src={Media}
@@ -272,14 +301,15 @@ const Feed =  () => {
                                 width="0"
                                 height="0"
                                 sizes="100vw"
-                                className="w-full h-auto"
+                                className="w-6 h-5 rounded-sm"
                               />       
                               <span className="ml-2 h-7 text-sm text-[#868686] flex items-center">
                                 Media
                               </span>
                             </button>
+
                             {/* Event */}
-                            <button className="w-[93px] px-2 h-12 flex items-center hover:bg-[#EBEBEB]">
+                            <button onClick={handleAlert} className="w-[93px] px-2 h-12 flex items-center hover:bg-[#EBEBEB]">
                               {/* png */}
                               <Image
                                 src={Event}
@@ -287,14 +317,15 @@ const Feed =  () => {
                                 width="0"
                                 height="0"
                                 sizes="100vw"
-                                className="w-full h-auto"
+                                className="w-[26px] h-[26px]"
                               />
                               <span className="ml-2 h-7 text-sm text-[#868686] flex items-center">
                                 Event
                               </span>
                             </button>
+
                             {/* Write article */}
-                            <button className="w-[136px] px-2 h-12 flex items-center hover:bg-[#EBEBEB]">
+                            <button onClick={handleAlert} className="w-[136px] px-2 h-12 flex items-center hover:bg-[#EBEBEB]">
                               {/* png */}
                               <Image
                                 src={Article}
@@ -302,12 +333,13 @@ const Feed =  () => {
                                 width="0"
                                 height="0"
                                 sizes="100vw"
-                                className="w-full h-auto"
+                                className="w-5 h-5"
                               />
                               <span className="ml-2 w-[calc(100%-40px)]  h-7 text-sm text-[#868686] flex items-center">
                                 Write article
                               </span>
                             </button>
+
                           </div>
 
                         </div>
@@ -323,7 +355,7 @@ const Feed =  () => {
                       </div>
 
                       {/* center-break */}
-                      <div className="w-full h-4 mb-2">
+                      <div onClick={() => alertTimeout()} className="w-full h-4 mb-2">
                         <button className="w-full h-full flex items-center">
                           <div className="w-full h-[1px] bg-[#BFBDBA]"></div>
                         </button>
@@ -399,7 +431,7 @@ const Feed =  () => {
                                 const members = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
                               
                               return (
-                                <li key={index} className='w-full h-fit py-4'>
+                                <li onClick={handleAlert} key={index} className='w-full h-fit py-4'>
                                     <Link href={'#'} className='w-full h-fit flex'>
 
                                         <div className='w-12 h-full'>
@@ -513,11 +545,11 @@ const Feed =  () => {
                   </div>
                   
                 </div>
+                
               </div>
             </div>
 
             {/* Alert Boxes */}
-
             {/* alertPostCreated */}
             {showAlertPost &&  alertPostCreated && (
               <div className='w-fit h-[78px] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
@@ -540,43 +572,25 @@ const Feed =  () => {
               </div>
             )}
 
-            {/* alertLinkCopied */}
-            {/* {showAlertLink && alertLinkCopied && (
-              <div className='w-fit h-fit p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-                  <div className='w-fit h-full flex items-center'>
-                      <div className='w-6 h-full mr-2'><FaCircleCheck className='w-6 h-6 text-[#77C45F]' /></div>
-                      <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Link copied to clipboard.</p>
-                  </div>
-                  <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseAlertBox} className='w-4 h-4 text-[#666666] ' /></button>
-              </div>
-            )} */}
-
-            {/* alertReportComment */}
-            {/* {showAlertLink && alertReportComment && (
-              <div className='w-fit h-fit p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-                  <div className='w-fit h-full flex items-center'>
-                      <div className='w-6 h-full mr-2'><FaCircleCheck className='w-6 h-6 text-[#77C45F]' /></div>
-                      <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Comment Reported</p>
-                  </div>
-                  <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseReport} className='w-4 h-4 text-[#666666] ' /></button>
-              </div>
-            )} */}
-
             <AlertBox />
 
           </div>
+
         </div>
 
         {/* post commnet popUp div */}
-        {showPostComment && 
-          (<AddingPost setShowPostComment={setShowPostComment} 
-                                            setCheckLocal={setCheckLocal}
-                                            setShowAlertPost={setShowAlertPost} 
-                                            setShowAlertImg={setShowAlertImg}
-                                            ref={postCommentRef} 
-            />) }
+        {showPostCompo && 
+          (<AddingPost 
+              setShowPostCompo={setShowPostCompo} 
+              setCheckLocal={setCheckLocal}
+              setShowAlertPost={setShowAlertPost} 
+              setShowAlertImg={setShowAlertImg}
+              ref={postCommentRef} 
+          />)}
 
       </div>
+
+      {windowWidth <= 620 && <TopBottomNav /> }
 
     </>
 
