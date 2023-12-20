@@ -50,7 +50,6 @@ const NavBar = ({popUp, setPopUp}) => {
   const [windowWidth, setWindowWidth] = useState(0);
   // console.log("windowWidth ",  windowWidth)
 
-
   const logWindowWidth = () => {
     setWindowWidth(window?.innerWidth);
   };
@@ -61,8 +60,6 @@ const NavBar = ({popUp, setPopUp}) => {
       window.removeEventListener('resize', logWindowWidth);
     };
   }, []);
-  
-  // console.log("windowWidth ", windowWidth)
 
   useEffect( () => {
     if(localStorage.getItem('recent')){
@@ -431,11 +428,9 @@ const NavBar = ({popUp, setPopUp}) => {
               </div>
             )}
 
-
           </div>
 
           {/* Nav Icons */}
-          {/* min 856px___w-686px--?? */}
           <nav className={"res-1024:block w-[417px] res-748:w-[577px] res-856:w-[666px] h-full dark:bg-black " + ( isInputSlct ? 'hidden' : '' )}>
             <ul className="w-full h-full flex">
 

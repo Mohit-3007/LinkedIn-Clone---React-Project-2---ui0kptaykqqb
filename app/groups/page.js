@@ -33,7 +33,6 @@ const Groups = () => {
     const inputRef = useRef()
     const uploadBtnRef = useRef()
     const uploadPopupRef = useRef()
-    const alertDivRef = useRef()
     const [showUpload, setShowUpload] = useState(false);
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
@@ -41,17 +40,10 @@ const Groups = () => {
     const [selectCheck2, setSelectCheck2] = useState(true)
     const [imageFile, setImageFile] = useState()
     const [imgUrl, setImgUrl] = useState('');
-    const { alertImageUpload, alertGroupCreated, alertDispatch } = useAlertContextProvider()
-    const [showAlertImg, setShowAlertImg] = useState(false)
-    const [showAlertGrp, setShowAlertGrp] = useState(false)
-    const [page, setPage] = useState(1);
+    const { alertDispatch } = useAlertContextProvider()
     const [groupRes, setGroupRes] = useState('');
     const [islocalData, setIsLocalData] = useState(false);
     const [checkLocal, setCheckLocal] = useState(false);
-
-    // console.log("alertImageUpload ",alertImageUpload);   
-    // console.log("alertGroupCreated ",alertGroupCreated);   
-    // console.log("showAlert ",showAlert); 
 
     useLayoutEffect( () => {
         if(!decodeURIComponent(document.cookie)){
@@ -62,29 +54,22 @@ const Groups = () => {
     
     useEffect( () => {
         if(localStorage.getItem('groupData')){
-            console.log("local data present");
-            setIsLocalData(true)
+            const data = JSON.parse(localStorage.getItem('groupData'));
+            if(data?.length > 0){
+                console.log("data ", data)
+                setIsLocalData(true)
+                console.log(`local data length is ${data.length} `);
+            }
+            else{
+                setIsLocalData(false)
+                console.log("local data length is zero ");
+            }        
         }
         else{
             console.log("local data not present");
+            setIsLocalData(false)
         }
     },[checkLocal])
-    
-    function handleCloseAlert(){
-        if(alertImageUpload == true){
-            console.log("handleCloseAlert:  alertImageUpload was True")
-            alertDispatch({ type: "imgAlertFalse" })
-            setShowAlertImg(false)  
-        }
-        else if(alertGroupCreated){
-            console.log("handleCloseAlert:  alertGroupUpload was True")
-            alertDispatch({ type: "groupAlertFalse" })
-            setShowAlertGrp(false)             
-        }
-        else{
-            console.log("Do Nothing, Just Chill!")
-        }         
-    }
 
     async function handleCreateGroup(){
         const crtGrouppRes = await creatingGroup(title, description, imageFile, token)
@@ -100,31 +85,51 @@ const Groups = () => {
                 content:description,
                 image:imgUrl
             }
-            
-            if(localStorage.getItem('groupData')){
-                const storedData = JSON.parse(localStorage.getItem('groupData'))
-                const newData = JSON.stringify([...storedData, groupObj])
 
-                console.log("Data already existed")
-                localStorage.setItem( 'groupData', newData )
-                alertDispatch({ type: "groupAlertTrue" })
-                setShowAlertGrp(prev => !prev)
+            const existingData = JSON.parse(localStorage.getItem('groupData')) || [];
+
+            existingData.push(groupObj)
+
+            const stringifyData = JSON.stringify(existingData);
+
+            localStorage.setItem( 'groupData', stringifyData )
+
+            alertDispatch({ type: "groupAlertTrue" })
                 setShowGroupPopup(false)
                 setTitle('')
                 setDescription('')
                 setCheckLocal(!checkLocal)
-            }
-            else{
-                const stringifyObj = JSON.stringify([groupObj]);
-                console.log("New Data Created");
-                localStorage.setItem( 'groupData' , stringifyObj );
-                alertDispatch({ type: "groupAlertTrue" })
-                setShowAlertGrp(prev => !prev)
-                setShowGroupPopup(false)
-                setTitle('')
-                setDescription('')
-                setCheckLocal(!checkLocal)
-            }     
+                setTimeout( () => {
+                    alertDispatch({ type: "groupAlertFalse" })
+                }, 2500)
+            
+            // if(localStorage.getItem('groupData')){
+            //     const storedData = JSON.parse(localStorage.getItem('groupData'))
+            //     const newData = JSON.stringify([...storedData, groupObj])
+            //     console.log("Data already existed")
+            //     localStorage.setItem( 'groupData', newData )
+            //     alertDispatch({ type: "groupAlertTrue" })
+            //     setShowGroupPopup(false)
+            //     setTitle('')
+            //     setDescription('')
+            //     setCheckLocal(!checkLocal)
+            //     setTimeout( () => {
+            //         alertDispatch({ type: "groupAlertFalse" })
+            //     }, 2500)
+            // }
+            // else{
+            //     const stringifyObj = JSON.stringify([groupObj]);
+            //     console.log("New Data Created");
+            //     localStorage.setItem( 'groupData' , stringifyObj );
+            //     alertDispatch({ type: "groupAlertTrue" })
+            //     setShowGroupPopup(false)
+            //     setTitle('')
+            //     setDescription('')
+            //     setCheckLocal(!checkLocal)
+            //     setTimeout( () => {
+            //         alertDispatch({ type: "groupAlertFalse" })
+            //     }, 2500)
+            // }     
         }
     }
 
@@ -148,9 +153,10 @@ const Groups = () => {
                 reader.readAsDataURL(file);
             }
             else{
-                // alert("Only image files are accepted.");
                 alertDispatch({ type: "imgAlertTrue" })
-                setShowAlertImg(prev => !prev)
+                setTimeout( () => {
+                    alertDispatch({ type: "imgAlertFalse" })
+                }, 2500)
             }       
         }
     }
@@ -162,16 +168,16 @@ const Groups = () => {
 
     function handleDocumentClick(e){
         if(!groupRef?.current?.contains(e?.target)){
-            console.log('Outside Group ref')
-            if(alertDivRef?.current?.contains(e?.target)) {
-                console.log("inside alertDivRef")
-                return
-            }
-            else if(showAlertImg == true){
-                // console.log("show alert is true")
-                return
-            }
-            else{
+            // console.log('Outside Group ref')
+            // if(alertDivRef?.current?.contains(e?.target)) {
+            //     console.log("inside alertDivRef")
+            //     return
+            // }
+            // else if(showAlertImg == true){
+            //     // console.log("show alert is true")
+            //     return
+            // }
+            // else{
                 console.log("showAlert is false")
                 setShowUpload(false)
                 setShowGroupPopup(false)
@@ -180,7 +186,7 @@ const Groups = () => {
                 setImgUrl('')
                 setTitle('')
                 setDescription('')
-            }
+            // }
             
         }
         else{
@@ -220,12 +226,11 @@ const Groups = () => {
     }, 2500)
     }
 
-
   return (
     <>
         {/* <NavBar /> */}
 
-        <div className="w-full h-fit z-10  pt-[3.25rem] ">
+        <div className="w-full h-fit z-10 pt-12 res-620:pt-[3.25rem] ">
 
         {/* <div className={'w-full bg-[#F4F2EE] pt-[3.25rem] z-20 relative h-screen scrollbar-stable ' + (
             showGroupPopup ? "overflow-y-hidden" : "overflow-y-scroll"
@@ -233,17 +238,17 @@ const Groups = () => {
             <div className='w-[calc(100vw-17px)] h-full'>
 
                 {/* main group view & Aside bar */}
-                <div className='w-full h-full pt-6 flex flex-col'>
+                <div className='w-full h-full pt-0 res-620:pt-6 flex flex-col'>
                     <div className='w-full h-full'>
                         {/* Responsiveness */}
                         <div className='w-full flex-col gap-4 res-768:gap-0 items-center res-768:items-start flex res-768:flex-row res-768:w-[720px] res-992:w-[960px] res-1200:w-[1128px] h-full res-768:mx-[calc((100%-720px)/2)] res-992:mx-[calc((100%-960px)/2)] res-1200:mx-[calc((100%-1128px)/2)] res-768:justify-between relative'>
 
                             {/* main */}
-                            <main className='w-[576px] res-768:w-[396px] res-992:w-[636px] res-1200:w-[50.25rem] h-full '>
-                                <div className='w-full h-[457px] bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl flex flex-col'>
+                            <main className='w-full res-620:w-[576px] res-768:w-[396px] res-992:w-[636px] res-1200:w-[50.25rem] h-full '>
+                                <div className='w-full min-h-[457px] max-h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden res-620:rounded-xl flex flex-col'>
 
                                     {/* heading */}
-                                    <div className='w-full h-[49px] pl-2 pr-6 border-b border-[#E8E8E8] flex justify-between'>
+                                    <div className='w-full h-[49px] pl-2 pr-6 border-b border-[#E8E8E8] flex justify-between items-center'>
 
                                         <div className='w-fit h-full'>
                                             <div className='w-full h-full pt-[9px] pb-[11px] pl-6 pr-2 flex justify-center
@@ -252,28 +257,28 @@ const Groups = () => {
                                             </div>
                                         </div>
 
-                                        <button onClick={() => handleGroupPopup()} className='w-fit h-8 my-2 px-4 outline outline-1 outline-[#0a66c2] text-[#0a66c2] 
-                                        text-base font-semibold hover:outline-2 flex items-center rounded-3xl hover:bg-[#def2fd]'>
+                                        <button onClick={() => handleGroupPopup()} className='w-fit min-h-6 max-h-fit res-400:h-8 my-2 px-2 res-400:px-4 outline outline-1 outline-[#0a66c2] text-[#0a66c2] 
+                                        text-sm res-400:text-base font-semibold hover:outline-2 flex items-center rounded-3xl hover:bg-[#def2fd]'>
                                             Create group
                                         </button>
 
                                     </div>
 
                                     {/* groups view container */}
-                                    <div className='w-full h-[calc(100%-49px)] p-4'>
+                                    <div className='w-full h-[calc(100%-49px)] p-0 res-400:p-4'>
 
-                                        {!islocalData &&
+                                        {!islocalData && (
                                             <div className='w-full h-full'>
-                                                <div className='w-[calc(100%-32px)] h-[calc(100%-8px)] mx-4 mt-2 p-4 flex flex-col justify-between'>
+                                                <div className='w-[calc(100%-32px)] min-h-[calc(100%-8px)] max-h-fit mx-4 mt-2 res-400:p-4 flex flex-col justify-between'>
 
                                                     {/* top */}   
-                                                    <section className='w-[20rem] h-[15.5rem] mx-[calc((100%-320px)/2)] flex flex-col'>
+                                                    <section className='w-full res-400:w-[20rem] h-fit mx-0 res-400:mx-[calc((100%-320px)/2)] flex flex-col'>
                                                         {/* pic */}
                                                         <div className='w-full h-[160px] flex items-center justify-center'>
                                                             <Image src={disco} alt='discover' height={160} className='w-[200px] h-full' objectFit='cover'/>
                                                         </div>
 
-                                                        <h2 className='w-full h-8 flex justify-center items-center text-2xl font-semibold text-[#191919]'>Discover Groups</h2>
+                                                        <h2 className='w-full min-h-8 max-h-fit text-center flex justify-center items-center text-xl res-400:text-2xl font-semibold text-[#191919]'>Discover Groups</h2>
 
                                                         <p className='mt-2 mb-6 w-full h-fit text-center text-base text-[#666666]'>
                                                             Find other trusted communities that share and support your goals.
@@ -291,7 +296,7 @@ const Groups = () => {
 
                                                 </div>
                                             </div>
-                                        }
+                                        )}
 
                                         {islocalData && <GroupLocalData checkLocal={checkLocal} setCheckLocal={setCheckLocal} /> }
 
@@ -301,10 +306,10 @@ const Groups = () => {
                             </main>
 
                             {/* aside */}
-                            <aside className='w-[576px] res-768:w-[18.75rem] h-fit overflow-hidden rounded-xl'>
+                            <aside className='w-full res-620:w-[576px] res-768:w-[18.75rem] h-fit overflow-hidden'>
 
                                 {/* groups section */}
-                                <section className='w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg rounded-xl'>
+                                <section className='w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg res-620:rounded-xl'>
 
                                     <h3 className='w-full h-[52px] p-4 flex items-center text-base text-[#191919] font-semibold'>Groups you might be interested in</h3>
 
@@ -422,11 +427,10 @@ const Groups = () => {
                 </div>    
 
                 {/* POP Up's */}
-
                 {/* create group div Popup on click */}
                 {showGroupPopup && (
                     <div className='fixed top-8 left-0- z-30 w-full h-full bg-[#666666] bg-opacity-70 overflow-hidden flex justify-center '>
-                        <div ref={groupRef} className='w-[744px] h-[500px] bg-white outline outline-1 outline-[#E8E8E8] shadow-lg rounded-xl relative'>
+                        <div ref={groupRef} className='w-full res-748:w-[744px] h-[500px] bg-white outline outline-1 outline-[#E8E8E8] shadow-lg rounded-xl relative'>
 
                             {/* top */}
                             <div className='w-full h-[52px] py-3 pl-3 flex items-center'>
@@ -554,7 +558,7 @@ const Groups = () => {
                                                         selectCheck1 ? " text-[#01754F]" : "text-white"
                                                     )} /> 
                                                 <label className='w-full h-full pl-8 flex flex-col'>
-                                                    <p className='w-full h-5 text-sm text-[#191919]'>Allow members to invite their connections</p>
+                                                    <p className='w-full min-h-5 max-h-fit text-sm text-[#191919]'>Allow members to invite their connections</p>
                                                     <p className='w-full h-fit text-sm text-[#666666]'>Group members can invite 1st degree connections to the group. All requests to join will still require admin approval.</p>
                                                 </label>
                                             </div>
@@ -565,15 +569,13 @@ const Groups = () => {
                                                         selectCheck2 ? " text-[#01754F]" : "text-white"
                                                     )} /> 
                                                 <label className='w-full h-full pl-8 flex flex-col'>
-                                                    <p className='w-full h-5 text-sm text-[#191919]'>Require new posts to be reviewed by admins</p>
+                                                    <p className='w-full min-h-5 max-h-fit text-sm text-[#191919]'>Require new posts to be reviewed by admins</p>
                                                     <p className='w-full h-fit text-sm text-[#666666]'>Members’ posts will require admin approval within 14 days before they become visible to others.</p>
                                                 </label>
                                             </div>
                                         </fieldset>
 
                                     </div>
-
-                                    
 
                                 </div>
                             </div>
@@ -591,29 +593,7 @@ const Groups = () => {
                         </div>
                     </div>
                 )}  
-
-                {/* alertGroupCreated */}
-                {showAlertGrp &&  alertGroupCreated && (
-                    <div className='w-fit h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-                        <div className='w-fit h-full flex'>
-                            <div className='w-6 h-full mr-2'><Gi3DMeeple className='w-6 h-6 text-[#77C45F]' /></div>
-                            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Group Created Successfully.</p>
-                        </div>
-                        <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseAlert} className='w-4 h-4 text-[#666666] ' /></button>
-                    </div>
-                )}
                 
-                {/* alertImageUpload */}
-                {showAlertImg && alertImageUpload && (
-                    <div ref={alertDivRef} className='w-[23.5rem] h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-                        <div className='w-[312px]] h-full flex'>
-                            <div className='w-6 h-full mr-2'><PiWarningOctagonFill className='w-6 h-6 text-[#CB112D]' /></div>
-                            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>This file type is not supported. Please choose an image.</p>
-                        </div>
-                        <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseAlert} className='w-4 h-4 text-[#666666] ' /></button>
-                    </div>
-                )}
-
                 {/* Alert box */}
                 <AlertBox />
 

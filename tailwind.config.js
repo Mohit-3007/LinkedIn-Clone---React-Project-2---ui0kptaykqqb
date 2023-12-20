@@ -11,7 +11,7 @@ module.exports = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: 'class',
+  darkMode: 'className',
   theme: {
     screens: {
       'res-1200': '1200px',
@@ -26,6 +26,9 @@ module.exports = {
       'res-856': '856px',
       'res-768': '768px',
       'res-748': '748px',
+      'res-620': '620px',
+      'res-400': '400px',
+      'res-330': '330px',
     },
     extend: {},
   },

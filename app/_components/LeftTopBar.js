@@ -6,7 +6,6 @@ import { useContextProvider } from '../ContextApi/AppContextProvider';
 import leftBg from '@/public/leftBg.jpg';
 import chip from '@/public/chip.png';
 import { FaBookmark } from "react-icons/fa";
-import alertTimeout from '../_lib/alertTimeout';
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 

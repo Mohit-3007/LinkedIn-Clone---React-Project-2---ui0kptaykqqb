@@ -13,7 +13,7 @@ import { useContextProvider } from '../ContextApi/AppContextProvider';
 import followUser from '../_lib/FollowUser';
 import getUser from '../_lib/getUser';
 import deletePost from '../_lib/deletePost';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import unfollowUser from '../_lib/UnfollowUser';
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
@@ -24,8 +24,9 @@ import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 
 
-const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, setCheckLocal}) => {
-    const { token, userName, res, setRes, owner } = useContextProvider();
+
+const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) => {
+    const { token, userName, res, setRes, owner, checkLocal, setCheckLocal } = useContextProvider();
     const [isFollow, setIsFollow] = useState(false)
     const [showFollow, setShowFollow] = useState(false);
     const [allow, setAllow] = useState(false);
@@ -35,6 +36,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, set
     const [postOption, setPostOption] = useState(false)
     const [isCopied, setIsCopied] = useState(false);
     const { alertDispatch } = useAlertContextProvider()
+    const router = useRouter();
 
     function handlePostOption(){
         if(postOption){
@@ -100,13 +102,14 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, set
         const deletePostRes = await deletePost(id, token)
 
         if(deletePostRes.status === 204){
+            // console.log("204 204 204")
             const storedData = JSON.parse(localStorage.getItem('postData'))
             const newData = storedData.filter(e => e._id !== id)
             const stringifyData = JSON.stringify(newData);
             localStorage.setItem('postData', stringifyData);
             setCheckLocal(prev => !prev);
             setPostOption(false)
-          }
+        }
 
     }
 
@@ -182,10 +185,10 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, set
     const day = Math.floor(Math.random() * (30 - 2 + 1)) + 2;
 
   return (
-    <div className='w-full h-16 mb-2 pl-4 pt-3 flex justify-between'>
+    <div className='w-full min-h-16 max-h-fit mb-2 pl-4 pt-3 flex justify-between'>
                             
         {/* user pic, name & other details */}
-        <div className='w-[80.70%] h-[3.25rem] flex'>
+        <div className='w-[80.70%] h-fit flex'>
 
             {isDataFromLocal && (
                 <>
@@ -239,11 +242,11 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, set
                     </Link>
 
                     {/* name & other details */}
-                    <div className='w-[87.12%] h-[3.25rem] ml-2 flex flex-col'>
+                    <div className='w-[87.12%] h-fit ml-2 flex flex-col'>
                         {/* name */}
-                        <Link href={`/user/${each?.author._id}`} className='w-full h-9 flex flex-col'>
+                        <Link href={`/user/${each?.author._id}`} className='w-full h-fit flex flex-col'>
 
-                            <span className='w-full h-[1.25rem] flex'>
+                            <span className='w-full h-fit flex'>
                                 <span className='h-full flex items-center text-black text-sm font-semibold hover:underline hover:text-[#0A66C2]'>{each?.author?.name}</span>
                                 <span className='h-full ml-1 flex items-center text-xs text-[#666666]'>
                                     {( isFollow == true ) ? (
@@ -254,7 +257,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, set
                                 </span>
                             </span>
 
-                            <span className='w-full h-[calc(100%-1.25rem)] flex items-center text-xs text-[#666666]'>
+                            <span className='w-full h-fit flex items-center text-xs text-[#666666]'>
                                 Designation and Some User Courier Info...
                             </span>
         
@@ -286,7 +289,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, set
                     </button>
 
                     {/* Option_Popup- Div */}
-                    <div ref={postRef} className={'absolute right-0 w-[335px] h-fit py-1 bg-white outline outline-1 shadow-lg outline-[#e1e1e1] rounded-sm ' + (
+                    <div ref={postRef} className={'absolute right-0 w-[200px] res-620:w-[335px] h-fit py-1 bg-white outline outline-1 shadow-lg outline-[#e1e1e1] rounded-sm ' + (
                         (postOption ? 'block' : 'hidden')
                     )}>
                         <div className='w-full h-full'>

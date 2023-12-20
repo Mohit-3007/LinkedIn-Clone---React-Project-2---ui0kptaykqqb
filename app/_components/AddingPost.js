@@ -9,11 +9,11 @@ import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 
 
-const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLocal, setShowAlertPost }, ref) => {
+const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setShowAlertPost }, ref) => 
+{
     const [title, setTitle] = useState('')
     const [textArea, setTextArea] = useState('')
-    const [isDisabled, setIsDisabled] = useState(true)
-    const { token, userName } = useContextProvider()
+    const { token, userName, setCheckLocal } = useContextProvider()
     const [imageFile, setImageFile] = useState()
     const inputRef = useRef()
     const { alertDispatch } = useAlertContextProvider()
@@ -39,12 +39,16 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
                 console.log("Post Data already existed")
                 localStorage.setItem( 'postData', newData )
                 alertDispatch({ type: "showPostCreAlert" })
-                setShowAlertPost(prev => !prev)
+                // setShowAlertPost(prev => !prev)
                 setShowPostCompo(false)
                 setCheckLocal(prev => !prev)
                 setTitle('')
                 setTextArea('')
                 setImageFile('')
+                setTimeout( () => {
+                    console.log('Close Alert')
+                    alertDispatch({ type: "hidePostCreAlert" })
+                }, 2500)
             }
             else{
                 const stringifyObj = JSON.stringify([postObj]);
@@ -52,12 +56,16 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
                 localStorage.setItem( 'postData' , stringifyObj );
 
                 alertDispatch({ type: "showPostCreAlert" })
-                setShowAlertPost(prev => !prev)
+                // setShowAlertPost(prev => !prev)
                 setShowPostCompo(false)
                 setCheckLocal(prev => !prev)
                 setTitle('')
                 setTextArea('')
                 setImageFile('')
+                setTimeout( () => {
+                    console.log('Close Alert')
+                    alertDispatch({ type: "hidePostCreAlert" })
+                }, 2500)
             }
         } 
 
@@ -83,7 +91,10 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
             }
             else{
                 alertDispatch({ type: "imgAlertTrue" })
-                setShowAlertImg(prev => !prev)
+                setTimeout( () => {
+                    alertDispatch({ type: "imgAlertFalse" })
+                }, 2500)
+                // setShowAlertImg(prev => !prev)
             }       
         }   
     }
@@ -94,7 +105,7 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
 
     return (
         <div  className='w-full h-[592px] z-30 bg-[#666666] bg-opacity-70 fixed top-[30px] flex items-center justify-center'>
-            <div ref={ref} className='w-[744px] h-full bg-white shadow-xl rounded-xl'>
+            <div ref={ref} className='w-full res-748:w-[744px] h-full bg-white shadow-xl rounded-xl'>
 
                 <div className='w-full h-full flex flex-col shadow-xl'>
 
@@ -114,7 +125,7 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
                                 {/* User name */}
                                 <div className='ml-1 px-2 w-[176px] h-[45px] flex flex-col'>
                                     <div className='w-full h-[25px] flex justify-between'>
-                                        <span className='h-full text-[#191919] text-[20px] font-semibold'>Mohit Khurana</span>
+                                        <span className='h-full text-[#191919] capitalize text-[20px] font-semibold'>{name}</span>
                                     </div>
                                 <div className='w-full h-[20px] text-sm text-[#191919] flex items-center'>Post to connection only</div>
                                 </div>
@@ -156,7 +167,7 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
                         {/* Icons and post button */}
                         <div className='w-full h-[calc(100%-311px)] mt-3 flex flex-col'>
 
-                            {/* Icons ??????? */}
+                            {/* Icons upload */}
                             <div className='w-full h-[96px] mb-[9px] flex'>
                                 <input ref={inputRef} type="file" accept="image/*" onChange={handleImageChange} className='w-0.5 h-0' />
                                 <MdDriveFolderUpload onClick={handleIconClick} className='w-16 h-8 text-[#404040]' />
@@ -170,6 +181,7 @@ const AddingPost = forwardRef(({ setShowAlertImg, setShowPostCompo, setCheckLoca
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
 
                     </div>

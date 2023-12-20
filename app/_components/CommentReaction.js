@@ -130,34 +130,34 @@ const CommentReaction = ({each, isDataFromLocal = false}) => {
       <div className='w-full h-[3.5rem] py-1 px-4 flex justify-between'>
 
         {/* like */}
-        <span onClick={() => handleUpVotePost(each?._id, token)} className='w-[7.0313rem] h-full rounded-md hover:bg-[#EBEBEB]'>
+        <span onClick={() => handleUpVotePost(each?._id, token)} className='w-fit h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex justify-center items-center'> 
               <BsFillHandThumbsUpFill className={'w-[26px] h-[26px] stroke-1 stroke-[#666666]  mr-1 ' + (likeBg ? "fill-[#368EE7]" : "fill-white")} />
-              <span className='text-sm text-[#858585] h-full flex items-center'>Like</span>
+              <span className='hidden res-400:flex text-sm text-[#858585] h-full items-center'>Like</span>
           </button>
         </span>
         
         {/* comment */}
-        <span onClick={() => handleCommentsFetch(each?._id)} className='w-[9.375rem] h-full rounded-md hover:bg-[#EBEBEB]'>
+        <span onClick={() => handleCommentsFetch(each?._id)} className='w-fit h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex items-center justify-center'>
             <FaRegCommentDots className='w-6 h-6 mr-1  text-[#666666]' />
-            <span className='text-sm text-[#858585] h-full flex items-center'>Comment</span>
+            <span className='text-sm  hidden res-400:flex text-[#858585] h-full items-center'>Comment</span>
           </button>
         </span>
 
         {/* repost */}
-        <div onClick={() => handleComingSoon()} className='w-[8.1875rem] h-full rounded-md hover:bg-[#EBEBEB]'>
+        <div onClick={() => handleComingSoon()} className='w-fit h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex items-center justify-center'>
             <BiRepost className='w-8 h-8 mr-1 text-[#666666]' />
-            <span className='text-sm text-[#858585] h-full flex items-center'>Repost</span>
+            <span className='hidden res-400:flex text-sm text-[#858585] h-full items-center'>Repost</span>
           </button>
         </div>
 
         {/* send */} 
-        <div onClick={() => handleComingSoon()} className='w-[7.3125rem] h-full rounded-md hover:bg-[#EBEBEB]'>
+        <div onClick={() => handleComingSoon()} className='w-fit h-full rounded-md hover:bg-[#EBEBEB]'>
           <button className='w-full h-full py-[10px] px-2 flex items-center justify-center'>
             <BsFillSendFill className='w-6 h-6 mr-1 text-[#666666]' />
-            <span className='text-sm text-[#858585] h-full flex items-center'>Send</span>
+            <span className='hidden res-400:flex text-sm text-[#858585] h-full items-center'>Send</span>
           </button>
         </div>
 

@@ -7,6 +7,8 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Loading from './loading';
+import TopBottomNav from './_components/MobileComponents/TopBottomNav';
+
 
 
 
@@ -58,7 +60,11 @@ export default function RootLayout({ children }) {
       
                   <NavBar popUp={popUp} setPopUp={setPopUp} />
     
-              )}   
+              )}  
+
+              {windowWidth <= 620 && (pathname != '/feed/overlay/post') && (pathname != '/searchresult/mobile-nav-search') && (
+                < TopBottomNav />
+              )} 
             {children}
           </AlertGlobalContextProvider>
         </GlobalContextProvider>

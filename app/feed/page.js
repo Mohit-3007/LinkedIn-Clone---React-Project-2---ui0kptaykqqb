@@ -23,15 +23,8 @@ import CommentReaction from '../_components/CommentReaction';
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 import AlertBox from '../_components/AlertBox';
-import alertTimeout from '../_lib/alertTimeout';
 import { useRouter } from 'next/navigation';
 import TopBottomNav from '../_components/MobileComponents/TopBottomNav';
-
-
-
-
-
-
 
 
 const Feed =  () => {
@@ -40,10 +33,10 @@ const Feed =  () => {
   const [showPostCompo, setShowPostCompo] = useState(false);
   const postCommentRef = useRef();
   const alertDivRef = useRef()
-  const { userName, owner } = useContextProvider();
-  const [checkLocal, setCheckLocal] = useState(false);
-  const [showAlertPost, setShowAlertPost] = useState(false)
-  const [showAlertImg, setShowAlertImg] = useState(false)
+  const { userName, owner, checkLocal, setCheckLocal } = useContextProvider();
+  // const [checkLocal, setCheckLocal] = useState(false);
+  // const [showAlertPost, setShowAlertPost] = useState(false)
+  // const [showAlertImg, setShowAlertImg] = useState(false)
   const [localData, setLocalData] = useState('');
   const { alertImageUpload, alertLinkCopied, alertPostCreated, alertReportPost, alertReportComment, alertDispatch } = useAlertContextProvider()
   const [isDataFromLocal, setIsDataFromLocal] = useState(false);
@@ -51,7 +44,6 @@ const Feed =  () => {
   const [checkOnce, setCheckOnce] = useState(true)
   const [groupRes, setGroupRes] = useState('');
   const [firstRender, setFirstRender] = useState(true)
-  const [showAlertLink, setShowAlertLink] = useState(false)
   const [windowWidth, setWindowWidth] = useState(0);
 
   const logWindowWidth = () => {
@@ -64,8 +56,7 @@ const Feed =  () => {
     return () => {
       window.removeEventListener('resize', logWindowWidth);
     };
-  }, []);
-
+  }, []); 
 
   useLayoutEffect( () => {
     if(!decodeURIComponent(document.cookie)){
@@ -74,22 +65,21 @@ const Feed =  () => {
     }
   },[]) 
 
-  useEffect(()=> {
-    if(firstRender) {
-      setFirstRender(false)
-    }
-    else{
-      console.log("rendering second")
-      if(showAlertLink){
-        setShowAlertLink(false)   
-      }
-      else{
-        setShowAlertLink(true)
-      }
-    }
-  },[alertLinkCopied, alertReportComment])
-  
-  
+  // useEffect(()=> {
+  //   if(firstRender) {
+  //     setFirstRender(false)
+  //   }
+  //   else{
+  //     console.log("rendering second")
+  //     if(showAlertLink){
+  //       setShowAlertLink(false)   
+  //     }
+  //     else{
+  //       setShowAlertLink(true)
+  //     }
+  //   }
+  // },[alertLinkCopied])
+    
   function handleLoading() {
     console.log("Start loading");
     setLoading(true);
@@ -121,34 +111,18 @@ const Feed =  () => {
 
 // checking local storage for posts
   useEffect( () => {
+    console.log("check local layout")
     if(localStorage.getItem('postData')){
         const storedData = JSON.parse(localStorage.getItem('postData'))
-        // console.log(storedData)
+        console.log(storedData)
         setLocalData(storedData);
         setIsDataFromLocal(true)
+        console.log("Inside if Condition");
+    }
+    else{
+      console.log("it is all empty");
     }
   },[checkLocal])
-
-  ///////////////////////////////////////////////////////////////
-  function handleCloseImageAlert(){
-      alertDispatch({ type: "imgAlertFalse" })
-      setShowAlertImg(false)  
-  }
-
-  function handleClosePostAlert(){
-    alertDispatch({ type: "hidePostCreAlert" })
-    setShowAlertPost(false)                       
-  }
-
-  function handleCloseAlertBox(){
-    alertDispatch({ type: "hidelinkCop" })
-    // setShowAlertLink(false)                       
-  }
-
-  function handleCloseReport(){
-    alertDispatch({ type: "hideReportComment" })
-    // setShowAlertLink(false)                       
-  }
 
   function handleAlert(){
     alertDispatch({type:"showComingSoon"})
@@ -188,7 +162,6 @@ const Feed =  () => {
 
 // random page & number for making fetch call for channels or groups below
   const pg = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
-
   useEffect(() => {
     async function callFetch(){
         // console.log(`fetch request sent with page no ${page}`)
@@ -201,36 +174,28 @@ const Feed =  () => {
     callFetch()
   },[]);
 
-
   return (
     <>
       
 
       <div className='w-full bg-[#F4F2EE] h-fit '>
 
-        {/* <NavBar /> */}
-
-        <div className="w-full h-fit z-10  pt-[3.25rem] ">
-
+        <div className="w-full h-fit z-10 pt-12 res-620:pt-[3.25rem] ">
         {/* <div className={"w-full h-[calc(100vh-52px)] z-10 scrollbar-stable fixed top-[3.25rem] " + (
           showPostCompo ? "overflow-y-hidden" : "overflow-y-scroll"
         )}> */}
-
           <div className='w-[calc(100vw-17px)] h-full'>
 
             {/* main content */}
             <div className="w-full h-full">
               <div className="w-full h-full flex justify-center">
-
                 {/* Responsivness */}
-
-                <div className="w-[720px] mx-0 res-992:w-[960px] res-992:mx-[calc((100%-960px)/2)] res-1200:w-[1128px] h-full res-1200:mx-[calc((100%-1128px)/2)]">
-
+                <div className="w-full res-620:w-[720px] mx-0 res-992:w-[960px] res-992:mx-[calc((100%-960px)/2)] res-1200:w-[1128px] h-full res-1200:mx-[calc((100%-1128px)/2)]">
                   {/* flex-col below width 768px */}
-                  <div className="flex-col items-center res-768:items-start w-full h-fit my-6 flex res-768:flex-row res-768:justify-between">   
+                  <div className="flex-col items-center res-768:items-start w-full h-fit res-620:my-6 flex res-768:flex-row res-768:justify-between">   
 
                     {/* Left-Bar */}
-                    <div className="w-[576px] res-768:w-[14.0625rem] h-fit mb-3">
+                    <div className="hidden res-620:block w-[576px] res-768:w-[14.0625rem] h-fit mb-3">
 
                       {/* main-left bar */}
                       <div className="w-full h-fit ">
@@ -263,10 +228,10 @@ const Feed =  () => {
                     </div>
 
                     {/* Center-Bar */}
-                    <div className="w-[576px] res-768:w-[471px] res-992:w-[24.25rem] res-1200:w-[34.6875rem] h-fit">
+                    <div className="w-full res-620:w-[576px] res-768:w-[471px] res-992:w-[24.25rem] res-1200:w-[34.6875rem] h-fit">
 
                       {/* center-top */}
-                      <div className="w-full h-[7.25rem] bg-white rounded-xl mb-2 relative">
+                      <div className="hidden res-620:block w-full h-[7.25rem] bg-white rounded-xl mb-2 relative">
 
                         <div className="w-full h-fit flex flex-col">
 
@@ -355,7 +320,7 @@ const Feed =  () => {
                       </div>
 
                       {/* center-break */}
-                      <div onClick={() => alertTimeout()} className="w-full h-4 mb-2">
+                      <div className="hidden res-620:block w-full h-4 mb-2">
                         <button className="w-full h-full flex items-center">
                           <div className="w-full h-[1px] bg-[#BFBDBA]"></div>
                         </button>
@@ -368,39 +333,35 @@ const Feed =  () => {
                           
                           {/* Posts from local data */}
                           {localData && localData.map( (each, index) => {
-
-                              return (
-                                <div key={index} className='w-full bg-white rounded-lg mb-3'>
-                                  <div className='w-full'>
-                                      <div className='w-full mb-3'>
-              
-                                          {/* post-top-bar */}
-                                          <PostTopBar each={each} localData={localData} setLocalData={setLocalData} isDataFromLocal={isDataFromLocal} setCheckLocal={setCheckLocal} />
-                                          
-                                          {/* post-Content */}
-                                          <PostContent content={each?.content} title={each?.title}/>
-              
-                                          {/* Content- Pic */}
-                                          {each.images && each.images.length > 0 && (  
-
-                                            <div className='w-full h-fit mt-2 bg-slate-300'>
-                                                <div className='w-full h-full'>
-                                                    {/* Image Component */}
-                                                    <Image src={each?.images[0]} width={555} height={300} priority alt='pic' />
-                                                </div>
-                                            </div>
-
-                                          )}
-              
-                                          {/* Like, Comment and Post */}
-                                          <div className='w-full  flex flex-col'>
-                                              <CommentReaction each={each} isDataFromLocal={isDataFromLocal} />  
-                                          </div>
-              
-                                      </div>
+                          return (
+                          <div key={index} className='w-full bg-white rounded-lg mb-3'>
+                            <div className='w-full'>
+                              <div className='w-full mb-3'>
+      
+                                {/* post-top-bar */}
+                                <PostTopBar each={each} localData={localData} setLocalData={setLocalData} isDataFromLocal={isDataFromLocal} setCheckLocal={setCheckLocal} />
+                                
+                                {/* post-Content */}
+                                <PostContent content={each?.content} title={each?.title}/>
+    
+                                {/* Content- Pic */}
+                                {each?.images && each.images.length > 0 && (  
+                                  <div className='w-full h-fit mt-2 bg-slate-300'>
+                                    <div className='w-full h-full'>
+                                      {/* Image Component */}
+                                      <Image src={each?.images[0]} width={555} height={300} priority alt='pic' />
+                                    </div>
                                   </div>
+                                )}
+                                {/* Like, Comment and Post */}
+                                <div className='w-full  flex flex-col'>
+                                  <CommentReaction each={each} isDataFromLocal={isDataFromLocal} />  
                                 </div>
-                              )
+    
+                              </div>
+                            </div>
+                          </div>
+                          )
                           })}
 
                           {/* Posts Map Function */}
@@ -408,7 +369,7 @@ const Feed =  () => {
                       
                         </div>
 
-                        {/* Load More ??????????????? */}
+                        {/* Load More */}
                         <div className="w-full h-[72px]"></div>
 
                       </div>
@@ -542,36 +503,12 @@ const Feed =  () => {
 
                     </div>
 
-                  </div>
-                  
-                </div>
-                
+                  </div>                 
+                </div>         
               </div>
             </div>
 
             {/* Alert Boxes */}
-            {/* alertPostCreated */}
-            {showAlertPost &&  alertPostCreated && (
-              <div className='w-fit h-[78px] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-                  <div className='w-fit h-full flex'>
-                      <div className='w-6 h-full mr-2'><Gi3DMeeple className='w-6 h-6 text-[#77C45F]' /></div>
-                      <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Post Created Successfully.</p>
-                  </div>
-                  <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleClosePostAlert} className='w-4 h-4 text-[#666666] ' /></button>
-              </div>
-            )}
-
-            {/* alertImageUpload */}
-            {showAlertImg && alertImageUpload && (
-              <div ref={alertDivRef} className='w-[23.5rem] h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-                  <div className='w-[312px]] h-full flex'>
-                      <div className='w-6 h-full mr-2'><PiWarningOctagonFill className='w-6 h-6 text-[#CB112D]' /></div>
-                      <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>This file type is not supported. Please choose an image.</p>
-                  </div>
-                  <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseImageAlert} className='w-4 h-4 text-[#666666] ' /></button>
-              </div>
-            )}
-
             <AlertBox />
 
           </div>
@@ -582,15 +519,14 @@ const Feed =  () => {
         {showPostCompo && 
           (<AddingPost 
               setShowPostCompo={setShowPostCompo} 
-              setCheckLocal={setCheckLocal}
-              setShowAlertPost={setShowAlertPost} 
-              setShowAlertImg={setShowAlertImg}
+              // setShowAlertPost={setShowAlertPost} 
+              // setShowAlertImg={setShowAlertImg}
               ref={postCommentRef} 
           />)}
 
       </div>
 
-      {windowWidth <= 620 && <TopBottomNav /> }
+      {/* {windowWidth <= 620 && <TopBottomNav /> } */}
 
     </>
 

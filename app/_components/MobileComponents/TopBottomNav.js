@@ -9,6 +9,7 @@ import { IoBagHandle } from "react-icons/io5";
 import { AiFillMessage } from "react-icons/ai";
 import { IoMdNotifications } from "react-icons/io";
 import { BsPeopleFill } from "react-icons/bs";
+import { FaSquarePlus } from "react-icons/fa6";
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { IoIosSearch, IoIosTimer } from "react-icons/io";
 import Dots9 from '@/public/9dots.png';
@@ -35,6 +36,7 @@ const TopBottomNav = () => {
     const suggRef = useRef()
     const [input, setInput] = useState('')
     const [fetch, setFetch] = useState(false);
+    const router = useRouter();
 
 
 // {
@@ -96,19 +98,24 @@ function handleClearRecent(){
     const name = userName;
     const firstLetter = name?.charAt(0);
 
-    function handleAlert(){
-        console.log("handleAlert ")
-        alertDispatch({type:"showComingSoon"})
-        setTimeout(()=>{
-          alertDispatch({type: 'hideComingSoon'})
-        }, 2500)
-      }
+  function handleAlert(){
+      console.log("handleAlert ")
+      alertDispatch({type:"showComingSoon"})
+      setTimeout(()=>{
+        alertDispatch({type: 'hideComingSoon'})
+      }, 2500)
+    }
+
+  function handleRedirect(){
+    console.log("re - routing")
+    router.push('/searchresult/mobile-nav-search')
+  }
 
   return (
-    <div className='w-full'>
+    <div className='w-full '>
 
         {/* top nav */}
-        <div className='w-full h-12 bg-white fixed top-0 pl-3 py-2 pr-1.5 flex items-center'>
+        <div className='w-full h-12 z-20 bg-white fixed top-0 pl-3 py-2 pr-1.5 flex items-center'>
 
             {/* profile */}
             <Link href={"#"} className='w-8 h-8 mr-2' >
@@ -116,7 +123,7 @@ function handleClearRecent(){
             </Link>
 
             {/* search bar */}
-            <div ref={inputRef} className="w-[calc(100%-32px-40px)] h-full  ">
+            <div onClick={handleRedirect} ref={inputRef} className="w-[calc(100%-32px-40px)] h-full  ">
                 <div 
                     // onClick={() => handleSearchInput(true)}                
                     className="w-full h-full relative">
@@ -148,7 +155,7 @@ function handleClearRecent(){
         </div>
 
         {/* bottom nav */}
-        <ul className='w-full h-12 pt-0.5 flex bg-white fixed bottom-0 '>
+        <ul className='w-full h-12 z-20 pt-0.5 flex bg-white fixed bottom-0 '>
             
             {/* Home */}
             <li className="w-1/5 h-full list-none text-[#666666] hover:text-[#191919] ">
@@ -162,16 +169,16 @@ function handleClearRecent(){
             <li onClick={handleAlert} className="w-1/5 h-full list-none text-[#666666] hover:text-[#191919] ">
                 <Link href="#" className="w-full h-full flex flex-col justify-center items-center ">
                     <div className="w-6 h-6"><BsPeopleFill className="w-full h-full fill" /></div>
-                    <span className=" h-4 text-xs">My Network</span>
+                    <span className=" h-4 text-xs overflow-hidden text-center">My Network</span>
                 </Link>
             </li>
 
             
-            {/* Messaging */}
-            <li onClick={handleAlert} className="w-1/5 h-full list-none text-[#666666] hover:text-[#191919] ">
+            {/* Post */}
+            <li onClick={() => router.push('/feed/overlay/post')} className="w-1/5 h-full list-none text-[#666666] hover:text-[#191919] ">
                 <Link href="#" className="w-full h-full flex flex-col justify-center items-center ">
-                    <div className="w-6 h-6"><AiFillMessage className="w-full h-full fill" /></div>
-                    <span className=" h-4  text-xs">Posts</span>
+                    <div className="w-6 h-6"><FaSquarePlus className="w-full h-full fill" /></div>
+                    <span className=" h-4  text-xs">Post</span>
                 </Link>
             </li>
 

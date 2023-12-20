@@ -10,74 +10,173 @@ import { TbMessageReport } from "react-icons/tb";
 import { RxLapTimer } from "react-icons/rx";
 
 const AlertBox = () => {
-  const { alertImageUpload, alertLinkCopied, alertPostCreated, alertReportPost, alertReportComment, alertComingSoon, alertDispatch } = useAlertContextProvider()
+  const { alertImageUpload, alertLinkCopied, alertPostCreated, alertReportPost, alertGroupCreated, alertReportComment, alertComingSoon, alertDispatch } = useAlertContextProvider()
   const [firstRender, setFirstRender] = useState(true)
-  const [showAlertLink, setShowAlertLink] = useState(true)
-  const [showReportComm, setShowReportComm] = useState(true)
-  const [showReportPost, setShowReportPost] = useState(true)
-  const [showComngSoon, setShowComngSoon] = useState(true)
+  const [showAlertPost, setShowAlertPost] = useState(false)
+  const [showAlertGrp, setShowAlertGrp] = useState(false)
+  const [showAlertImg, setShowAlertImg] = useState(false)
+  const [showAlertLink, setShowAlertLink] = useState(false)
+  const [showReportComm, setShowReportComm] = useState(false)
+  const [showReportPost, setShowReportPost] = useState(false)
+  const [showComngSoon, setShowComngSoon] = useState(false)
 
-  // console.log(`Alert boxes alertImageUpload status is ${alertImageUpload}`)
-  // console.log(`Alert boxes alertLinkCopied status is ${alertLinkCopied}`)
-  // console.log(`Alert boxes alertPostCreated status is ${alertPostCreated}`)
-  // console.log(`Alert boxes alertReportPost status is ${alertReportPost}`)
-  // console.log(`Alert boxes alertReportComment status is ${alertReportComment}`)
+  /////////////// showAlertPost /////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      console.log("inside of else")
+      if(showAlertPost) setShowAlertPost(false)
+      else setShowAlertPost(true)
+    }
+  }, [alertPostCreated])
 
-  useLayoutEffect( () => {
-    if(showReportComm) setShowReportComm(false)
-    else setShowReportComm(true)
+  function handleClosePostAlert(){
+    alertDispatch({ type: "hidePostCreAlert" })
+    // setShowAlertPost(false)                       
+  }
+
+  /////////////// showAlertGroup /////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      console.log("inside of else")
+      if(showAlertGrp) setShowAlertGrp(false)
+      else setShowAlertGrp(true)
+    }
+  }, [alertGroupCreated])
+
+  function handleCloseGroupAlert(){
+    alertDispatch({ type: "groupAlertFalse" })
+    // setShowAlertGrp(false)                       
+  }
+
+  /////////////// showAlertImg //////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      console.log("inside of else")
+      if(showAlertImg) setShowAlertImg(false)
+      else setShowAlertImg(true)
+    }
+  }, [alertImageUpload])
+
+  function handleCloseImageAlert(){
+    alertDispatch({ type: "imgAlertFalse" })
+    // setShowAlertImg(false)  
+  }
+
+  ///////////////// showReportComm ///////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      console.log("inside of")
+      if(showReportComm) setShowReportComm(false)
+      else setShowReportComm(true)
+    }
   },[alertReportComment])
 
   function handleCommReport(){
     alertDispatch({ type: "hideReportComment" })                     
   }
-  ////////////
-
-  useLayoutEffect( () => {
-    if(showReportPost) setShowReportPost(false)
-    else setShowReportPost(true)
+ 
+  ////////////// showReportPost //////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      if(showReportPost) setShowReportPost(false)
+      else setShowReportPost(true)
+    }
   },[alertReportPost])
 
   function handlePostReport(){
     alertDispatch({ type: "hideReportPost" })                     
   }
-  ////////////
 
-  useLayoutEffect( () => {
-    if(showComngSoon) setShowComngSoon(false)
-    else setShowComngSoon(true)
+  ////////////// showComngSoon //////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      if(showComngSoon) setShowComngSoon(false)
+      else setShowComngSoon(true)
+    }
   },[alertComingSoon])
 
   function handlePostReport(){
     alertDispatch({ type: "hideComingSoon" })                     
   }
-  ////////////
 
+  ////////////// showAlertLink //////////////
   useLayoutEffect(()=> {
-    // if(firstRender) {
-    //   setFirstRender(false)
-    // }
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
       if(showAlertLink) setShowAlertLink(false)    
       else setShowAlertLink(true)  
+    }
   },[alertLinkCopied])
    
   function handleLinkBox(){
     alertDispatch({ type: "hidelinkCop" })                      
   }
-  ///////////
   
   
   return (
     <>
+
+      {/* alertPostCreated */}
+      {showAlertPost &&  (
+        <div className='w-fit h-[78px] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
+          <div className='w-fit h-full flex'>
+            <div className='w-6 h-full mr-2 flex items-center '><Gi3DMeeple className='w-6 h-6 text-[#77C45F]' /></div>
+            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Post Created Successfully.</p>
+          </div>
+          {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleClosePostAlert} className='w-4 h-4 text-[#666666] ' /></button> */}
+        </div>
+      )}
+
+      {/* alertGroupCreated */}
+      {showAlertGrp &&  (
+        <div className='w-fit h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
+          <div className='w-fit h-full flex'>
+            <div className='w-6 h-full mr-2'><Gi3DMeeple className='w-6 h-6 text-[#77C45F]' /></div>
+            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Group Created Successfully.</p>
+          </div>
+          {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleClosePostAlert} className='w-4 h-4 text-[#666666] ' /></button> */}
+        </div>
+      )}
+
+      {/* alertImageUpload */}
+      {showAlertImg && (
+        <div className='w-[23.5rem] h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
+          <div className='w-[312px]] h-full flex'>
+            <div className='w-6 h-full mr-2'><PiWarningOctagonFill className='w-6 h-6 text-[#CB112D]' /></div>
+            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>This file type is not supported. Please choose an image.</p>
+          </div>
+          {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseImageAlert} className='w-4 h-4 text-[#666666] ' /></button> */}
+        </div>
+      )}
       
       {/* alertLinkCopied */}
       {showAlertLink &&  (
         <div className='w-fit h-fit p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
-            <div className='w-fit h-full flex items-center'>
-                <div className='w-6 h-full mr-2'><FaCircleCheck className='w-6 h-6 text-[#77C45F]' /></div>
-                <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Link copied to clipboard.</p>
-            </div>
-            {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleLinkBox} className='w-4 h-4 text-[#666666] ' /></button> */}
+          <div className='w-fit h-full flex items-center'>
+            <div className='w-6 h-full mr-2'><FaCircleCheck className='w-6 h-6 text-[#77C45F]' /></div>
+            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Link copied to clipboard.</p>
+          </div>
+          {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleLinkBox} className='w-4 h-4 text-[#666666] ' /></button> */}
         </div>
       )} 
 

@@ -36,6 +36,7 @@ const UserPage =  ({params: {id}}) => {
   const [isProfileData, setIsProfileData] = useState(false);
   const contactPopUpRef = useRef()
   const router = useRouter();
+  const [windowWidth, setWindowWidth] = useState(0);
 
   
   useLayoutEffect( () => {
@@ -186,21 +187,31 @@ const UserPage =  ({params: {id}}) => {
     setShowContact(!showContact);
   }
 
+  const logWindowWidth = () => {
+    setWindowWidth(window?.innerWidth);
+  };
+  useEffect(() => {
+    logWindowWidth();
+    window.addEventListener('resize', logWindowWidth);
+    return () => {
+      window.removeEventListener('resize', logWindowWidth);
+    };
+  }, []);
+
 
   return (
     
-    <div className="w-[calc(100vw-17px)] bg-[#F4F2EE] pt-[3.25rem] relative h-fit">
-      <div className="w-full h-fit pt-6 flex flex-col">
+    <div className="w-[calc(100vw-17px)] bg-[#F4F2EE] pt-12 res-620:pt-[3.25rem] relative h-fit">
+      <div className="w-full h-fit res-620:pt-6 flex flex-col">
 
-        {/*  */}
+        {/* Main Container */}
         <div className="w-full h-fit flex justify-center">
-
           {/* RESPONSIVENESS */}
-          <div className="w-[720px] mx-0 res-992:w-[960px] res-992:mx-[calc((100%-960px)/2)] res-1200:w-[1128px] h-fit res-1200:mx-[calc((100%-1128px)/2)]">
+          <div className="w-full res-620:w-[720px] mx-0 res-992:w-[960px] res-992:mx-[calc((100%-960px)/2)] res-1200:w-[1128px] h-fit res-1200:mx-[calc((100%-1128px)/2)]">
             <div className='w-full h-fit flex flex-col res-768:flex-row items-center res-768:items-start justify-between'>
 
               {/* main */}
-              <main className='w-[576px] res-768:w-[396px] res-992:w-[636px] res-1200:w-[50.25rem] mb-3 res-768:mb-0 h-fit flex flex-col'>
+              <main className='w-full res-620:w-[576px] res-768:w-[396px] res-992:w-[636px] res-1200:w-[50.25rem] mb-3 res-768:mb-0 h-fit flex flex-col'>
 
                 {/* User Profile details, address & contact */}
                 <section className='w-full h-fit'>
@@ -216,8 +227,8 @@ const UserPage =  ({params: {id}}) => {
                     {/* User profile pic */}
                     <div className='w-full h-[60px] flex flex-col'>
                       {/* pic */}
-                      <div className='w-[128px] res-992:w-[160px] h-[172px] -mt-[112px]'>
-                       <div className='w-full h-[160px]'>
+                      <div className='w-[128px] h-[128px] res-992:w-[160px] res-992:h-[160px] -mt-[70px] res-992:-mt-[85px]'>
+                       <div className='w-full h-full'>
                         {/* {userData && userData.profileImage && ( */}
                           <Image src={( !isProfileData ?  
                             ( userData?.profileImage ? userData.profileImage : userProfile )
@@ -238,10 +249,10 @@ const UserPage =  ({params: {id}}) => {
                       <div className='w-full h-fit flex items-start'>
 
                         {/* name & education */}
-                        <div className='w-[72%] res-992:w-[66%] res-1200:w-[500px] h-full flex flex-col'>
+                        <div className='w-full res-620:w-[72%] res-992:w-[66%] res-1200:w-[500px] h-full flex flex-col'>
 
                           {/* name */}
-                          <div className='w-full h-[30px] flex items-center justify-start '>
+                          <div className='w-full min-h-[30px] max-h-fit flex items-center justify-start '>
                             <span className='text-[#191919] text-lg res-992:text-2xl h-full py-1 font-semibold rounded-sm hover:bg-[#EBEBEB] flex items-center capitalize '>{userData?.name}</span>
                             <span className='text-[#666666] ml-1 text-sm'>{ !isProfileData && (userData?.gender ? 
                                 (userData.gender === 'male' ? '(He/Him)' : "(She/Her)" ) 
@@ -265,7 +276,7 @@ const UserPage =  ({params: {id}}) => {
                         </div>
 
                         {/* college or Institute */}
-                        <div className='w-[28%] res-992:w-[34%] res-1200:w-[232px] h-[43px]'>
+                        <div className='hidden res-620:block w-[28%] res-992:w-[34%] res-1200:w-[232px] h-[43px]'>
                           <ul className='text-sm font-semibold text-[#191919] ml-5 res-992:ml-10 '>
                             {userData?.education?.map((e, index) => {
                               return(
@@ -281,98 +292,21 @@ const UserPage =  ({params: {id}}) => {
                       </div>
 
                       {/* address & contact */}
-                      <div className='mt-2 w-[72%] res-992:w-fit h-fit res-992:h-[18px] flex'>
+                      <div className='mt-2 w-full flex flex-col res-400:flex-row res-620:w-[72%] res-992:w-fit h-fit res-992:h-[18px] '>
+                        {/* address */}
                         <span className='h-full text-[#9B9B9B] text-sm'>
                            {userData?.address && userData.address[0]
                               ? `${userData.address[0].city}, ${userData.address[0].state}, ${userData.address[0].country}`
                               : ''
                           }
                         </span>
+                        {/* Contact */}
                         <span className='h-full text-[#307ECB] text-sm font-semibold'>
                           <span>{!isProfileData ? ". " : "" }</span>
                           <span onClick={handleContactPopUp} className='hover:underline cursor-pointer'>Contact info</span>
                         </span>
+
                       </div>
-
-                      {/* Contact popUp window */}
-                      {showContact && (
-                        <div ref={contactPopUpRef} className='-bottom-[10px] left-[266px] z-30 flex flex-col bg-white shadow-2xl rounded-md w-[552px] h-[364px] absolute'>
-                          
-                          {/* name & cross */}
-                          <div className='w-full h-11 pl-3 py-2 flex border-b border-[#E8E8E8]'>
-                            {/* name */}
-                            <div className='w-[492px] h-full text-[#191919] capitalize font-semibold text-xl'>{userData?.name}</div>
-                            {/* cross */}
-                            <div className='w-[calc(100%-492px)] h-full flex items-center justify-center'>
-                              <button className='w-8 h-8 rounded-[50%] hover:bg-[#EBEBEB] flex items-center justify-center'><RxCross1 onClick={handleContactPopUp} className='w-5 h-5 text-[#666666]' /></button>
-                            </div>
-                          </div>
-
-                          {/* address */}
-                          <div className='w-full h-[calc(100%-44px)] px-3 py-2'>
-                            <section className='w-full h-max'>
-                              <h2 className='text-xl text-[#191919] mb-4'>Contact Info</h2>
-                              <div className='w-full h-full text-[#191919]'>
-
-                                {/* user profile */}
-                                <section className='w-full h-12 flex mb-4'>
-                                  {/* icon */}
-                                  <div className='w-10 h-6 flex justify-center'><IoLogoLinkedin className='w-6 h-6 text-[#404040]' /></div>
-                                  {/* details */}
-                                  <div className='w-full h-full flex flex-col ml-2'>
-                                    <div className='w-full h-6 capitalize font-semibold text-base'>{firstName}'s Profile</div>
-                                    <div className='w-full h-5 mt-1 text-[#307ECB] font-semibold lowercase text-sm hover:underline'>
-                                      linkedin.com/in/{firstName}-{lastName && lastName}-{id}
-                                    </div>
-                                  </div>
-                                </section>
-
-                                {/* Phone */}
-                                <section className='w-full h-12 flex mb-4'>
-                                  {/* icon */}
-                                  <div className='w-10 h-6 flex justify-center'><FaPhoneAlt className='w-5 h-5 text-[#404040]' /></div>
-                                  {/* details */}
-                                  <div className='w-full h-full flex flex-col ml-2'>
-                                    <div className='w-full h-6 font-semibold text-base'>Phone</div>
-                                    <div className='w-full h-5 mt-1 text-sm flex'>
-                                      { !isProfileData ? (userData?.phone) : "91******** "} 
-                                      <span className='text-[#9B9B9B] ml-1'>(Work)</span>
-                                    </div>
-                                  </div>
-                                </section>
-
-                                {/* email */}
-                                <section className='w-full h-12 flex mb-4'>
-                                  {/* icon */}
-                                  <div className='w-10 h-6 flex justify-center'><AiOutlineMail className='w-6 h-6 text-[#404040]' /></div>
-                                  {/* details */}
-                                  <div className='w-full h-full flex flex-col ml-2'>
-                                    <div className='w-full h-6 font-semibold text-base'>Email</div>
-                                    <div className='w-full h-5 mt-1 text-[#307ECB] font-semibold lowercase text-sm hover:underline'>
-                                      {userData?.email}
-                                    </div>
-                                  </div>
-                                </section>
-
-                                {/* Joined */}
-                                <section className='w-full h-12 flex mb-4'>
-                                  {/* icon */}
-                                  <div className='w-10 h-6 flex justify-center'><BsPeopleFill className='w-5 h-5 text-[#404040]' /></div>
-                                  {/* details */}
-                                  <div className='w-full h-full flex flex-col ml-2'>
-                                    <div className='w-full h-6 font-semibold text-base'>Joined</div>
-                                    <div className='w-full h-5 mt-1 text-sm flex'>
-                                      {formattedDate}
-                                    </div>
-                                  </div>
-                                </section>
-
-                              </div>
-                            </section>
-                          </div>  
-
-                        </div>
-                      )}
                       
                     </div>
 
@@ -407,6 +341,7 @@ const UserPage =  ({params: {id}}) => {
                   </div> 
 
                 </section>
+
 
                 { !isProfileData && (
                   <>
@@ -530,7 +465,7 @@ const UserPage =  ({params: {id}}) => {
                                             {/* name */}
                                             <div className='text-base font-semibold w-full h-6 flex items-center'>{e?.schoolName}</div>
                                             {/* degree */}
-                                            <div className='w-full h-5 flex items-center text-sm'>{e?.degree}</div>
+                                            <div className='w-full h-fit flex items-center text-sm'>{e?.degree}</div>
                                             {/* year */}
                                             <div className='w-full h-5 flex items-center text-[#666666]'>{startYear} - {endYear}</div>
                                           </div>
@@ -611,7 +546,7 @@ const UserPage =  ({params: {id}}) => {
               </main>
 
               {/* Aside */}
-              <aside className='w-[576px] res-768:w-[18.75rem] h-fit'>
+              <aside className='w-full res-620:w-[576px] res-768:w-[18.75rem] h-fit'>
                   
                   {/* aside top bar */}
                   <div className='w-full h-[250px] mb-2 bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
@@ -626,11 +561,93 @@ const UserPage =  ({params: {id}}) => {
 
             </div>
           </div>
-
         </div>
 
+        {/* Contact popUp window */}
+        {showContact && (
+          <div className='w-screen h-screen z-30 absolute flex justify-center'>
+            <div ref={contactPopUpRef} className='w-full res-400:w-[400px] res-620:w-[552px] z-30 flex flex-col bg-white shadow-2xl rounded-md  mt-32 h-[364px]'>
+              
+              {/* name & cross */}
+              <div className='w-full h-11 pl-3 py-2 flex border-b border-[#E8E8E8]'>
+                {/* name */}
+                <div className='w-[calc(100%-48px)] h-full text-[#191919] capitalize font-semibold text-xl'>{userData?.name}</div>
+                {/* cross */}
+                <div className='w-12 h-full flex items-center justify-center'>
+                  <button className='w-8 h-8 rounded-[50%] hover:bg-[#EBEBEB] flex items-center justify-center'><RxCross1 onClick={handleContactPopUp} className='w-5 h-5 text-[#666666]' /></button>
+                </div>
+              </div>
+
+              {/* address */}
+              <div className='w-full h-[calc(100%-44px)] px-3 py-2'>
+                <section className='w-full h-max'>
+                  <h2 className='text-xl text-[#191919] mb-4'>Contact Info</h2>
+                  <div className='w-full h-full text-[#191919]'>
+
+                    {/* user profile */}
+                    <section className='w-full min-h-12 max-h-fit flex mb-4'>
+                      {/* icon */}
+                      <div className='w-10 h-6 flex justify-center'><IoLogoLinkedin className='w-6 h-6 text-[#404040]' /></div>
+                      {/* details */}
+                      <div className='w-full h-full flex flex-col ml-2'>
+                        <div className='w-full h-6 capitalize font-semibold text-base'>{firstName}'s Profile</div>
+                        <div className='w-full h-5 mt-1 text-[#307ECB] font-semibold lowercase text-sm hover:underline'>
+                          linkedin.com/in/{firstName}-{lastName && lastName}-{id}
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* Phone */}
+                    <section className='w-full h-12 flex mb-4'>
+                      {/* icon */}
+                      <div className='w-10 h-6 flex justify-center'><FaPhoneAlt className='w-5 h-5 text-[#404040]' /></div>
+                      {/* details */}
+                      <div className='w-full h-full flex flex-col ml-2'>
+                        <div className='w-full h-6 font-semibold text-base'>Phone</div>
+                        <div className='w-full h-5 mt-1 text-sm flex'>
+                          { !isProfileData ? (userData?.phone) : "91******** "} 
+                          <span className='text-[#9B9B9B] ml-1'>(Work)</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* email */}
+                    <section className='w-full h-12 flex mb-4'>
+                      {/* icon */}
+                      <div className='w-10 h-6 flex justify-center'><AiOutlineMail className='w-6 h-6 text-[#404040]' /></div>
+                      {/* details */}
+                      <div className='w-full h-full flex flex-col ml-2'>
+                        <div className='w-full h-6 font-semibold text-base'>Email</div>
+                        <div className='w-full h-5 mt-1 text-[#307ECB] font-semibold lowercase text-sm hover:underline'>
+                          {userData?.email}
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* Joined */}
+                    <section className='w-full h-12 flex mb-4'>
+                      {/* icon */}
+                      <div className='w-10 h-6 flex justify-center'><BsPeopleFill className='w-5 h-5 text-[#404040]' /></div>
+                      {/* details */}
+                      <div className='w-full h-full flex flex-col ml-2'>
+                        <div className='w-full h-6 font-semibold text-base'>Joined</div>
+                        <div className='w-full h-5 mt-1 text-sm flex'>
+                          {formattedDate}
+                        </div>
+                      </div>
+                    </section>
+
+                  </div>
+                </section>
+              </div>  
+
+            </div>
+          </div>
+        )}
+
         {/* footer */}
-        <Footer />
+        {windowWidth > 620 && <Footer /> }
+        
 
       </div>
     </div>
