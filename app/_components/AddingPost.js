@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react'
 import { RxCross1 } from "react-icons/rx";
 import { useContextProvider } from '../ContextApi/AppContextProvider';
-import composePost from '../_lib/ComposePost';
+
 import { MdDriveFolderUpload } from "react-icons/md";
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
+import composePost from '../_lib/composePost';
 
 
 
