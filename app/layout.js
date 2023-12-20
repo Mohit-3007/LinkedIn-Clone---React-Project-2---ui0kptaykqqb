@@ -1,4 +1,4 @@
-'use client'
+
 import { useState, useEffect, Suspense } from 'react';
 import { AlertGlobalContextProvider, useAlertContextProvider } from './ContextApi/AlertContextProvider';
 import { GlobalContextProvider } from './ContextApi/AppContextProvider';
