@@ -63,7 +63,7 @@ export const FeedPosts =  () => {
         {res && res.map( (each, index ) => {
             
             return (
-                <div key={index} className='w-full bg-white rounded-lg'>
+                <div key={index} className='w-full bg-white res-620:rounded-lg'>
                     <div className='w-full'>
                         <div className='w-full mb-3'>
 

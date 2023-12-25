@@ -30,6 +30,10 @@ const GroupDotOption = ({setCheckLocal, groupId}) => {
         localStorage.setItem('groupData', stringifyData);
         setCheckLocal(prev => !prev);
         setShowOpt(false)
+        alertDispatch({type:'showGroupLeft'})
+        setTimeout(()=> {
+          alertDispatch({type:'hideGroupLeft'})
+        },2500)
       }
     }
 

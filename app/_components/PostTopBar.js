@@ -20,13 +20,8 @@ import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 
 
-
-
-
-
-
-const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) => {
-    const { token, userName, res, setRes, owner, checkLocal, setCheckLocal } = useContextProvider();
+const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isGroupPost = false }) => {
+    const { token, userName, res, setRes, owner, checkLocal, setCheckLocal, groupPosts, setGroupPosts } = useContextProvider();
     const [isFollow, setIsFollow] = useState(false)
     const [showFollow, setShowFollow] = useState(false);
     const [allow, setAllow] = useState(false);
@@ -37,6 +32,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
     const [isCopied, setIsCopied] = useState(false);
     const { alertDispatch } = useAlertContextProvider()
     const router = useRouter();
+    const [postDays, setpostDays] = useState('')
 
     function handlePostOption(){
         if(postOption){
@@ -53,7 +49,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
     
     useEffect( () => {
         if(isFollow == true){
-            console.log("disabling follow button")
+            // console.log("disabling follow button")
             setShowFollow(false)
         }      
     },[isFollow])
@@ -68,11 +64,11 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
 
     useEffect( () => {
         async function fetchUser(){
-            const fetchUser = await getUser(each?.author._id, token)
+            const fetchUser = await getUser(each?.author?._id, token)
             if(fetchUser.status === 'success'){
                 // console.log("fetchUser result ", fetchUser)
                 if(fetchUser?.data?.isFollowed === true){
-                    console.log('inside checking isFollowed? ', isFollow)
+                    // console.log('inside checking isFollowed? ', isFollow)
                     setIsFollow(true);
                 }
             }
@@ -110,7 +106,6 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
             setCheckLocal(prev => !prev);
             setPostOption(false)
         }
-
     }
 
     async function handleFollowUser(id, token){
@@ -136,19 +131,28 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
 
 // hiding the post
     function handleHidePost(){
-        // console.log("each ,", each)
-        // console.log("res, ", res);
-        if(isDataFromLocal){
-            const newData = localData.filter( e => {
+        if(isGroupPost){
+            console.log("isGroupPost ", isGroupPost);
+            console.log("isGroupPost ", each?._id);
+
+            const newData = groupPosts.filter( e => {
                 return e?._id != each?._id
             })
-            setLocalData(newData);
+            setGroupPosts(newData);
         }
         else{
-            const newData = res.filter( e => {
-                return e?._id != each?._id
-            })
-            setRes(newData);
+            if(isDataFromLocal){
+                const newData = localData.filter( e => {
+                    return e?._id != each?._id
+                })
+                setLocalData(newData);
+            }
+            else{
+                const newData = res.filter( e => {
+                    return e?._id != each?._id
+                })
+                setRes(newData);
+            }
         }
     }
 
@@ -179,10 +183,13 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
         },2500)
     };
 
-// getting the first leter of UserName
+// getting the first leter of UserName & random post created date
     const name = userName;
     const firstLetter = name?.charAt(0);
-    const day = Math.floor(Math.random() * (30 - 2 + 1)) + 2;
+    useEffect( () => {
+        const day = Math.floor(Math.random() * (30 - 2 + 1)) + 2;
+        setpostDays(day)
+    },[path])
 
   return (
     <div className='w-full min-h-16 max-h-fit mb-2 pl-4 pt-3 flex justify-between'>
@@ -234,7 +241,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
             {!isDataFromLocal && (
                 <>
                     {/* User-Pic */}
-                    <Link href={`/user/${each?.author._id}`} className='w-12 h-[3.25rem]'>
+                    <Link href={`/user/${each?.author?._id}`} className='w-12 h-[3.25rem]'>
                         <div className='w-12 h-12 rounded-[50%] bg-slate-300'>
                             {/* Image-Component */}
                             <Image src={each?.author?.profileImage} alt='user-profile-pic' width={48} height={48} priority className='rounded-[50%]'/>
@@ -244,9 +251,9 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
                     {/* name & other details */}
                     <div className='w-[87.12%] h-fit ml-2 flex flex-col'>
                         {/* name */}
-                        <Link href={`/user/${each?.author._id}`} className='w-full h-fit flex flex-col'>
+                        <Link href={`/user/${each?.author?._id}`} className='w-full h-fit flex flex-col'>
 
-                            <span className='w-full h-fit flex'>
+                            <span className='w-full h-fit flex items-center'>
                                 <span className='h-full flex items-center text-black text-sm font-semibold hover:underline hover:text-[#0A66C2]'>{each?.author?.name}</span>
                                 <span className='h-full ml-1 flex items-center text-xs text-[#666666]'>
                                     {( isFollow == true ) ? (
@@ -264,7 +271,7 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
                         </Link>
                         {/* time */}
                         <Link href={"#"} className='w-full h-4 flex items-center text-xs text-[#666666]'>
-                            <span className='flex items-start'>{day}d<span className='flex items-start justify-center mx-1'>. </span></span><FaGlobeAmericas className='w-4 h-4' />
+                            <span className='flex items-start'>{postDays}d<span className='flex items-start justify-center mx-1'>. </span></span><FaGlobeAmericas className='w-4 h-4' />
                         </Link>
                     </div>
 
@@ -389,7 +396,6 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
             </div>
 
             {/* follow */}
-            {/* {showFollow && ( */}
             {!isDataFromLocal && (
                 <button onClick={() => handleFollowUser(each?.author?._id, token)} className={'w-fit h-7 px-1.5 py-1 mr-2 rounded-md hover:bg-[#E2F0FE] text-[#0A66C2] flex items-center justify-center ' + (
                     isFollow === false ? 'block' : 'hidden'
@@ -399,12 +405,10 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false }) =
                 </button>
             )}
 
-
         </div>   
             
-
     </div>
   )
 }
 
-export default PostTopBar
+export default PostTopBar;

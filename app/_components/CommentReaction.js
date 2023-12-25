@@ -22,23 +22,23 @@ const CommentReaction = ({each, isDataFromLocal = false}) => {
   const [commentCount, setCommentCount] = useState(0);
   const { alertDispatch } = useAlertContextProvider()
 
+  // console.log("each each ", each  ," && ", each.likeCount)
+
   useEffect ( () => {
     // console.log("isDataFromLocal ", isDataFromLocal)
     if(isDataFromLocal == false){
-      const likeCountt = each?.likeCount;
-      if(likeCountt == 0) return
+      const likeCountt = each.likeCount;
+      if(likeCountt === 0) return
       setLikeCount(likeCountt-1)
     }   
   },[])
 
   /////////////
   useEffect( () => {
-    if(!isDataFromLocal){
-      
-      setCommentCount(each?.commentCount)
+    if(isDataFromLocal == false){    
+      // console.log("each?.commentCount each?.commentCount ", each.commentCount)
+      setCommentCount(each.commentCount)
     }
-    // if(each?.commentCount){
-    // }
   },[])
 
   /////////////
@@ -101,6 +101,9 @@ const CommentReaction = ({each, isDataFromLocal = false}) => {
                     <span className='hover:text-[#0A66C2] hover:underline'>Xvz and {likeCount} others</span>
                   )}
                   {likeCount != 0 && likeCount < 2 && (
+                    <span className='hover:text-[#0A66C2] hover:underline'>{likeCount}</span>
+                  )}
+                  {likeCount == 0 && (
                     <span className='hover:text-[#0A66C2] hover:underline'>{likeCount}</span>
                   )}
                 </button>

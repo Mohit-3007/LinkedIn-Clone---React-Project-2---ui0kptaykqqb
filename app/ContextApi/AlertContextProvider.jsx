@@ -10,7 +10,10 @@ const AlertGlobalContextProvider = ({children}) => {
         alertLinkCopied: "false",
         alertPostCreated: "false",
         alertGroupCreated: "false",
+        alertGroupJoin: "false",
+        alertGroupLeft: "false",
         alertReportPost: "false",
+        alertReportGroup: "false",
         alertReportComment: "false",
         alertComingSoon: "false"
     }
@@ -32,6 +35,11 @@ const AlertGlobalContextProvider = ({children}) => {
             case "hideReportPost":
                 return {...state, alertReportPost: "false"}
 
+            case "showReportGroup":
+                return {...state, alertReportGroup: "true"}
+            case "hideReportGroup":
+                return {...state, alertReportGroup: "false"}
+
             case "showReportComment":
                 return {...state, alertReportComment: "true"}
             case "hideReportComment":
@@ -52,6 +60,16 @@ const AlertGlobalContextProvider = ({children}) => {
             case "groupAlertFalse":
                 return {...state, alertGroupCreated: "false"};
 
+            case "showGroupJoin":
+                return {...state, alertGroupJoin: "true"};
+            case "hideGroupJoin":
+                return {...state, alertGroupJoin: "false"};
+
+            case "showGroupLeft":
+                return {...state, alertGroupLeft: "true"};
+            case "hideGroupLeft":
+                return {...state, alertGroupLeft: "false"};
+
             default:
                 return { ... state };
         }
@@ -64,7 +82,10 @@ const AlertGlobalContextProvider = ({children}) => {
         alertLinkCopied: alertState.alertLinkCopied,
         alertPostCreated: alertState.alertPostCreated,
         alertGroupCreated: alertState.alertGroupCreated,
+        alertGroupJoin: alertState.alertGroupJoin,
+        alertGroupLeft: alertState.alertGroupLeft,
         alertReportPost: alertState.alertReportPost,
+        alertReportGroup: alertState.alertReportGroup,
         alertReportComment: alertState.alertReportComment,
         alertComingSoon: alertState.alertComingSoon,
         alertDispatch

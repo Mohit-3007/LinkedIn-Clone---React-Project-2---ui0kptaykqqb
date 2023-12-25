@@ -27,7 +27,7 @@ const SingleComment = ({data, key, setInput, input, setCommentId}) => {
   useEffect( () => {
     async function fetchUser(){
       const result = await getUser(data?.author, token)
-      console.log("result ", result);
+      // console.log("result ", result);
       if(result.status === 'success') setUserData(result?.data)
     }
 

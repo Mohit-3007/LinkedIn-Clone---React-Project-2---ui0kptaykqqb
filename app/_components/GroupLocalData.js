@@ -10,18 +10,14 @@ const GroupLocalData = ({checkLocal, setCheckLocal}) => {
     const [imgUrl, setImgUrl] = useState('')
     const [localData, setLocalData] = useState('');
 
-    console.log('checkLocal ', checkLocal)
-
     useEffect( () => {
-
         if(localStorage.getItem('groupData')){
             const storedData = JSON.parse(localStorage.getItem('groupData'))
             console.log(storedData)
+            storedData.reverse();
             setLocalData(storedData);
         }
-
     },[checkLocal])
-
 
   return (
     <div className='w-full h-fit flex flex-col'>
@@ -34,11 +30,10 @@ const GroupLocalData = ({checkLocal, setCheckLocal}) => {
                 {localData && localData.map( (e, index) => {
 
                     return (
-
                         <li key={index} className='w-full min-h-[73px] max-h-fit px-2 pt-2 pb-[9px]'>
                             <div className='w-full h-full flex justify-between'>
 
-                                <div className='w-[calc(100%-48px)] h-fit pr-2 flex'>
+                                <Link href={`/groups/${e.id}`} className='w-fit h-fit pr-2 flex'>
                                     {/* image or logo */}
                                     <div className='w-10 h-10 res-330:w-[56px] res-330:h-[56px]'>
                                         <Image src={e?.image ? e.image : uploadSamp} alt='uploded image' objectFit='cover' width={88} height={88} className='w-full h-full rounded-sm' />
@@ -53,7 +48,7 @@ const GroupLocalData = ({checkLocal, setCheckLocal}) => {
                                         <div className='w-full h-4 text-xs text-[#666666]'>1 member</div>
                                         
                                     </div>
-                                </div>
+                                </Link>
 
                                 {/* dots option */}
                                 <GroupDotOption setCheckLocal={setCheckLocal} groupId={e?.id} />

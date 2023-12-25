@@ -15,8 +15,10 @@ const GlobalContextProvider = ({children}) => {
   const [searchTitle, setSearchTitle] = useState('')
 // for checking post in local storage
   const [checkLocal, setCheckLocal] = useState(false);
+  const [checkGroupLocal, setCheckGroupLocal] = useState(false);
   const [res, setRes] = useState('')
   const [page, setPage] = useState(1)
+  const [groupPosts, setGroupPosts] = useState('')
 
   // console.log("1st line ,", login);
   function handleLoginState(){
@@ -64,6 +66,8 @@ const GlobalContextProvider = ({children}) => {
     searchContent: searchContent,
     searchTitle: searchTitle,
     checkLocal: checkLocal,
+    checkGroupLocal: checkGroupLocal,
+    groupPosts: groupPosts,
     setRes,
     setPage,
     setToken,
@@ -75,6 +79,8 @@ const GlobalContextProvider = ({children}) => {
     setSearchContent,
     setSearchTitle,
     setCheckLocal,
+    setCheckGroupLocal,
+    setGroupPosts,
   }
   return  <AppContext.Provider value={initialValues}>{children}</AppContext.Provider>
 }

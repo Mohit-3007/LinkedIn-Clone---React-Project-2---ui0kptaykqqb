@@ -24,10 +24,6 @@ import getLocation from '@/app/_lib/getLocation';
 import { useRouter } from 'next/navigation';
 
 
-
-
-
-
 const UserPage =  ({params: {id}}) => {
   const { token, owner } = useContextProvider()
   const [userData, setUserData] = useState('');
@@ -140,8 +136,6 @@ const UserPage =  ({params: {id}}) => {
     if(userUnFollowRes.status === 'success') setIsFollowing(false)
   }
 
-  // console.log("This User is followed or not ? ", isFollowing);
-
 // user first name & last name
   function getName(fullName){
     const nameArray = fullName?.split(" ");
@@ -165,8 +159,6 @@ const UserPage =  ({params: {id}}) => {
   const inputDate = userData?.createdAt;
   const formattedDate = formatDate(inputDate);
 
-  
-
   function handleWindowClick(e){
     if(!contactPopUpRef?.current?.contains(e.target)){
         setShowContact(false);
@@ -174,7 +166,6 @@ const UserPage =  ({params: {id}}) => {
         // else if(popUp && !profileRef?.current?.contains(e.target)) setPopUp(false)
     }    
   }
-
   useEffect(() => {
     document.addEventListener('mousedown', handleWindowClick);
     return () => {
@@ -182,7 +173,6 @@ const UserPage =  ({params: {id}}) => {
     }
   },[showContact])
   
-
   function handleContactPopUp(){
     setShowContact(!showContact);
   }

@@ -15,20 +15,34 @@ import AsideFollowButton from './AsideFollowButton';
 
 const AsideUsers = () => {
     const [userData, setUserData] = useState();
+    const [page, setPage] = useState(0)
 
 // random page & number for making fetch call for users data
-  const pg = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
+    function generateRandomPage(){
+        const pg = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
+        setPage(pg)
+    }
+    useEffect(()=>{
+        generateRandomPage()
+    },[])
 //  fetching random posts for users
     useEffect( () => {
         async function callfetch(){
-            const getUserRes = await getPosts({limit:7, page:pg})
+            const getUserRes = await getPosts({limit:7, page:page})
             console.log("getUserRes, ", getUserRes)
             if(getUserRes.status === 'success'){
                 setUserData(getUserRes?.data)
             }
+            else{
+                if(getUserRes.message == 'No Post found'){
+                    generateRandomPage()
+                }
+            }
         }
-        callfetch()
-    },[])
+        if(page != 0){
+            callfetch()
+        }
+    },[page])
 
 // roles array
     const role = ['', 'HR', 'IT Recruiter', 'Connecting talent with opportunities', 'Xyz Consultancy', 'Training & Placements']

@@ -9,13 +9,12 @@ import getComments from '../_lib/getComments';
 import updatingComment from '../_lib/updatingComment';
 import SingleComment from './SingleComment';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
-
+import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
 
 // export const preLoadComments = (postId, token) => {
 //   void getComments(postId, token);
 // }
-
 
 export const Comments = ({postId, setCommentCount, commentCount}) => {
   const { token, userName } = useContextProvider();
@@ -24,6 +23,7 @@ export const Comments = ({postId, setCommentCount, commentCount}) => {
   const [loadMore, setLoadMore] = useState(false);
   const [isCommentId, setCommentId] = useState('');
   const [fetchAgain, setFetchAgain] = useState(false);
+  const { alertDispatch } = useAlertContextProvider()
 
 // getting comments from api 
   useEffect(() => {
@@ -58,6 +58,13 @@ export const Comments = ({postId, setCommentCount, commentCount}) => {
         setCommentCount(prev => prev + 1)
       }
     }   
+  }
+
+  function handleAlert(){
+    alertDispatch({type:"showComingSoon"})
+    setTimeout(()=>{
+      alertDispatch({type: 'hideComingSoon'})
+    }, 2500)
   }
 
 // getting the first leter of UserName
@@ -96,7 +103,7 @@ const firstLetter = name.charAt(0);
                     <div className='w-20 h-full flex'>
 
                       {/* smile */}
-                      <div className='w-10 h-10 rounded-[50%] hover:bg-[#EBEBEB]'>
+                      <div onClick={handleAlert} className='w-10 h-10 rounded-[50%] hover:bg-[#EBEBEB]'>
                         <span className='w-full h-full flex items-center justify-center'>
                           <FaRegSmile className='w-5 h-5 text-[#666666]' />
                         </span>
@@ -105,7 +112,7 @@ const firstLetter = name.charAt(0);
 
                       </div>
                       {/* Upload */}
-                      <div className='w-10 h-10 rounded-[50%] hover:bg-[#EBEBEB]'>
+                      <div onClick={handleAlert} className='w-10 h-10 rounded-[50%] hover:bg-[#EBEBEB]'>
                         <span className='w-full h-full flex items-center justify-center'>
                           <RiGalleryFill className='w-5 h-5 fill-[#666666] ' />
                         </span>
@@ -132,26 +139,18 @@ const firstLetter = name.charAt(0);
         </div>
 
         {/* div for dropdown - commnet sort by most relevant by  */}
-        {/* pending???????????????????????  */}
-        {commentCount > 2 && (
+        {/* {commentCount > 2 && (
           <div className='ml-3 mr-2 w-[calc(100%-20px)] h-6 mb-2'>
             <div className='w-full h-full flex items-center'>
-
-              {/* drop down Button */}
+            
               <div className='h-[17px] cursor-pointer'>
                 <span className='h-full flex items-center text-[13.33px] text-[#838383] font-medium relative' >
                   Most relevant<FaSortDown className='w-4 h-4 absolute -right-4 bottom-1 text-[#666666]' />
                 </span>
               </div>
-
-              {/* drop down PopUp div */}
-              <div className='hidden'>
-
-              </div>
-
             </div>
           </div>
-        )}
+        )} */}
 
         {/* view comments */}
         <div className='w-full flex flex-col'>   

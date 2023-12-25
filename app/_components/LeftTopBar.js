@@ -15,6 +15,8 @@ import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 const LeftTopBar = ({showMore}) => {
   const { userName, owner } = useContextProvider();
   const { alertDispatch } = useAlertContextProvider();
+  const [profileView, setProfileView] = useState(0);
+  const [connections, setConnections] = useState(0);
 
 
 // getting the first leter of UserName
@@ -22,8 +24,12 @@ const LeftTopBar = ({showMore}) => {
   const fullName = name?.replace(';', '');
   const firstLetter = name?.charAt(0);
 
-  let profileViewers = Math.floor(Math.random() * (30 - 7 + 1)) + 7;
-  let connections = Math.floor(Math.random() * (190 - 80 + 1)) + 80;
+  useEffect( () => {
+    let profileViewers = Math.floor(Math.random() * (30 - 7 + 1)) + 7;
+    let connection = Math.floor(Math.random() * (190 - 80 + 1)) + 80;
+    setProfileView(profileViewers);
+    setConnections(connection)
+  },[])
 
   function handleAlert(){
     alertDispatch({type:"showComingSoon"})
@@ -31,7 +37,6 @@ const LeftTopBar = ({showMore}) => {
       alertDispatch({type: 'hideComingSoon'})
     }, 2500)
   }
-
 
   return (
     <>
@@ -70,7 +75,7 @@ const LeftTopBar = ({showMore}) => {
 
             <div className='w-full h-6 flex items-center px-3 justify-between text-xs font-semibold'>
               <span className='text-[#6E6E6E]'>Profile viewers</span>
-              <span className='text-[#0A66C2]'>{profileViewers}</span>
+              <span className='text-[#0A66C2]'>{profileView}</span>
             </div>  
 
             <div className='w=full h-10 px-3 py-1'>

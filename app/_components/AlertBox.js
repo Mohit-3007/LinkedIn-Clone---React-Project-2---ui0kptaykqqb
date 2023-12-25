@@ -10,7 +10,8 @@ import { TbMessageReport } from "react-icons/tb";
 import { RxLapTimer } from "react-icons/rx";
 
 const AlertBox = () => {
-  const { alertImageUpload, alertLinkCopied, alertPostCreated, alertReportPost, alertGroupCreated, alertReportComment, alertComingSoon, alertDispatch } = useAlertContextProvider()
+  const { alertImageUpload, alertLinkCopied, alertPostCreated, alertReportPost, alertReportGroup, alertGroupCreated, 
+    alertReportComment, alertComingSoon, alertGroupJoin, alertGroupLeft, alertDispatch } = useAlertContextProvider()
   const [firstRender, setFirstRender] = useState(true)
   const [showAlertPost, setShowAlertPost] = useState(false)
   const [showAlertGrp, setShowAlertGrp] = useState(false)
@@ -18,7 +19,10 @@ const AlertBox = () => {
   const [showAlertLink, setShowAlertLink] = useState(false)
   const [showReportComm, setShowReportComm] = useState(false)
   const [showReportPost, setShowReportPost] = useState(false)
+  const [showReportGroup, setShowReportGroup] = useState(false)
   const [showComngSoon, setShowComngSoon] = useState(false)
+  const [showGrpJoin, setShowGrpJoin] = useState(false)
+  const [showGrpLeft, setShowGrpLeft] = useState(false)
 
   /////////////// showAlertPost /////////////
   useEffect( () => {
@@ -52,6 +56,38 @@ const AlertBox = () => {
   function handleCloseGroupAlert(){
     alertDispatch({ type: "groupAlertFalse" })
     // setShowAlertGrp(false)                       
+  }
+
+  /////////////// showGroupJoin /////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      console.log("inside of else")
+      if(showGrpJoin) setShowGrpJoin(false)
+      else setShowGrpJoin(true)
+    }
+  }, [alertGroupJoin])
+
+  function handleCloseGroupJoin(){
+    alertDispatch({ type: "hideGroupJoin" })                      
+  }
+
+  /////////////// showGroupLeft /////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      console.log("inside of else")
+      if(showGrpLeft) setShowGrpLeft(false)
+      else setShowGrpLeft(true)
+    }
+  }, [alertGroupLeft])
+
+  function handleCloseGroupLeft(){
+    alertDispatch({ type: "hideGroupLeft" })                      
   }
 
   /////////////// showAlertImg //////////////
@@ -100,6 +136,21 @@ const AlertBox = () => {
 
   function handlePostReport(){
     alertDispatch({ type: "hideReportPost" })                     
+  }
+
+  ////////////// showReportGroup //////////////
+  useEffect( () => {
+    if(firstRender) {
+      setFirstRender(false)
+    }
+    else{
+      if(showReportGroup) setShowReportGroup(false)
+      else setShowReportGroup(true)
+    }
+  },[alertReportGroup])
+
+  function handleGroupReport(){
+    alertDispatch({ type: "hideReportGroup" })                     
   }
 
   ////////////// showComngSoon //////////////
@@ -158,6 +209,28 @@ const AlertBox = () => {
         </div>
       )}
 
+      {/* alertGroupJoin */}
+      {showGrpJoin &&  (
+        <div className='w-fit h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
+          <div className='w-fit h-full flex'>
+            <div className='w-6 h-full mr-2'><Gi3DMeeple className='w-6 h-6 text-[#77C45F]' /></div>
+            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>You're in! Join the conversations with group members.</p>
+          </div>
+          {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseGroupJoin} className='w-4 h-4 text-[#666666] ' /></button> */}
+        </div>
+      )}
+
+      {/* alertGroupLeft */}
+      {showGrpLeft &&  (
+        <div className='w-fit h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
+          <div className='w-fit h-full flex'>
+            <div className='w-6 h-full mr-2'><Gi3DMeeple className='w-6 h-6 text-[#77C45F]' /></div>
+            <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>You have left the group.</p>
+          </div>
+          {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCloseGroupLeft} className='w-4 h-4 text-[#666666] ' /></button> */}
+        </div>
+      )}
+
       {/* alertImageUpload */}
       {showAlertImg && (
         <div className='w-[23.5rem] h-[78] p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
@@ -184,7 +257,7 @@ const AlertBox = () => {
       {showReportComm &&  (
         <div className='w-fit h-fit p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
             <div className='w-fit h-full flex items-center'>
-                <div className='w-6 h-full mr-2'><TbMessageReport className='w-6 h-6 text-[#77C45F]' /></div>
+                <div className='w-6 h-full mr-2'><TbMessageReport className='w-6 h-6 text-[#CB112D]' /></div>
                 <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Comment Reported</p>
             </div>
             {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleCommReport} className='w-4 h-4 text-[#666666] ' /></button> */}
@@ -195,10 +268,21 @@ const AlertBox = () => {
       {showReportPost &&  (
         <div className='w-fit h-fit p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
             <div className='w-fit h-full flex items-center'>
-                <div className='w-6 h-full mr-2'><TbMessageReport className='w-6 h-6 text-[#77C45F]' /></div>
+                <div className='w-6 h-full mr-2'><TbMessageReport className='w-6 h-6 text-[#CB112D]' /></div>
                 <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Post Reported</p>
             </div>
             {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handlePostReport} className='w-4 h-4 text-[#666666] ' /></button> */}
+        </div>
+      )}
+
+      {/* alertReportGroup */}
+      {showReportGroup &&  (
+        <div className='w-fit h-fit p-4 flex fixed bottom-8 left-8 z-50 outline outline-1 outline-[#E8E8E8] shadow-lg bg-white rounded-lg '>
+            <div className='w-fit h-full flex items-center'>
+                <div className='w-6 h-full mr-2'><TbMessageReport className='w-6 h-6 text-[#CB112D]' /></div>
+                <p className='w-[calc(100%-32px)] h-full flex items-center break-words text-sm text-[#191919]'>Group Reported</p>
+            </div>
+            {/* <button className='w-8 h-full flex justify-end cursor-pointer '><RxCross1 onClick={handleGroupReport} className='w-4 h-4 text-[#666666] ' /></button> */}
         </div>
       )}
 

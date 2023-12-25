@@ -1,11 +1,37 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaHashtag, FaPlus } from "react-icons/fa6";
 import Link from 'next/link';
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
+import { FaPeopleGroup } from "react-icons/fa6";
+import { useContextProvider } from '../ContextApi/AppContextProvider';
 
 const LeftBottomBar = ({showMore}) => {
     const { alertDispatch } = useAlertContextProvider();
+    const [islocalData, setIsLocalData] = useState(false);
+    const [localData, setLocalData] = useState('')
+    const { checkGroupLocal, setCheckGroupLocal } = useContextProvider()
+
+    useEffect( () => {
+        if(localStorage.getItem('groupData')){
+            const data = JSON.parse(localStorage.getItem('groupData'));
+            data.reverse();
+            if(data?.length > 0){
+                console.log("data ", data)
+                setLocalData(data)
+                setIsLocalData(true)
+                console.log(`local data length is ${data.length} `);
+            }
+            else{
+                setIsLocalData(false)
+                console.log("local data length is zero ");
+            }        
+        }
+        else{
+            console.log("local data not present");
+            setIsLocalData(false)
+        }
+    },[checkGroupLocal])
 
     function handleAlert(){
         alertDispatch({type:"showComingSoon"})
@@ -39,11 +65,25 @@ const LeftBottomBar = ({showMore}) => {
         </div>
 
         {/* Groups */}
-        <Link href={"/groups"} className='w-full h-8 flex items-center justify-between text-xs text-[#0A66C2] font-semibold'>
-            <div className='w-[185px] h-full pl-3 mr-2 flex items-center hover:underline'>Groups</div>
-            <div className='w-8 h-8 hover:bg-[#EBEBEB] rounded-[50%] flex items-center justify-center'>
-                <FaPlus className='w-4 h-4 text-[#191919]' />
+        <Link href={"/groups"} className='w-full h-fit flex flex-col '>
+            <div className='w-full h-8 flex items-center justify-between text-xs text-[#0A66C2] font-semibold'>
+                <div className='w-[185px] h-full pl-3 mr-2 flex items-center hover:underline'>Groups</div>
+                <div className='w-8 h-8 hover:bg-[#EBEBEB] rounded-[50%] flex items-center justify-center'><FaPlus className='w-4 h-4 text-[#191919]' /></div>
             </div>
+            <ul className='w-full h-fit list-none font-semibold text-xs text-[#6E6E6E]'>
+                {localData && localData.map ( (e, index) => {
+                    return (
+                        <Link key={index} href={`/groups/${e.id}`}>
+                            <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer'>
+                                <div className='w-full h-full px-3 py-1 flex'>
+                                    <FaPeopleGroup className='w-4 h-4 mr-2 text-[#404040]' />
+                                    {e?.name}
+                                </div>
+                            </li>                         
+                        </Link>
+                    )   
+                })}
+            </ul>
         </Link>
 
         {/* Events */}

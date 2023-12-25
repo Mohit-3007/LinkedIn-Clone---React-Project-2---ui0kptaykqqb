@@ -44,6 +44,7 @@ const Groups = () => {
     const [groupRes, setGroupRes] = useState('');
     const [islocalData, setIsLocalData] = useState(false);
     const [checkLocal, setCheckLocal] = useState(false);
+    const [page, setPage] = useState(0);
 
     useLayoutEffect( () => {
         if(!decodeURIComponent(document.cookie)){
@@ -85,15 +86,10 @@ const Groups = () => {
                 content:description,
                 image:imgUrl
             }
-
             const existingData = JSON.parse(localStorage.getItem('groupData')) || [];
-
             existingData.push(groupObj)
-
             const stringifyData = JSON.stringify(existingData);
-
             localStorage.setItem( 'groupData', stringifyData )
-
             alertDispatch({ type: "groupAlertTrue" })
                 setShowGroupPopup(false)
                 setTitle('')
@@ -102,34 +98,6 @@ const Groups = () => {
                 setTimeout( () => {
                     alertDispatch({ type: "groupAlertFalse" })
                 }, 2500)
-            
-            // if(localStorage.getItem('groupData')){
-            //     const storedData = JSON.parse(localStorage.getItem('groupData'))
-            //     const newData = JSON.stringify([...storedData, groupObj])
-            //     console.log("Data already existed")
-            //     localStorage.setItem( 'groupData', newData )
-            //     alertDispatch({ type: "groupAlertTrue" })
-            //     setShowGroupPopup(false)
-            //     setTitle('')
-            //     setDescription('')
-            //     setCheckLocal(!checkLocal)
-            //     setTimeout( () => {
-            //         alertDispatch({ type: "groupAlertFalse" })
-            //     }, 2500)
-            // }
-            // else{
-            //     const stringifyObj = JSON.stringify([groupObj]);
-            //     console.log("New Data Created");
-            //     localStorage.setItem( 'groupData' , stringifyObj );
-            //     alertDispatch({ type: "groupAlertTrue" })
-            //     setShowGroupPopup(false)
-            //     setTitle('')
-            //     setDescription('')
-            //     setCheckLocal(!checkLocal)
-            //     setTimeout( () => {
-            //         alertDispatch({ type: "groupAlertFalse" })
-            //     }, 2500)
-            // }     
         }
     }
 
@@ -168,29 +136,16 @@ const Groups = () => {
 
     function handleDocumentClick(e){
         if(!groupRef?.current?.contains(e?.target)){
-            // console.log('Outside Group ref')
-            // if(alertDivRef?.current?.contains(e?.target)) {
-            //     console.log("inside alertDivRef")
-            //     return
-            // }
-            // else if(showAlertImg == true){
-            //     // console.log("show alert is true")
-            //     return
-            // }
-            // else{
-                console.log("showAlert is false")
-                setShowUpload(false)
-                setShowGroupPopup(false)
-                setSelectCheck1(true)
-                setSelectCheck2(true)
-                setImgUrl('')
-                setTitle('')
-                setDescription('')
-            // }
-            
+            console.log("showAlert is false")
+            setShowUpload(false)
+            setShowGroupPopup(false)
+            setSelectCheck1(true)
+            setSelectCheck2(true)
+            setImgUrl('')
+            setTitle('')
+            setDescription('')           
         }
         else{
-            // console.log("inside else")
             if(uploadBtnRef?.current?.contains(e.target)) return
             if(uploadPopupRef?.current?.contains(e.target)) return
             setShowUpload(false)
@@ -204,20 +159,33 @@ const Groups = () => {
         }
     }, [])
 
-// random page & number
+
+// random page & number for making fetch call for channels or groups below
+  function generateRandomPage(){
     const pg = Math.floor(Math.random() * (100 - 5 + 1)) + 5;
-   
-    useEffect(() => {
-        async function callFetch(){
-            // console.log(`fetch request sent with page no ${page}`)
-            const data = await getPosts({limit:6, page:pg})
-            console.log("Channel/Groups ", data)
-            if(data.status === 'success'){
-                setGroupRes(data?.data)
-            }         
+    setPage(pg)
+  }
+  useEffect(()=>{
+    generateRandomPage()
+  },[])
+  useEffect(() => {
+    async function callFetch(){
+      console.log(`fetch request sent with page no ${page}`)
+      const data = await getPosts({limit:6, page:page})
+      console.log("Channel/Groups ", data)
+      if(data.status === 'success'){
+        setGroupRes(data?.data)
+      }
+      else{
+        if(data.message == 'No Post found'){
+          generateRandomPage()
         }
-        callFetch()
-      },[]);
+      }         
+    }
+    if(page != 0){
+      callFetch()
+    }
+  },[page]);
 
     function handleAlert(){
     alertDispatch({type:"showComingSoon"})
@@ -228,13 +196,9 @@ const Groups = () => {
 
   return (
     <>
-        {/* <NavBar /> */}
 
         <div className="w-full h-fit z-10 pt-12 res-620:pt-[3.25rem] ">
 
-        {/* <div className={'w-full bg-[#F4F2EE] pt-[3.25rem] z-20 relative h-screen scrollbar-stable ' + (
-            showGroupPopup ? "overflow-y-hidden" : "overflow-y-scroll"
-        )}> */}
             <div className='w-[calc(100vw-17px)] h-full'>
 
                 {/* main group view & Aside bar */}
@@ -310,36 +274,13 @@ const Groups = () => {
 
                                 {/* groups section */}
                                 <section className='w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg res-620:rounded-xl'>
-
                                     <h3 className='w-full h-[52px] p-4 flex items-center text-base text-[#191919] font-semibold'>Groups you might be interested in</h3>
-
                                     {/* groups ul */}
                                     <ul className='w-full h-fit px-4'>
-
-                                        {/*  */}
-                                        {groupRes && groupRes.map( (e, index) => {
-                                            const members = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
-                                          
-                                          return (
-                                            <li onClick={handleAlert} key={index} className='w-full h-fit py-4'>
-                                                <Link href={'#'} className='w-full h-fit flex'>
-
-                                                    <div className='w-12 h-full'>
-                                                        <div className='w-full h-12 flex justify-center items-center'>
-                                                            <Image src={e?.channel?.image} alt='group-pic' objectFit='cover' width={48} height={48} className='w-full h-full rounded-sm' />
-                                                        </div>
-                                                    </div>
-
-                                                    <div className='w-[calc(100%-48px)] pl-2 h-fit t'>
-                                                        <div className='w-full h-fit ext-base font-semibold hover:underline text-[#191919] break-words'>{e?.channel?.name}</div>
-                                                        <div className='text-xs text-[#666666]'>{members} members</div>
-                                                    </div>
-
-                                                </Link>
-                                            </li>
-                                          )
+                                        {/* GroupContainer */}
+                                        {groupRes && groupRes.map( (e, index) => {                                                         
+                                             return  <GroupContainer key={index} index={index} e={e} />                                        
                                         })}
-
                                     </ul>
 
                                 </section>
@@ -602,6 +543,33 @@ const Groups = () => {
 
     </>
   )
+}
+
+function GroupContainer({index, e}){
+    const [members, setMembers] = useState('');
+    useEffect( () => {
+        const member = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
+        setMembers(member)
+    },[])
+
+    return (
+        <li key={index} className='w-full h-fit py-4'>
+            <Link href={`/groups/${e.channel._id}`} className='w-full h-fit flex'>
+
+                <div className='w-12 h-full'>
+                    <div className='w-full h-12 flex justify-center items-center'>
+                        <Image src={e?.channel?.image} alt='group-pic' objectFit='cover' width={48} height={48} className='w-full h-full rounded-sm' />
+                    </div>
+                </div>
+
+                <div className='w-[calc(100%-48px)] pl-2 h-fit t'>
+                    <div className='w-full h-fit ext-base font-semibold hover:underline text-[#191919] break-words'>{e?.channel?.name}</div>
+                    <div className='text-xs text-[#666666]'>{members} members</div>
+                </div>
+
+            </Link>
+        </li>
+    )
 }
 
 export default Groups;

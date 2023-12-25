@@ -8,14 +8,14 @@ const PostContent = ({content, title}) => {
 
     useEffect( () => {
 
-        const words = content.split(' ');
-        if(words.length < 12 ) {
+        const words = content?.split(' ');
+        if(words?.length < 12 ) {
             setHideButton(true)
             const text = words.join(' ') 
             setDisplayText(text)
         }
         else{
-            const text = showMore ? words.join(' ') : words.slice(0, 11).join(' ');
+            const text = showMore ? words?.join(' ') : words?.slice(0, 11).join(' ');
             setDisplayText(text)
         }
 

@@ -157,32 +157,18 @@ const NavBar = ({popUp, setPopUp}) => {
   }
 
   function handleWindowClick(e){
-    console.log("window cicked")
     if(inputRef.current && !inputRef?.current?.contains(e.target)) {
       if(suggRef?.current?.contains(e.target)) return
       else{
-        console.log(popUp)
-        console.log("not reognising")
-        // setPopUp(false)
-        // console.log("pop up closed")
         handleSearchInput(false)
       } 
     } 
-
     else if(searchIconsRef.current && !searchIconsRef?.current?.contains(e.target)) {
       if(searchSuggRef?.current?.contains(e.target)) return
       else{
-        console.log(searchIconsRef.current.contains(e.target))
-        console.log(popUp)
-        console.log("not reognising 2")
-        // setPopUp(false)
-        // console.log("pop up closed")
         handleSearchInput(false)
       } 
-    } 
-    else{
-      console.log("inside else condition")
-    }      
+    }       
   }
 
   useEffect( () => {
