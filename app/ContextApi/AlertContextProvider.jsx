@@ -21,39 +21,39 @@ const AlertGlobalContextProvider = ({children}) => {
     function reducer(state, action) {
         switch(action.type){
             case "imgAlertTrue":
-                return {...state, alertImageUpload: "true"}
+                return {...state, alertImageUpload: "true"};
             case "imgAlertFalse":
-                return {...state, alertImageUpload: "false"}
+                return {...state, alertImageUpload: "false"};
 
             case "showlinkCop":
-                return {...state, alertLinkCopied: "true"}
+                return {...state, alertLinkCopied: "true"};
             case "hidelinkCop":
-                return {...state, alertLinkCopied: "false"}
+                return {...state, alertLinkCopied: "false"};
 
             case "showReportPost":
-                return {...state, alertReportPost: "true"}
+                return {...state, alertReportPost: "true"};
             case "hideReportPost":
-                return {...state, alertReportPost: "false"}
+                return {...state, alertReportPost: "false"};
 
             case "showReportGroup":
-                return {...state, alertReportGroup: "true"}
+                return {...state, alertReportGroup: "true"};
             case "hideReportGroup":
-                return {...state, alertReportGroup: "false"}
+                return {...state, alertReportGroup: "false"};
 
             case "showReportComment":
-                return {...state, alertReportComment: "true"}
+                return {...state, alertReportComment: "true"};
             case "hideReportComment":
-                return {...state, alertReportComment: "false"}
+                return {...state, alertReportComment: "false"};
 
             case "showComingSoon":
-                return {...state, alertComingSoon: "true"}
+                return {...state, alertComingSoon: "true"};
             case "hideComingSoon":
-                return {...state, alertComingSoon: "false"}
+                return {...state, alertComingSoon: "false"};
 
             case "showPostCreAlert":
-                return {...state, alertPostCreated: "true"}
+                return {...state, alertPostCreated: "true"};
             case "hidePostCreAlert":
-                return {...state, alertPostCreated: "false"}
+                return {...state, alertPostCreated: "false"};
 
             case "groupAlertTrue":
                 return {...state, alertGroupCreated: "true"};

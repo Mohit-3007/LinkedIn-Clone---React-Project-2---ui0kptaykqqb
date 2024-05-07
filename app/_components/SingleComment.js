@@ -7,13 +7,7 @@ import { IoIosLink } from "react-icons/io";
 import { MdModeEditOutline } from "react-icons/md";
 import { IoFlag } from "react-icons/io5";
 import { useContextProvider } from '../ContextApi/AppContextProvider';
-import { usePathname } from 'next/navigation';
-import updatingComment from '../_lib/updatingComment';
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
-
-
-
-
 
 const SingleComment = ({data, key, setInput, input, setCommentId}) => {
   const [userData, setUserData] = useState('')
@@ -43,19 +37,19 @@ const SingleComment = ({data, key, setInput, input, setCommentId}) => {
     }     
   } 
 
-    useEffect( () => {
-      document.addEventListener('mousedown', handleMouseEvent)
-      return () => {
-        document.removeEventListener('mousedown', handleMouseEvent)
-      }
-    },[])
+  useEffect( () => {
+    document.addEventListener('mousedown', handleMouseEvent)
+    return () => {
+      document.removeEventListener('mousedown', handleMouseEvent)
+    }
+  },[])
 
-    useEffect(()=>{
-      if(userData){
-        const name = userData?.name.charAt(0)
-        setFirstLetter(name);
-      }
-    },[userData])
+  useEffect(()=>{
+    if(userData){
+      const name = userData?.name.charAt(0)
+      setFirstLetter(name);
+    }
+  },[userData])
 
 // formatting comment date
   function getRelativeTime(timestamp) {
@@ -286,7 +280,6 @@ const SingleComment = ({data, key, setInput, input, setCommentId}) => {
   const relativeTime = getRelativeTime(timestamp);
   // console.log(relativeTime);
 
-
   function copyToClipboard(){
     // try {
       const currentPath = window.location.href;
@@ -315,7 +308,6 @@ const SingleComment = ({data, key, setInput, input, setCommentId}) => {
     },2500)
   }
 
-
   function handleEditComment(){
     console.log("Edit the comment");
     setInput(data?.content)
@@ -330,144 +322,128 @@ const SingleComment = ({data, key, setInput, input, setCommentId}) => {
     }, 2500)
   }
 
-
   return (
     <article key={key} className='w-[calc(100%-32px)] mx-4 mb-3 h-[6.5625rem]'>
+      {/* comment user profile pic & name & other details & option PopUp */}
+      <div className='w-full h-[53px] flex'>
+        {/* pic div */}
+        <Link href={`/user/${userData?._id}`} className='mt-[5px] w-10 h-10'>
+          {/* image-????? */}
+          <span className='w-full h-full dark:bg-[rgb(56,67,79)] bg-[#7A1CA4] flex justify-center items-center
+           uppercase text-xl font-bold dark:text-[rgba(255,255,255,0.9)] text-white rounded-[50%]'>{firstLetter}</span>
+        </Link>
 
-        {/* comment user profile pic & name & other details & option PopUp */}
-        <div className='w-full h-[53px] flex'>
+        {/* name & other details & option PopUp div */}
+        <div className='ml-1 w-[calc(100%-44px)] h-full py-2 pl-3 dark:bg-[rgb(41,49,56)] bg-[#F2F2F2] rounded-tr-lg flex'>
+          {/* name & other details */}
+          <Link href={`/user/${userData?._id}`} className='w-[calc(100%-64px)] h-full flex flex-col'>
+            {/* name */}
+            <span className='w-full h-[21px] flex'>
+              <span className='h-full mr-1 flex items-center dark:text-[rgba(255,255,255,0.9)] text-[#181818] text-sm font-medium hover:underline
+               hover:text-[#0A66C2]'>{userData?.name}</span>
+              <span className='h-full flex items-center dark:text-[rgba(255,255,255,0.6)] text-[#A3A3A3] text-xs'>He/Him . 3rd+</span>
+            </span>
 
-            {/* pic div */}
-            <Link href={`/user/${userData?._id}`} className='mt-[5px] w-10 h-10'>
-                {/* image-????? */}
-                <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center uppercase text-xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
-            </Link>
+            {/* other details */}
+            <span className='w-full h-[calc(1000%-21px)] dark:text-[rgba(255,255,255,0.9)] text-[#A3A3A3] truncate text-xs flex items-center'>
+              Do you want more meetings? Close larger deals? Listen to the Brutal Truth a Do you want more meetings? Close larger deals? Listen to the Brutal Truth a
+            </span>
+          </Link>
 
-            {/* name & other details & option PopUp div */}
-            <div className='ml-1 w-[calc(100%-44px)] h-full py-2 pl-3 bg-[#F2F2F2] rounded-tr-lg flex'>
+          {/* isEditied or not comment time option PopUp */}
+          <div className='w-[64px] pr-2 h-6 flex items-center justify-end relative'>
+            {/* isEdited or not */}
+            <div className='w-fit h-4 flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#A3A3A3] mr-1 '>{data?.isEdited == true ? 'Edited' : ''}</div>
 
-                {/* name & other details */}
-                <Link href={`/user/${userData?._id}`} className='w-[calc(100%-64px)] h-full flex flex-col'>
+            {/* comment time */}
+            <div className=' h-4 text-xs dark:text-[rgba(255,255,255,0.6)] text-[#A3A3A3] '>{relativeTime}</div>
 
-                    {/* name */}
-                    <span className='w-full h-[21px] flex'>
-                        <span className='h-full mr-1 flex items-center text-[#181818] text-sm font-medium hover:underline hover:text-[#0A66C2]'>{userData?.name}</span>
-                        <span className='h-full flex items-center text-[#A3A3A3] text-xs'>He/Him . 3rd+</span>
-                    </span>
-
-                    {/* other details */}
-                    <span className='w-full h-[calc(1000%-21px)] text-[#A3A3A3] truncate text-xs flex items-center'>
-                        Do you want more meetings? Close larger deals? Listen to the Brutal Truth a Do you want more meetings? Close larger deals? Listen to the Brutal Truth a
-                    </span>
-
-                </Link>
-
-                {/* isEditied or not comment time option PopUp */}
-                <div className='w-[64px] pr-2 h-6 flex items-center justify-end relative'>
-
-                    {/* isEdited or not */}
-                    <div className='w-fit h-4 flex items-center text-xs text-[#A3A3A3] mr-1 '>{data?.isEdited == true ? 'Edited' : ''}</div>
-
-                    {/* comment time */}
-                    <div className=' h-4 text-xs text-[#A3A3A3] '>{relativeTime}</div>
-
-                    {/* option dots */}                  
-                    <div ref={dotRef} onClick={() => setShowOpt(!showOpt) } className='w-4 h-full ml-1 flex items-center cursor-pointer'>
-                        <BsThreeDots className='w-4 h-4 text-[#616161]' />
-                    </div>
-
-                    <div ref={optRef} className={'w-[204px] h-20 py-1ab absolute -bottom-20 bg-white outline outline-1 shadow-xl outline-[#e1e1e1] rounded-sm ' 
-                        + (showOpt ? 'block' : 'hidden')}>
-                        <ul className='w-full h-full list-none flex flex-col justify-center'>
-
-                            <li onClick={copyToClipboard} className='w-full h-[36px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                <div className='w-full h-full px-4 py-2 flex items-center'>
-                                    {/* icons */}
-                                    <div className='w-5 h-5 mr-2 '>
-                                        <IoIosLink className='w-full h-full' />
-                                    </div>
-                                    <div className='w-[calc(100%-32px)] text-sm h-5'>
-                                        Copy link to post
-                                    </div>
-                                </div>
-                            </li>
-
-                            {owner === userData?._id && (
-
-                                <li onClick={handleEditComment} className='w-full h-[36px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                    <div className='w-full h-full px-4 py-2 flex items-center'>
-                                        {/* icons */}
-                                        <div className='w-5 h-5 mr-2 '>
-                                            <MdModeEditOutline className='w-full h-full' />
-                                        </div>
-                                        <div className='w-[calc(100%-32px)] text-sm h-5'>
-                                            Edit the comment
-                                        </div>
-                                    </div>
-                                </li>
-
-                            ) }
-
-                            {owner != userData?._id && (
-
-                                <li onClick={handleReportComment} className='w-full h-[36px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                    <div className='w-full h-full px-4 py-2 flex items-center'>
-                                        {/* icons */}
-                                        <div className='w-5 h-5 mr-2 '>
-                                            <IoFlag className='w-full h-full' />
-                                        </div>
-                                        <div className='w-[calc(100%-32px)] text-sm h-5'>
-                                            Report comment
-                                        </div>
-                                    </div>
-                                </li>
-
-                            )}
-
-
-                        </ul>
-                    </div>
-
-                </div>
-
+            {/* option dots */}                  
+            <div ref={dotRef} onClick={() => setShowOpt(!showOpt) } className='w-4 h-full ml-1 flex items-center cursor-pointer'>
+              <BsThreeDots className='w-4 h-4 dark:text-[rgba(255,255,255,0.6)] text-[#616161]' />
             </div>
 
-        </div>
-
-        {/* User Comment DIv */}
-        <div className='ml-11 w-[calc(100%-44px)] pl-3 pr-4 pb-3 min-h-8 h-fit bg-[#F2F2F2] rounded-b-lg'>
-            <span className='h-fit text-[#181818] text-sm'>{data.content}</span>
-        </div>
-
-        {/* like & reply */}
-        <div className='w-full h-4'>
-            <div className='ml-11 w-[calc(100%-44px)] pl-2 h-full'>
-                <div className='w-full h-full mt-1 flex'>
-
-                    {/* like div */}
-                    <div onClick={handleAlert} className='pr-2 h-full '>
-                        <div className='w-full h-full hover:bg-[#EBEBEB] flex items-center justify-center cursor-pointer'>
-                        <span className='text-[#666666] text-xs font-medium'>Like</span>
-                        </div>
-                        
+            <div ref={optRef} 
+            className={'w-[204px] h-20 py-1ab absolute -bottom-20 dark:bg-[rgb(27,31,25)] bg-white outline outline-1 shadow-xl dark:outline-[rgb(65,71,77)] outline-[#e1e1e1] rounded-sm '
+             + (showOpt ? 'block' : 'hidden')}>
+              <ul className='w-full h-full list-none flex flex-col justify-center'>
+                <li onClick={copyToClipboard} className='w-full h-[36px] dark:hover:bg-[rgb(44,47,51)] dark:text-[rgba(255,255,255,0.6)]
+                dark:hover:text-[rgba(255,255,255,0.9)] hover:bg-[#e1e1e1] cursor-pointer'>
+                  <div className='w-full h-full px-4 py-2 flex items-center'>
+                    {/* icons */}
+                    <div className='w-5 h-5 mr-2 '>
+                      <IoIosLink className='w-full h-full' />
                     </div>
-
-                    {/* break line */}
-                    <div className='w-0 border-l h-4 border-[#B2B2B2]'></div>
-
-                    {/* reply div */}
-                    <div onClick={handleAlert} className='px-2 h-full'>
-                        <div className='w-full h-full hover:bg-[#EBEBEB] flex items-center justify-center cursor-pointer'>
-                        <span className='text-[#666666] text-xs font-medium'>Reply</span>
-                        </div>
+                    <div className='w-[calc(100%-32px)] text-sm h-5'>
+                      Copy link to post
                     </div>
-
-                </div>
+                  </div>
+                </li>
+                {owner === userData?._id && (
+                  <li onClick={handleEditComment} className='w-full h-[36px] dark:hover:bg-[rgb(44,47,51)] dark:text-[rgba(255,255,255,0.6)]
+                  dark:hover:text-[rgba(255,255,255,0.9)] hover:bg-[#e1e1e1] cursor-pointer'>
+                    <div className='w-full h-full px-4 py-2 flex items-center'>
+                      {/* icons */}
+                      <div className='w-5 h-5 mr-2 '>
+                        <MdModeEditOutline className='w-full h-full' />
+                      </div>
+                      <div className='w-[calc(100%-32px)] text-sm h-5'>
+                        Edit the comment
+                      </div>
+                    </div>
+                  </li>
+                ) }
+                {owner != userData?._id && (
+                  <li onClick={handleReportComment} className='w-full h-[36px] dark:hover:bg-[rgb(44,47,51)] dark:text-[rgba(255,255,255,0.6)]
+                  dark:hover:text-[rgba(255,255,255,0.9)] hover:bg-[#e1e1e1] cursor-pointer'>
+                    <div className='w-full h-full px-4 py-2 flex items-center'>
+                      {/* icons */}
+                      <div className='w-5 h-5 mr-2 '>
+                        <IoFlag className='w-full h-full' />
+                      </div>
+                      <div className='w-[calc(100%-32px)] text-sm h-5'>
+                        Report comment
+                      </div>
+                    </div>
+                  </li>
+                )}
+              </ul>
             </div>
+          </div>
         </div>
-    
+      </div>
+
+      {/* User Comment DIv */}
+      <div className='ml-11 w-[calc(100%-44px)] pl-3 pr-4 pb-3 min-h-8 h-fit dark:bg-[rgb(41,49,56)] bg-[#F2F2F2] rounded-b-lg'>
+        <span className='h-fit dark:text-[rgba(255,255,255,0.9)] text-[#181818] text-sm'>{data.content}</span>
+      </div>
+
+      {/* like & reply */}
+      <div className='w-full h-4'>
+        <div className='ml-11 w-[calc(100%-44px)] pl-2 h-full'>
+          <div className='w-full h-full mt-1 flex'>
+            {/* like div */}
+            <div onClick={handleAlert} className='pr-2 h-full '>
+              <div className='w-full h-full hover:bg-[#EBEBEB] dark:hover:text-[rgba(255,255,255,0.9)] dark:hover:bg-[rgb(43,47,50)]
+               dark:text-[rgba(255,255,255,0.6)] text-[#666666] flex items-center justify-center cursor-pointer'>
+                <span className='text-xs font-medium'>Like</span>
+              </div> 
+            </div>
+
+            {/* break line */}
+            <div className='w-0 border-l h-4 dark:border-[#76797B] border-[#B2B2B2]'></div>
+
+            {/* reply div */}
+            <div onClick={handleAlert} className='px-2 h-full'>
+              <div className='w-full h-full hover:bg-[#EBEBEB] dark:hover:text-[rgba(255,255,255,0.9)] dark:hover:bg-[rgb(43,47,50)]
+               dark:text-[rgba(255,255,255,0.6)] text-[#666666] flex items-center justify-center cursor-pointer'>
+                <span className='text-xs font-medium'>Reply</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </article>
-
   )
 }
 

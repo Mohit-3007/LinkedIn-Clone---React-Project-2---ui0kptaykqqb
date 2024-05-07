@@ -14,7 +14,7 @@ const loginUser = async (email, password) => {
             appType: 'linkedin'
         }) 
       })
-    //   console.log("RESP RESP <",resp);
+      console.log("RESP RESP <",resp);
       if (!resp.ok) {
         console.log('Failed to fetch data')
       }

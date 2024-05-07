@@ -41,22 +41,22 @@ const LeftBottomBar = ({showMore}) => {
     }
 
   return (
-    <div className={'res-768:block w-full h-full pt-2 flex flex-col ' + (showMore ? '' : 'hidden')}>
+    <div className={'res-768:block w-full h-full pt-2 flex flex-col dark:bg-[#1B1F23]  ' + (showMore ? '' : 'hidden')}>
         {/*  */}
         <div className='w-full h-20 mb-4 flex flex-col'>
-            <div className='w-full h-8 flex items-center pl-3 text-xs text-[#191919]'>Recent</div>
-            <ul className='w-full h-12 list-none font-semibold text-xs text-[#6E6E6E]'>
+            <div className='w-full h-8 flex items-center pl-3 text-xs dark:text-[rgba(255,255,255,0.9)] text-[#191919]'>Recent</div>
+            <ul className='w-full h-12 list-none font-semibold dark:text-[rgba(255,255,255,0.6)] text-xs text-[#6E6E6E]'>
 
-                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer'>
+                <li className='w-full h-6 hover:bg-[#EBEBEB] dark:hover:bg-[rgb(68,71,75)] cursor-pointer'>
                     <div className='w-full h-full px-3 py-1 flex'>
-                        <FaHashtag className='w-4 h-4 mr-2 text-[#404040]' />
+                        <FaHashtag className='w-4 h-4 mr-2 text-[#404040] dark:text-[rgba(255,255,255,0.6)] ' />
                         fresher
                     </div>
                 </li>
 
-                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer'>
+                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer dark:hover:bg-[rgb(68,71,75)]'>
                     <div className='w-full h-full px-3 py-1 flex'>
-                        <FaHashtag className='w-4 h-4 mr-2 text-[#404040]' />
+                        <FaHashtag className='w-4 h-4 mr-2 text-[#404040] dark:text-[rgba(255,255,255,0.6)] ' />
                         india
                     </div>
                 </li>
@@ -97,18 +97,18 @@ const LeftBottomBar = ({showMore}) => {
                 <div className='w-[185px] h-full pl-3 mr-2 flex items-center hover:underline'>Followed Hastags</div>
             </div>
 
-            <ul className='w-full h-12 list-none font-semibold text-xs text-[#6E6E6E]'>
+            <ul className='w-full h-12 list-none font-semibold text-xs dark:text-[rgba(255,255,255,0.6)] text-[#6E6E6E]'>
 
-                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer'>
+                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer dark:hover:bg-[rgb(68,71,75)]'>
                     <div className='w-full h-full px-3 py-1 flex'>
-                        <FaHashtag className='w-4 h-4 mr-2 text-[#404040]' />
+                        <FaHashtag className='w-4 h-4 mr-2 dark:text-[rgba(255,255,255,0.6)] text-[#404040]' />
                         fresher
                     </div>
                 </li>
 
-                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer'>
+                <li className='w-full h-6 hover:bg-[#EBEBEB] cursor-pointer dark:hover:bg-[rgb(68,71,75)]'>
                     <div className='w-full h-full px-3 py-1 flex'>
-                        <FaHashtag className='w-4 h-4 mr-2 text-[#404040]' />
+                        <FaHashtag className='w-4 h-4 mr-2 dark:text-[rgba(255,255,255,0.6)] text-[#404040]' />
                         india
                     </div>
                 </li>
@@ -119,10 +119,9 @@ const LeftBottomBar = ({showMore}) => {
 
         {/* Discover more */}
         <div onClick={handleAlert}>
-            <Link href={"#"} className='w-full h-11 p-3 hover:bg-[#EBEBEB] flex items-center justify-center font-semibold text-sm text-[#646464] border-t-[1px] border-[#E8E8E8]'>Discover more</Link>
+            <Link href={"#"} className='w-full h-11 p-3 hover:bg-[#EBEBEB] dark:hover:bg-[rgb(68,71,75)] dark:text-[rgba(255,255,255,0.6)] flex items-center
+             justify-center font-semibold text-sm text-[#646464] border-t-[1px] dark:border-[#373A3D] border-[#E8E8E8]'>Discover more</Link>
         </div>
-
-
     </div>
   )
 }

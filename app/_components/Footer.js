@@ -10,18 +10,16 @@ const Footer = () => {
   return (
     <footer className='w-full res-1128:w-[1128px] res-1128:mx-[calc((100%-1128px)/2)] h-fit my-6 pt-6'>
         <div className='w-full h-fit'>
-
             <div className='w-full h-full my-3 flex'>
-            
                 {/* left panel */}
                 <div className='w-[50%] h-fit'>
-                    <ul className='w-full h-[134px] flex flex-row flex-wrap text-[#62615F] text-xs font-semibold'>
+                    <ul className='w-full h-[134px] flex flex-row flex-wrap dark:text-[rgb(255,255,255,0.6)] text-[#62615F] text-xs font-semibold'>
 
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://about.linkedin.com/"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2]'>About</Link>
                         </li>
-
+  
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://www.linkedin.com/accessibility?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B%2FsqeDHhHReySxNr7d0ZwSA%3D%3D"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Accessibility</Link>
@@ -87,61 +85,49 @@ const Footer = () => {
 
                     </ul>
                 </div>
-
                 {/* right panel */}
                 <div className='w-[50%] h-fit'>
                     <div className='w-full h-fit flex'>
                         {/* left */}
-                        <div className='w-fit h-fit flex flex-col'>
-
+                        <div className='w-fit h-fit flex flex-col dark:text-[rgb(255,255,255,0.6)] text-[#7D7C7A]'>
                         <li className='w-full h-fit mb-4 flex'>
                             {/* svg */}
-                            <BsQuestionCircleFill className='text-[#3D3D3C] mr-2 w-5 h-5' />
+                            <BsQuestionCircleFill className='text-[#3D3D3C] dark:text-[rgb(255,255,255,0.6)] mr-2 w-5 h-5' />
                             <div className='w-[calc(100%-32px)] h-full flex flex-col'>
                             <Link href={"https://www.linkedin.com/help/linkedin?trk=d_flagship3_profile_view_base"} 
-                                target='_blank' className='text-sm font-semibold text-[#7D7C7A] h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Questions?
+                                target='_blank' className='text-sm font-semibold h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Questions?
                             </Link>
-                            <p className='h-fit flex items-center text-xs text-[#62615F]'>Vist our Help Center</p>
+                            <p className='h-fit flex items-center text-xs dark:text-[rgb(255,255,255,0.6)] text-[#62615F]'>Vist our Help Center</p>
                             </div>
                         </li>
-                        
                         <li className='w-full h-fit mb-4 flex'>
                             {/* svg */}
-                            <IoMdSettings className='text-[#3D3D3C] mr-2 w-6 h-6' />
+                            <IoMdSettings className='text-[#3D3D3C] dark:text-[rgb(255,255,255,0.6)] mr-2 w-6 h-6' />
                             <div className='w-[calc(100%-32px)] h-full flex flex-col'>
                             <Link href={"https://www.linkedin.com/mypreferences/d/categories/account"} 
-                                target='_blank' className='text-sm font-semibold text-[#7D7C7A] h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Manage your account and privacy 
+                                target='_blank' className='text-sm font-semibold h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Manage your account and privacy 
                             </Link>
-                            <p className='h-fit flex items-center text-xs text-[#62615F]'>Go to your Settings</p>
+                            <p className='h-fit flex items-center text-xs dark:text-[rgb(255,255,255,0.6)] text-[#62615F]'>Go to your Settings</p>
                             </div>
-                        </li>
-                                                
+                        </li>                       
                         <li className='w-full h-fit mb-4 flex'>
                             {/* svg */}
-                            <IoShieldHalf className='text-[#3D3D3C] mr-2 w-6 h-6' />
+                            <IoShieldHalf className='text-[#3D3D3C] dark:text-[rgb(255,255,255,0.6)] mr-2 w-6 h-6' />
                             <div className='w-[calc(100%-32px)] h-full flex flex-col'>
                             <Link href={"https://www.linkedin.com/help/linkedin/answer/a1339724"} 
-                                target='_blank' className='text-sm font-semibold text-[#7D7C7A] h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Recommendation tranparency 
+                                target='_blank' className='text-sm font-semibold h-5 flex items-center hover:underline hover:text-[#0a66c2]'>Recommendation tranparency 
                             </Link>
-                            <p className='h-fit flex items-center text-xs text-[#62615F]'>Learn more about Recommended Content</p>
+                            <p className='h-fit flex items-center text-xs text-[#62615F] dark:text-[rgb(255,255,255,0.6)]'>Learn more about Recommended Content</p>
                             </div>
                         </li>
-
-                        </div>
-                        {/* right */}
-                        <div className='w-[50%] h-[156px]'>
-
-                        </div>
+                        </div>                       
                     </div>
                 </div>
-
             </div>
-
-            <p className='w-full h-4 text-[#62615F] text-xs'>Linkedin Corporation &copy; 2023</p>
-
+            <p className='w-full h-4 dark:text-[rgb(255,255,255,0.6)] text-[#62615F] text-xs'>Linkedin Corporation &copy; 2023</p>
         </div>
     </footer>
   )
 }
 
-export default Footer
+export default Footer;

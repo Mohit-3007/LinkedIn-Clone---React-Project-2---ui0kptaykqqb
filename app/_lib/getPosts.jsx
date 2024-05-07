@@ -7,13 +7,14 @@ const getPosts = async ({limit, page}) => {
       headers: {
         projectID: 'ui0kptaykqqb',
       }     
-    })
-  
-    if (!resp.ok) {
-      console.log('Failed to fetch posts data and response is ', resp)
-    }
+  })
 
-  return await resp.json()
+  if (!resp.ok) {
+    console.log('Failed to fetch posts data and response is ', resp)
+  }
+
+  return await resp.json();
+  
 }
 
 export default getPosts;

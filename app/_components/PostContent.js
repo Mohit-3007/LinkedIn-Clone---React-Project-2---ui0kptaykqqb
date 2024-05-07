@@ -27,16 +27,16 @@ const PostContent = ({content, title}) => {
         <div className='w-[calc(100%-32px)] mx-4'>
             {/* title */}
             <div className='w-full'>
-                <span className='w-full text-black text-base font-semibold'>{title}</span>
+                <span className='w-full dark:text-[rgba(255,255,255,0.9)] text-black text-base font-semibold'>{title}</span>
             </div>
             {/* Content */}
             <div className='w-full'>
-                <span className='w-full text-black text-sm'>{displayText}</span>
+                <span className='w-full dark:text-[rgba(255,255,255,0.9)] text-black text-sm'>{displayText}</span>
             </div>
             {/* See More- Button */}
             {!hideButton && (
                 <button onClick={() => setShowMore(!showMore)} className='w-[4.6875rem] h-5 pl-2 flex items-center'>
-                    <span className='w-full h-full text-xs flex items-center text-[#666666] hover:text-[#0A66C2] hover:underline'>
+                    <span className='w-full h-full text-xs flex items-center dark:text-[rgba(255,255,255,0.6)] text-[#666666] hover:text-[#0A66C2] hover:underline'>
                         {showMore ? "see less" : "...see more"}
                     </span>
                 </button>

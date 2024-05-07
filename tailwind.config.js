@@ -11,7 +11,7 @@ module.exports = {
     // Or if using `src` directory:
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: 'className',
+  darkMode: 'class',
   theme: {
     screens: {
       'res-1200': '1200px',

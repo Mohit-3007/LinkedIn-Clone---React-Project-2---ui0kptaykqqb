@@ -13,15 +13,13 @@ import { useContextProvider } from '../ContextApi/AppContextProvider';
 import followUser from '../_lib/FollowUser';
 import getUser from '../_lib/getUser';
 import deletePost from '../_lib/deletePost';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import unfollowUser from '../_lib/UnfollowUser';
 import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
 
-
-
-const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isGroupPost = false }) => {
-    const { token, userName, res, setRes, owner, checkLocal, setCheckLocal, groupPosts, setGroupPosts } = useContextProvider();
+const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isGroupPost = false, isSearchPost = false, dataType }) => {
+    const { userName, token, res, setRes, owner, setCheckLocal, groupPosts, setGroupPosts, setSearchContent, setSearchTitle, searchContent, searchTitle } = useContextProvider();
     const [isFollow, setIsFollow] = useState(false)
     const [showFollow, setShowFollow] = useState(false);
     const [allow, setAllow] = useState(false);
@@ -31,7 +29,6 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
     const [postOption, setPostOption] = useState(false)
     const [isCopied, setIsCopied] = useState(false);
     const { alertDispatch } = useAlertContextProvider()
-    const router = useRouter();
     const [postDays, setpostDays] = useState('')
 
     function handlePostOption(){
@@ -147,6 +144,20 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
                 })
                 setLocalData(newData);
             }
+            if(isSearchPost){
+                if(dataType == 'content'){
+                    const newData = searchContent.filter( e => {
+                        return e?._id != each?._id
+                    })
+                    setSearchContent(newData);
+                }else{
+                    console.log("one ",searchTitle)
+                    const newData = searchTitle.filter( e => {
+                        return e?._id != each?._id
+                    })
+                    setSearchTitle(newData);
+                }
+            }
             else{
                 const newData = res.filter( e => {
                     return e?._id != each?._id
@@ -192,119 +203,107 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
     },[path])
 
   return (
-    <div className='w-full min-h-16 max-h-fit mb-2 pl-4 pt-3 flex justify-between'>
-                            
+    <div className='w-full min-h-16 max-h-fit mb-2 pl-4 pt-3 flex justify-between'>                          
         {/* user pic, name & other details */}
         <div className='w-[80.70%] h-fit flex'>
-
             {isDataFromLocal && (
                 <>
-
-                    {/* User-Pic */}
-                    <Link href={`/user/${owner}`} className='w-12 h-[3.25rem]'>
-                        <div className='w-12 h-12 rounded-[50%]'>
-                            {/* Image-Component */}
-                            <span className='w-full h-full bg-[#7A1CA4] flex justify-center items-center uppercase text-2xl font-bold text-white rounded-[50%]'>{firstLetter}</span>
-                        </div>
-                    </Link>
-
-                    {/* name & other details */}
-                    <div className='w-[87.12%] h-[3.25rem] ml-2 flex flex-col'>
-                        {/* name */}
-                        <Link href={`/user/${owner}`} className='w-full h-9 flex flex-col'>
-
-                            <span className='w-full h-[1.25rem] flex'>
-                                <span className='h-full flex items-center text-black text-sm font-semibold hover:underline capitalize hover:text-[#0A66C2]'>{name}</span>
-                                <span className='h-full ml-1 flex items-center text-xs text-[#666666]'>
-                                    {( isFollow == true ) ? (
-                                    <>
-                                        <span className='h-full text-lg flex items-end mr-1'>. </span><span>following</span>
-                                    </>
-                                    ) : " "}
-                                </span>
-                            </span>
-
-                            <span className='w-full h-[calc(100%-1.25rem)] flex items-center text-xs text-[#666666]'>
-                                Designation and Some User Courier Info...
-                            </span>
-        
-                        </Link>
-                        {/* time */}
-                        <Link href={"#"} className='w-full h-4 flex items-center text-xs text-[#666666]'>
-                            <span className='flex items-start'>1d<span className='flex items-start justify-center mx-1'>. </span></span><FaGlobeAmericas className='w-4 h-4' />
-                        </Link>
+                {/* User-Pic */}
+                <Link href={`/user/${owner}`} className='w-12 h-[3.25rem]'>
+                    <div className='w-12 h-12 rounded-[50%]'>
+                        <span className='w-full h-full dark:bg-[rgb(27,31,35)] dark:text-[rgb(255,255,255,0.9)] bg-[#7A1CA4] flex justify-center
+                            items-center uppercase text-[26px] font-semibold dark:shadow-sm dark:shadow-[rgb(139,141,143)] text-white rounded-[50%] outline outline-1
+                            dark:outline-[rgb(96,99,101)]'>{firstLetter}</span>
                     </div>
+                </Link>
+                {/* name & other details */}
+                <div className='w-[87.12%] h-[3.25rem] ml-2 flex flex-col'>
+                    {/* name */}
+                    <Link href={`/user/${owner}`} className='w-full h-9 flex flex-col'>
+                        <span className='w-full h-[1.25rem] flex'>
+                            <span className='h-full flex items-center text-black text-sm font-semibold hover:underline capitalize dark:text-[rgba(255,255,255,0.9)] dark:hover:text-[#0A66C2] hover:text-[#0A66C2]'>{name}</span>
+                            <span className='h-full ml-1 flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#666666]'>
+                                {( isFollow == true ) ? (
+                                <>
+                                    <span className='h-full text-lg flex items-end mr-1'>. </span><span>following</span>
+                                </>
+                                ) : " "}
+                            </span>
+                        </span>
 
+                        <span className='w-full h-[calc(100%-1.25rem)] flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#666666]'>
+                            Designation and Some User Courier Info...
+                        </span>
+
+                    </Link>
+                    {/* time */}
+                    <Link href={"#"} className='w-full h-4 flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#666666]'>
+                        <span className='flex items-start'>1d<span className='flex items-start justify-center mx-1'>. </span></span><FaGlobeAmericas className='w-4 h-4' />
+                    </Link>
+                </div>
                 </>
             )}
-
             {!isDataFromLocal && (
                 <>
-                    {/* User-Pic */}
-                    <Link href={`/user/${each?.author?._id}`} className='w-12 h-[3.25rem]'>
-                        <div className='w-12 h-12 rounded-[50%] bg-slate-300'>
-                            {/* Image-Component */}
-                            <Image src={each?.author?.profileImage} alt='user-profile-pic' width={48} height={48} priority className='rounded-[50%]'/>
-                        </div>
-                    </Link>
-
-                    {/* name & other details */}
-                    <div className='w-[87.12%] h-fit ml-2 flex flex-col'>
-                        {/* name */}
-                        <Link href={`/user/${each?.author?._id}`} className='w-full h-fit flex flex-col'>
-
-                            <span className='w-full h-fit flex items-center'>
-                                <span className='h-full flex items-center text-black text-sm font-semibold hover:underline hover:text-[#0A66C2]'>{each?.author?.name}</span>
-                                <span className='h-full ml-1 flex items-center text-xs text-[#666666]'>
-                                    {( isFollow == true ) ? (
-                                    <>
-                                        <span className='h-full text-lg flex items-end mr-1'>. </span><span>following</span>
-                                    </>
-                                    ) : " "}
-                                </span>
-                            </span>
-
-                            <span className='w-full h-fit flex items-center text-xs text-[#666666]'>
-                                Designation and Some User Courier Info...
-                            </span>
-        
-                        </Link>
-                        {/* time */}
-                        <Link href={"#"} className='w-full h-4 flex items-center text-xs text-[#666666]'>
-                            <span className='flex items-start'>{postDays}d<span className='flex items-start justify-center mx-1'>. </span></span><FaGlobeAmericas className='w-4 h-4' />
-                        </Link>
+                {/* User-Pic */}
+                <Link href={`/user/${each?.author?._id}`} className='w-12 h-[3.25rem]'>
+                    <div className='w-12 h-12 rounded-[50%] flex justify-center items-center bg-slate-300 dark:bg-[rgb(56,67,79)]'>
+                        {each?.author?.profileImage != null ? (
+                            <Image src={each.author.profileImage} alt='user-profile-pic' width={48} height={48} priority className='rounded-[50%]'/>)
+                        : (<div className="w-12 h-12">
+                                <span className='w-full h-full dark:bg-[rgb(27,31,35)] dark:text-[rgb(255,255,255,0.9)] bg-[#7A1CA4] flex justify-center
+                                 items-center uppercase text-[26px] font-semibold dark:shadow-sm dark:shadow-[rgb(139,141,143)] text-white rounded-[50%] outline outline-1
+                                dark:outline-[rgb(96,99,101)]'>{firstLetter}</span>
+                            </div>) 
+                        }
                     </div>
+                </Link>
+                {/* name & other details */}
+                <div className='w-[87.12%] h-fit ml-2 flex flex-col'>
+                    {/* name */}
+                    <Link href={`/user/${each?.author?._id}`} className='w-full h-fit flex flex-col'>
+                        <span className='w-full h-fit flex items-center'>
+                            <span className='h-full flex items-center text-black text-sm font-semibold hover:underline dark:text-[rgba(255,255,255,0.9)] dark:hover:text-[#0A66C2] hover:text-[#0A66C2]'>{each?.author?.name}</span>
+                            <span className='h-full ml-1 flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#666666]'>
+                                {( isFollow == true ) ? (
+                                <>
+                                    <span className='h-full text-lg flex items-end mr-1'>. </span><span>following</span>
+                                </>
+                                ) : " "}
+                            </span>
+                        </span>
 
-                </>
-
-                
+                        <span className='w-full h-fit flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#666666]'>
+                            Designation and Some User Courier Info...
+                        </span>
+                    </Link>
+                    {/* time */}
+                    <Link href={"#"} className='w-full h-4 flex items-center text-xs dark:text-[rgba(255,255,255,0.6)] text-[#666666]'>
+                        <span className='flex items-start'>{postDays}d<span className='flex items-start justify-center mx-1'>. </span></span><FaGlobeAmericas className='w-4 h-4' />
+                    </Link>
+                </div>
+                </>         
             )}
-
         </div>
-
         {/* Follow & More option popUp & Cross sign */}
         <div className='w-[calc(100%-80.70%)] h-full flex flex-col justify-between items-end'>
-
             <div className='w-[4.25rem] h-fit flex items-center'>  
-
                 {/* dots & option Pop up */}
                 <div className='w-8 h-fit relative'>
-
                     {/* Icon */}
-                    <button ref={dotRef} onClick={() => setPostOption(!postOption)} className='w-full h-full flex items-start justify-center rounded-[50%] hover:bg-[#EBEBEB]'>
-                        <BsThreeDots className='w-5 h-5 fill-[#666666]'/>
+                    <button ref={dotRef} onClick={() => setPostOption(!postOption)} className='w-full h-7 flex items-center
+                     justify-center rounded-[50%] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#EBEBEB]'>
+                        <BsThreeDots className='w-5 h-5 dark:text-[rgba(255,255,255,0.6)] dark:hover:text-[rgba(255,255,255,0.9)] text-[#666666]'/>
                     </button>
-
                     {/* Option_Popup- Div */}
-                    <div ref={postRef} className={'absolute right-0 w-[200px] res-620:w-[335px] h-fit py-1 bg-white outline outline-1 shadow-lg outline-[#e1e1e1] rounded-sm ' + (
+                    <div ref={postRef} className={'absolute right-0 w-[200px] res-620:w-[335px] h-fit py-1 dark:bg-[#1B1F23] bg-white outline outline-1 shadow-lg dark:outline-[#1B1F23] outline-[#e1e1e1] rounded-sm ' + (
                         (postOption ? 'block' : 'hidden')
                     )}>
                         <div className='w-full h-full'>
-                            <ul className='w-full h-full list-none text-[#404040] font-semibold text-sm'>
-                                
+                            <ul className='w-full h-full list-none text-[#404040] font-semibold text-sm'>                            
                                 {/* 1 */}                                                         
-                                <li onClick={copyToClipboard} className='w-full h-[56px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                    <div className='w-full h-full px-4 py-2 flex items-center'>
+                                <li onClick={copyToClipboard} className='w-full h-[56px] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#e1e1e1] cursor-pointer'>
+                                    <div className='w-full h-full px-4 py-2 flex items-center dark:text-[rgba(255,255,255,0.9)]'>
                                         {/* icons */}
                                         <div className='w-6 h-6 mr-2 '>
                                             <IoIosLink className='w-full h-full' />
@@ -314,13 +313,10 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
                                         </div>
                                     </div>
                                 </li>
-
                                 {/* 2 */}
-
                                 {isDataFromLocal && (
-
-                                    <li className='hidden w-full h-[56px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                        <div className='w-full h-full px-4 py-2 flex items-center'>
+                                    <li className='hidden w-full h-[56px] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#e1e1e1] cursor-pointer'>
+                                        <div className='w-full h-full px-4 py-2 flex items-center dark:text-[rgba(255,255,255,0.9)]'>
                                             {/* icons */}
                                             <div className='w-6 h-6 mr-2 '>
                                                 <MdModeEditOutline className='w-full h-full' />
@@ -332,11 +328,9 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
                                     </li>
 
                                 )}
-
                                 {!isDataFromLocal && (
-
-                                    <li onClick={() => handleFollowUnfollow(each?.author?._id, token)} className='w-full h-[56px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                        <div className='w-full h-full px-4 py-2 flex items-center'>
+                                    <li onClick={() => handleFollowUnfollow(each?.author?._id, token)} className='w-full h-[56px] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#e1e1e1] cursor-pointer'>
+                                        <div className='w-full h-full px-4 py-2 flex items-center dark:text-[rgba(255,255,255,0.9)]'>
                                             {/* icons */}
                                             <div className='w-6 h-6 mr-2 '>
                                                 <RxCrossCircled className='w-full h-full' />
@@ -346,15 +340,11 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
                                             </div>
                                         </div>
                                     </li>
-
                                 )}
-
                                 {/* 3 */}
-
                                 {isDataFromLocal && (
-
-                                    <li onClick={() => handleDeletePost(each?._id, token)} className='w-full h-[56px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                        <div className='w-full h-full px-4 py-2 flex items-center'>
+                                    <li onClick={() => handleDeletePost(each?._id, token)} className='w-full h-[56px] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#e1e1e1] cursor-pointer'>
+                                        <div className='w-full h-full px-4 py-2 flex items-center dark:text-[rgba(255,255,255,0.9)]'>
                                             {/* icons */}
                                             <div className='w-6 h-6 mr-2 '>
                                                 <MdDeleteForever className='w-full h-full' />
@@ -364,13 +354,10 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
                                             </div>
                                         </div>
                                     </li>
-
                                 )}
-
                                 {!isDataFromLocal && (
-
-                                    <li onClick={() => handleReport()} className='w-full h-[56px] hover:bg-[#e1e1e1] cursor-pointer'>
-                                        <div className='w-full h-full px-4 py-2 flex items-center'>
+                                    <li onClick={() => handleReport()} className='w-full h-[56px] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#e1e1e1] cursor-pointer'>
+                                        <div className='w-full h-full px-4 py-2 flex items-center dark:text-[rgba(255,255,255,0.9)]'>
                                             {/* icons */}
                                             <div className='w-6 h-6 mr-2 '>
                                                 <IoFlag className='w-full h-full' />
@@ -380,35 +367,28 @@ const PostTopBar = ({each, localData, setLocalData, isDataFromLocal = false, isG
                                             </div>
                                         </div>
                                     </li>
-
                                 )}
-
                             </ul>
                         </div>
                     </div>
-
                 </div>
-
                 {/* cross */}
-                <button onClick={handleHidePost} className='ml-1 w-8 h-full flex justify-center items-center rounded-[50%] hover:bg-[#EBEBEB]'>
-                    <RxCross1 className='w-4 h-4 text-[#666666] font-extrabold' />
+                <button onClick={handleHidePost} className='ml-1 w-8 h-7 flex justify-center
+                 items-center rounded-[50%] dark:hover:bg-[rgb(43,47,50)] hover:bg-[#EBEBEB]'>
+                    <RxCross1 className='w-4 h-4 dark:text-[rgba(255,255,255,0.6)] dark:hover:text-[rgba(255,255,255,0.9)] text-[#666666] font-extrabold' />
                 </button>
             </div>
-
             {/* follow */}
             {!isDataFromLocal && (
-                <button onClick={() => handleFollowUser(each?.author?._id, token)} className={'w-fit h-7 px-1.5 py-1 mr-2 rounded-md hover:bg-[#E2F0FE] text-[#0A66C2] flex items-center justify-center ' + (
-                    isFollow === false ? 'block' : 'hidden'
+                <button onClick={() => handleFollowUser(each?.author?._id, token)} className={'w-fit h-7 px-1.5 py-1 mr-2 rounded-md hover:bg-[#E2F0FE] dark:hover:bg-[rgb(43,47,50)] text-[#0A66C2] flex items-center justify-center ' 
+                + ( isFollow === false ? 'block' : 'hidden'
                 )}>
                     <FaPlus className='w-3 h-3 mr-1' />
                     <span className='text-sm font-semibold'>Follow</span>
                 </button>
             )}
-
-        </div>   
-            
+        </div>              
     </div>
   )
 }
-
 export default PostTopBar;

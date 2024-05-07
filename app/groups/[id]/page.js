@@ -25,9 +25,6 @@ import uploadSamp from '@/public/uploadSamp.jpeg';
 import { RxExit } from "react-icons/rx";
 import { IoIosLink } from "react-icons/io";
 import { IoFlag } from "react-icons/io5";
-import deleteGroup from '@/app/_lib/deleteGroup';
-
-
 
 
 const GroupPage = ({params: {id}}) => {
@@ -40,9 +37,9 @@ const GroupPage = ({params: {id}}) => {
   const dotRef = useRef()
   const postCompoRef = useRef()
   const { token, owner, checkGroupLocal, setCheckGroupLocal, groupPosts, setGroupPosts } = useContextProvider();
-  const [localData, setLocalData] = useState('');
+  // const [localData, setLocalData] = useState('');
   const { alertDispatch } = useAlertContextProvider()
-  const [isDataFromLocal, setIsDataFromLocal] = useState(false);
+  // const [isDataFromLocal, setIsDataFromLocal] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [checkOnce, setCheckOnce] = useState(true)
   const [groupRes, setGroupRes] = useState('');
@@ -58,8 +55,8 @@ const GroupPage = ({params: {id}}) => {
 
   useLayoutEffect( () => {
     if(!decodeURIComponent(document.cookie)){
-        console.log("You are not logged in, re-routing to login page")
-        router.replace('/')
+      console.log("You are not logged in, re-routing to login page")
+      router.replace('/')
     }
   },[])
 
@@ -71,7 +68,6 @@ const GroupPage = ({params: {id}}) => {
         console.log("RESULT OF GROUP DATA ", groupDataa);
         if(groupDataa?.status === 'success'){
           setGroupData(groupDataa?.data);
-          // checkLocalStorage()
         }
       }
       fetchGroupDetails(id, token)
@@ -105,7 +101,6 @@ const GroupPage = ({params: {id}}) => {
     }
   },[page]);
 
-// 
   useEffect( () => {
     if(groupData != undefined){
       if(groupData?.owner?._id == owner){
@@ -118,31 +113,31 @@ const GroupPage = ({params: {id}}) => {
     }
   },[groupData])
 
-// checking Group in local storage
-function checkLocalStorage(){
-  console.log("checkLocalStorage FUNCTION IS CALLED ")
-  if(localStorage.getItem('groupData')){
+  // checking Group in local storage
+  function checkLocalStorage(){
     console.log("checkLocalStorage FUNCTION IS CALLED ")
-    const data = JSON.parse(localStorage.getItem('groupData'));
-    if(data?.length > 0){
-      console.log("data ", data)
-      console.log("groupData?._id ", id)
-      const isPresent = data.find((e)=> {
-        return e.id == id
-      })
-      console.log("isPresent outside if ", isPresent)
-      if(isPresent != null){
-        console.log("isPresent inside if ", isPresent)
-        console.log("it is true");
-        setJoinGroup(true)
-        setLoading(true);
-        groupPostsFetch(id, token)
-      }
-    }     
+    if(localStorage.getItem('groupData')){
+      console.log("checkLocalStorage FUNCTION IS CALLED ")
+      const data = JSON.parse(localStorage.getItem('groupData'));
+      if(data?.length > 0){
+        console.log("data ", data)
+        console.log("groupData?._id ", id)
+        const isPresent = data.find((e)=> {
+          return e.id == id
+        })
+        console.log("isPresent outside if ", isPresent)
+        if(isPresent != null){
+          console.log("isPresent inside if ", isPresent)
+          console.log("it is true");
+          setJoinGroup(true)
+          setLoading(true);
+          groupPostsFetch(id, token)
+        }
+      }     
+    }
   }
-}
 
-// making fetch call for group posts
+  // making fetch call for group posts
   async function groupPostsFetch (id, token) {
     const postData = await fetchGroupPosts(id, token)
     console.log("Result of Group Posts fetch:- ", postData);
@@ -164,7 +159,7 @@ function checkLocalStorage(){
     }
   }
 
-// joining group 
+  // joining group 
   function handleJoinGroup(){
     setJoinGroup(true)
     setLoading(true);
@@ -187,7 +182,7 @@ function checkLocalStorage(){
     }, 2500) 
   }
 
-// handle delete group function
+  // handle delete group function
   async function handleDeleteGroup(groupId){
     const storedData = JSON.parse(localStorage.getItem('groupData'))
     const newData = storedData.filter(e => e.id !== groupId)
@@ -203,28 +198,28 @@ function checkLocalStorage(){
     },2500)
   }
 
-// when screen is below 768 
-  function handleShowMore(){
-    console.log("Show More/ Show Less button clicked")
-    setShowMore(!showMore)
-}
+  // when screen is below 768 
+    function handleShowMore(){
+      console.log("Show More/ Show Less button clicked")
+      setShowMore(!showMore)
+  }
 
-function handleWindowClick(e){
-  // console.log("showPostCompo 1 ", showPostCompo);
-  if(showPostCompo === true ){
-    console.log("showPostCompo ", showPostCompo);
-    if(!postCompoRef?.current?.contains(e.target)){
-      setShowPostCompo(false)
-      console.log('i am inside')
+  function handleWindowClick(e){
+    // console.log("showPostCompo 1 ", showPostCompo);
+    if(showPostCompo === true ){
+      console.log("showPostCompo ", showPostCompo);
+      if(!postCompoRef?.current?.contains(e.target)){
+        setShowPostCompo(false)
+        console.log('i am inside')
+      }
+    }
+    else{
+      if(!optiosRef?.current?.contains(e.target)){
+        if(dotRef?.current?.contains(e.target)) return
+        setShowOptionDiv(false);  
+      }    
     }
   }
-  else{
-    if(!optiosRef?.current?.contains(e.target)){
-      if(dotRef?.current?.contains(e.target)) return
-      setShowOptionDiv(false);  
-    }    
-  }
-}
   useEffect(() => {
     document.addEventListener('mousedown', handleWindowClick);
     return () => {
@@ -232,15 +227,15 @@ function handleWindowClick(e){
     }
   },[])
 
-/////////////////// Screen Width //////////////////////////////////////////
+  /////////////////// Screen Width //////////////////////////////////////////
   useEffect( () => {
     function handleScreenWidth() {
       const width = window.innerWidth;
       if(width < 768){
-          if(checkOnce == true){
-            // console.log("setShowMore false is done");
-            setCheckOnce(false)
-            setShowMore(false)
+        if(checkOnce == true){
+          // console.log("setShowMore false is done");
+          setCheckOnce(false)
+          setShowMore(false)
         }
       }
       else{
@@ -254,21 +249,21 @@ function handleWindowClick(e){
     }
   },[])
 
-// random members 
-useEffect(()=> {
-  const members = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
-  setMembers(members)
-},[pathName])
+  // random members 
+  useEffect(()=> {
+    const members = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
+    setMembers(members)
+  },[pathName])
 
-function copyToClipboard(){
-  const currentPath = window.location.href;
-  navigator.clipboard.writeText(currentPath);
-  setShowOptionDiv(false)
-  alertDispatch({type: 'showlinkCop'})
-  setTimeout(()=> {
-  alertDispatch({type: 'hidelinkCop'})
-  },2500)
-};
+  function copyToClipboard(){
+    const currentPath = window.location.href;
+    navigator.clipboard.writeText(currentPath);
+    setShowOptionDiv(false)
+    alertDispatch({type: 'showlinkCop'})
+    setTimeout(()=> {
+    alertDispatch({type: 'hidelinkCop'})
+    },2500)
+  };
 
 // post loading handler
   function handlePostLoading() {
@@ -297,14 +292,13 @@ function copyToClipboard(){
 
 // roles array
   const role = ['', 'HR', 'IT Recruiter', 'Connecting talent with opportunities', 'Xyz Consultancy', 'Training & Placements']
-
   useEffect(()=> {
     const numb = Math.floor(Math.random() * (5-1) + 1)
     setNum(numb)
   },[])
  
   return (
-    <div className='w-full bg-[#F4F2EE] h-fit '>
+    <div className='w-full dark:bg-[rgb(27,31,35)] bg-[#F4F2EE] h-fit '>
       <div className="w-full h-fit z-10 pt-12 res-620:pt-[3.25rem] ">
         <div className='w-[calc(100vw-17px)] h-full'>
           {/* main content */}
@@ -314,7 +308,6 @@ function copyToClipboard(){
               <div className="w-full res-620:w-[720px] mx-0 res-992:w-[960px] res-992:mx-[calc((100%-960px)/2)] res-1200:w-[1128px] h-full res-1200:mx-[calc((100%-1128px)/2)]">
                 {/* flex-col below width 768px */}
                 <div className="flex-col items-center res-768:items-start w-full h-fit res-620:my-6 flex res-768:flex-row res-768:justify-between">   
-
                   {/* Left-Content */}
                   <div className="hidden res-620:block w-[576px] res-768:w-[14.0625rem] h-fit mb-3">
                     {/* main-left bar */}
@@ -333,27 +326,24 @@ function copyToClipboard(){
                       <button className='w-full h-6 px-2 py-0.5 mt-2 flex justify-center text-[#666666] font-semibold text-xs cursor-pointer'>
                         {showMore ? "Show less" : "Show more"} 
                         {showMore ? (
-                                <FaCaretUp className="inline w-4 h-4" />
-                            )  :   (
-                                <FaCaretDown className="inline w-4 h-4" />
-                            )
+                            <FaCaretUp className="inline w-4 h-4" />
+                        )  :   (
+                            <FaCaretDown className="inline w-4 h-4" />
+                        )
                         }
                       </button>
                     </footer>
                   </div>
-
                   {/* Center-Content */}
                   <main className="w-full res-620:w-[576px] res-768:w-[471px] res-992:w-[24.25rem] res-1200:w-[34.6875rem] h-fit">
                     <div className='w-full h-fit'>
                       <div className='w-full h-fit mb-4'>
-
                         {/* group details- pic & name other */}
                         <section className='w-full h-fit bg-white'>
                           {/* background container */}
                           <div className='w-full h-[8.6875rem] '>
                             <Image src={backGround} alt='background image' height={201} objectFit='cover' className='w-full h-full res-620:rounded-t-md' />
                           </div>
-
                           {/* group profile pic & details */}
                           <div className='w-full h-max my-4 px-4 pb-4 pt-8 relative res-620:rounded-b-md shadow-lg flex flex-col'>
                             {/* pic */}
@@ -427,7 +417,6 @@ function copyToClipboard(){
                               </div>
                           </div>                                 
                         </section>
-
                         {/* About group */}
                         {!joinGroup && (
                           <section className='w-full h-fit p-4 bg-white res-620:rounded-md shadow-lg flex flex-col'>
@@ -444,7 +433,6 @@ function copyToClipboard(){
                             )}
                           </section>
                         )}
-
                         {/* loading */}
                         {loading && (
                           <div className='w-full h-fit flex justify-center'>
@@ -452,7 +440,7 @@ function copyToClipboard(){
                             <div className="spinner"></div>
                           </div>
                         )}
-                {/* ////////////    Groups Posts    //////////// */}
+                        {/* ////////////    Groups Posts    //////////// */}
                         {groupPosts && groupPosts?.length > 0 && (
                           <>
                             {/* Create Groups Posts */}
@@ -467,7 +455,6 @@ function copyToClipboard(){
                                       <Image src={GroupPosts} alt='Group post cover pic' width={48} height={48} className='w-full h-full' />
                                     </div>
                                   </Link>
-
                                   <button onClick={handlePostLoading} className="w-[calc(100%-32px)] h-12 mt-1 py-2.5 pl-4 pr-2 border flex items-center rounded-[35px] hover:bg-[#EDEDED]">
                                     <span className="w-fit h-[1.3125rem] text-sm text-[#868686] overflow-hidden">
                                       Start a post in this group
@@ -508,7 +495,6 @@ function copyToClipboard(){
                                   </button>
                                 </div>
                               </div>
-
                               {/* for Post loading */}
                               {postLoading && (
                                 <div className='absolute w-full h-[400px] rounded-xl bg-white left-10 -top-11 z-40 shadow-lg flex justify-center items-center '>
@@ -539,7 +525,6 @@ function copyToClipboard(){
                       </div>          
                     </div>
                   </main>
-
                   {/* Right-Content Aside */}
                   <div className="hidden res-992:flex w-[18.75rem] h-fit flex-col  ">
                     {/* Right aside bar- Admin */}
@@ -580,91 +565,78 @@ function copyToClipboard(){
                       <h3 className='w-full h-[52px] p-4 flex items-center text-base text-[#191919] font-semibold'>Groups you might be interested in</h3>
                       {/* groups ul */}
                       <ul className='w-full h-fit px-4'>
-                          {/* GroupContainer */}
-                          {groupRes && groupRes.map( (e, index) => {                                                     
-                            return <GroupContainer key={index} index={index} e={e} />                              
-                          })}
+                        {/* GroupContainer */}
+                        {groupRes && groupRes.map( (e, index) => {                                                     
+                          return <GroupContainer key={index} index={index} e={e} />                              
+                        })}
                       </ul> 
                     </section>
                     {/* right aside bar- bottom */}
                     <div className='w-full h-[321px] '>
-                        {/* section for premium */}
-                        <section className='w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
-                          <AsidePremium />                     
-                        </section>
-
-                        {/* Footer */}
-                        <div className='w-full h-fit'>
-                          <footer className='w-full h-fit flex flex-col'>
-                            <ul className='w-full h-fit px-6 py-4 flex flex-row justify-center flex-wrap text-[#62615F] text-xs font-semibold'>  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://about.linkedin.com/"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2]'>About</Link>
-                              </li>
-
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://www.linkedin.com/accessibility?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B%2FsqeDHhHReySxNr7d0ZwSA%3D%3D"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Accessibility</Link>
-                              </li>
-
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://www.linkedin.com/uas/login-cap?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ftalent%2Fpost-a-job%3Flipi%3Durn%253Ali%253Apage%253Ad_flagship3_profile_view_base%253B%252FsqeDHhHReySxNr7d0ZwSA%253D%253D%26src%3Dli-footer%26trk%3Dfooter_jobs_home&source_app=tsweb&trk=tsweb_signin"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Talent Solutions</Link>
-                              </li>
-
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://www.linkedin.com/legal/professional-community-policies"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Community Guidelines</Link>
-                              </li>
-
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://careers.linkedin.com/"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Careers</Link>
-                              </li>
-
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://business.linkedin.com/marketing-solutions?trk=n_nav_lms_f&src=li-footer"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Marketing Solutions</Link>
-                              </li>
-                              
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"#"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Privacy & Terms</Link>
-                              </li>
-                                                  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://business.linkedin.com/marketing-solutions/ads?trk=n_nav_ads_f"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Ad Choices</Link>
-                              </li>
-                                                  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://www.linkedin.com/help/linkedin/answer/a1342443"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Advertising</Link>
-                              </li>
-                                                  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://business.linkedin.com/sales-solutions?trk=flagship_nav&veh=li-footer-lss-control&src=li-footer"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Solutions</Link>
-                              </li>
-                                                  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://mobile.linkedin.com/"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Mobile</Link>
-                              </li>
-                                                  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://business.linkedin.com/grow?&src=li-footer"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Small Buisness</Link>
-                              </li>
-                                                  
-                              <li className='w-fit h-4 my-1 mx-2'>
-                                <Link href={"https://about.linkedin.com/transparency"} 
-                                target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Center</Link>
-                              </li>
-                            </ul>
-                            <div className='w-full h-fit px-6 pb-10 text-center'><p className='w-full h-4 text-[#62615F] text-xs'>Linkedin Corporation &copy; 2023</p></div>
-                          </footer>
-                        </div>
+                      {/* section for premium */}
+                      <section className='w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
+                        <AsidePremium />                     
+                      </section>
+                      {/* Footer */}
+                      <div className='w-full h-fit'>
+                        <footer className='w-full h-fit flex flex-col'>
+                          <ul className='w-full h-fit px-6 py-4 flex flex-row justify-center flex-wrap text-[#62615F] text-xs font-semibold'>  
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://about.linkedin.com/"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2]'>About</Link>
+                            </li>
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://www.linkedin.com/accessibility?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B%2FsqeDHhHReySxNr7d0ZwSA%3D%3D"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Accessibility</Link>
+                            </li>
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://www.linkedin.com/uas/login-cap?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ftalent%2Fpost-a-job%3Flipi%3Durn%253Ali%253Apage%253Ad_flagship3_profile_view_base%253B%252FsqeDHhHReySxNr7d0ZwSA%253D%253D%26src%3Dli-footer%26trk%3Dfooter_jobs_home&source_app=tsweb&trk=tsweb_signin"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Talent Solutions</Link>
+                            </li>
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://www.linkedin.com/legal/professional-community-policies"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Community Guidelines</Link>
+                            </li>
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://careers.linkedin.com/"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Careers</Link>
+                            </li>
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://business.linkedin.com/marketing-solutions?trk=n_nav_lms_f&src=li-footer"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Marketing Solutions</Link>
+                            </li>         
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"#"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Privacy & Terms</Link>
+                            </li>                                            
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://business.linkedin.com/marketing-solutions/ads?trk=n_nav_ads_f"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Ad Choices</Link>
+                            </li>                                             
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://www.linkedin.com/help/linkedin/answer/a1342443"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Advertising</Link>
+                            </li>                                             
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://business.linkedin.com/sales-solutions?trk=flagship_nav&veh=li-footer-lss-control&src=li-footer"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Solutions</Link>
+                            </li>                                            
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://mobile.linkedin.com/"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Mobile</Link>
+                            </li>                                          
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://business.linkedin.com/grow?&src=li-footer"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Small Buisness</Link>
+                            </li>                                              
+                            <li className='w-fit h-4 my-1 mx-2'>
+                              <Link href={"https://about.linkedin.com/transparency"} 
+                              target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Center</Link>
+                            </li>
+                          </ul>
+                          <div className='w-full h-fit px-6 pb-10 text-center'><p className='w-full h-4 text-[#62615F] text-xs'>Linkedin Corporation &copy; 2023</p></div>
+                        </footer>
+                      </div>
                     </div>
                   </div>
                 </div>                 
@@ -675,12 +647,11 @@ function copyToClipboard(){
           <AlertBox />
         </div>
       </div>
-
       {showPostCompo && 
-        (<AddingPost 
-            setShowPostCompo={setShowPostCompo} 
-            ref={postCompoRef} 
-        />)}
+      (<AddingPost 
+        setShowPostCompo={setShowPostCompo} 
+        ref={postCompoRef} 
+      />)}
     </div>
   )
 }
@@ -688,8 +659,8 @@ function copyToClipboard(){
 function GroupContainer({index, e}){
   const [members, setMembers] = useState('');
   useEffect( () => {
-      const member = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
-      setMembers(member)
+    const member = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
+    setMembers(member)
   },[])
 
   return (
@@ -697,7 +668,7 @@ function GroupContainer({index, e}){
       <Link href={`/groups/${e.channel._id}`} className='w-full h-fit flex'>
         <div className='w-12 h-full'>
           <div className='w-full h-12 flex justify-center items-center'>
-              <Image src={e?.channel?.image} alt='group-pic' objectFit='cover' width={48} height={48} className='w-full h-full rounded-sm' />
+            <Image src={e?.channel?.image} alt='group-pic' objectFit='cover' width={48} height={48} className='w-full h-full rounded-sm' />
           </div>
         </div>
         <div className='w-[calc(100%-48px)] pl-2 h-fit t'>
@@ -709,4 +680,4 @@ function GroupContainer({index, e}){
   )
 }
 
-export default GroupPage
+export default GroupPage;

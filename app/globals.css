@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+/* body{
    background-color: #F3F2F0;
  }
+
+ [data-theme="dark"],
+ [data-theme="dark"] body {
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+ } */
 
 .spinner {
     width: 40px;
@@ -66,11 +71,9 @@ body{
    0% {
      width: 0%;
    }
- 
    50% {
      width: 100%;
    }
- 
    100% {
      width: 0%;
    }
