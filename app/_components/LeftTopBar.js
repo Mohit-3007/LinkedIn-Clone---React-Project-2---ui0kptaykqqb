@@ -5,8 +5,10 @@ import Image from 'next/image'
 import { useContextProvider } from '../ContextApi/AppContextProvider';
 import leftBg from '@/public/leftBg.jpg';
 import chip from '@/public/chip.png';
+import darkCover from '@/public/darkCover.png';
 import { FaBookmark } from "react-icons/fa";
 import { useAlertContextProvider } from '../ContextApi/AlertContextProvider';
+import { useTheme } from 'next-themes';
 
 
 const LeftTopBar = ({showMore}) => {
@@ -14,6 +16,7 @@ const LeftTopBar = ({showMore}) => {
   const { alertDispatch } = useAlertContextProvider();
   const [profileView, setProfileView] = useState(0);
   const [connections, setConnections] = useState(0);
+  const {theme} = useTheme();
 
 // getting the first leter of UserName
   const name = userName;
@@ -41,7 +44,7 @@ const LeftTopBar = ({showMore}) => {
        dark:bg-[#1B1F23] border-[#E8E8E8] dark:border-0 dark:outline-none relative'>
         {/* image div */}
         <Link href={`/user/${owner}`} className='w-[576px] res-768:w-[225px] h-[56px] absolute left-0 top-0 '>
-          <Image src={leftBg} alt='background' width={225} className='w-[576px] res-768:w-[225px] h-[68px] ' />
+          <Image src={theme === 'light' ? leftBg : darkCover} alt='background' width={225} className='w-[576px] res-768:w-[225px] h-[68px] ' />
         </Link>
         {/* user Link */}
         <Link href={`/user/${owner}`} className='w-full h-fit flex flex-col items-center mt-[68px]'>
