@@ -471,14 +471,15 @@ const UserPage =  ({params: {id}}) => {
         {showContact && (
           <div className='w-screen h-screen z-30 absolute flex justify-center'>
             <div ref={contactPopUpRef} className='w-full res-400:w-[400px] res-620:w-[552px] z-30 flex flex-col dark:bg-[rgb(27,31,35)] bg-white
-             shadow-2xl rounded-md mt-32 h-[364px]'>
+              shadow-2xl rounded-md mt-32 h-[364px]'>
               {/* name & cross */}
               <div className='w-full h-11 pl-3 py-2 flex border-b dark:border-[rgb(255,255,255,0.6)] border-[#E8E8E8]'>
                 {/* name */}
                 <div className='w-[calc(100%-48px)] h-full dark:text-[rgb(255,255,255,0.9)] text-[#191919] capitalize font-semibold text-xl'>{userData?.name}</div>
                 {/* cross */}
                 <div className='w-12 h-full flex items-center justify-center'>
-                  <button className='w-8 h-8 rounded-[50%] hover:bg-[#EBEBEB] text-[#666666] dark:text-[rgb(255,255,255,0.6)] dark:hover:bg-[#2C2F33] flex items-center justify-center'>
+                  <button className='w-8 h-8 rounded-[50%] hover:bg-[#EBEBEB] text-[#666666] dark:text-[rgb(255,255,255,0.6)]
+                   dark:hover:bg-[#2C2F33] flex items-center justify-center'>
                     <RxCross1 onClick={handleContactPopUp} className='w-5 h-5' /></button>
                 </div>
               </div>

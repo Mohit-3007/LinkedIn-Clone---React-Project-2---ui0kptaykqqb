@@ -1,12 +1,11 @@
 'use client'
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import Logo from '../../public/logo.png'
 import Image from 'next/image';
 import Link from 'next/link';
 import  signUpUser  from '../_lib/SignUpUser'
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useContextProvider } from '../ContextApi/AppContextProvider';
-import linke from '@/public/linke.png'
 import LogSignInFooter from './LogSignInFooter';
 
 
@@ -55,6 +54,7 @@ const SignUp = () => {
 
     async function handleSubmit(e){
         e.preventDefault()
+        setPasswordErrorMess("")
         const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
         if(!email){
             setEmailErrorMess("Please enter your email address");
@@ -99,6 +99,11 @@ const SignUp = () => {
             setEmail('')
             setPassword('')
             setSuccessLogin(true)
+        }else{
+            setPasswordErrorMess("Email id already exists.")
+            setName('')
+            setEmail('')
+            setPassword('')
         }
         
     }
@@ -108,15 +113,10 @@ const SignUp = () => {
         setShowPass(!showPass)
     }
 
-    const footerStyle = {
-        position: 'absolute',
-        bottom: 0,
-      };
-
   return (
-    <div className="w-[100vw] h-screen  overflow-x-hidden flex flex-col bg-[#F3F2F0] relative">
+    <div className="w-[100vw] h-fit overflow-x-hidden flex flex-col bg-[#F3F2F0]">
         {/* main */}
-        <main className='w-full res-1128:w-[1128px] res-1128:mx-[calc((100%-1128px)/2)] px-4 py-6 h-fit  ' >
+        <main className='w-full h-[calc(100vh-50px)] res-1128:w-[1128px] res-1128:mx-[calc((100%-1128px)/2)] px-0 res-768:px-4 py-6 overflow-hidden ' >
             <header className='w-full h-max'>
                 {/* logo */}
                 <div className='w-full h-[44px]'>
@@ -136,7 +136,7 @@ const SignUp = () => {
                 </h1>
             </header>
             {/* SignUp form wrapper */}
-            <div className='w-[400.5px] mx-[calc((100%-400.5px)/2)] h-fit'>
+            <div className='w-full res-768:w-[400.5px] mx-0 res-768:mx-[calc((100%-400.5px)/2)] h-fit'>
                 <form className='w-full h-fit bg-white shadow rounded-t '>
                     <section className='w-full h-full px-6 pt-6'>
                         {/* email & passowrd */}
@@ -200,44 +200,7 @@ const SignUp = () => {
             </div>
         </main> 
         {/* footer */}
-        <LogSignInFooter style={footerStyle} />
-        <footer className='absolute bottom-0 w-full h-fit res-992:h-[50px] bg-white'>
-            <ul className='w-full px-4 res-992:px-0 py-6 res-992:py-0 flex-wrap res-992:flex-nowrap res-992:w-[1128px] 
-                res-1128:w-[1128px] h-fit res-992:mr-[calc(100%-1128px)] res-1128:mx-[calc((100%-1128px)/2)] list-none flex'>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm flex items-center text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Image src={linke} alt='logo' width={56} height={14} className='w-[56px] h-[14px] mr-2' />
-                    <span className='w-fit '>&copy; 2023</span>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://about.linkedin.com/?trk=registration_footer-about"} className='w-fit h-full' target='_blank' >About</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/accessibility?trk=registration_footer-accessibility"} className='w-fit h-full' target='_blank' >Accessibility</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/legal/user-agreement?trk=registration_footer-user-agreement"} className='w-fit h-full' target='_blank' >User Agreement</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/legal/privacy-policy?trk=registration_footer-privacy-policy"} className='w-fit h-full' target='_blank' >Privacy Policy</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/legal/cookie-policy?trk=registration_footer-cookie-policy"} className='w-fit h-full' target='_blank' >Cookie Policy</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/legal/copyright-policy?trk=registration_footer-copyright-policy"} className='w-fit h-full' target='_blank' >Copyright Policy</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://brand.linkedin.com/policies?trk=registration_footer-brand-policy"} className='w-fit h-full' target='_blank' >Brand Policy</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/psettings/guest-controls?trk=registration_footer-guest-controls"} className='w-fit h-full' target='_blank' >Guest Controls</Link>
-                </li>
-                <li className='w-[50%] res-992:w-fit h-[34px] p-2 text-sm text-[#666666] cursor-pointer hover:underline hover:text-[#0a66c2]'>
-                    <Link href={"https://www.linkedin.com/legal/professional-community-policies?trk=registration_footer-community-guide"} className='w-fit h-full' target='_blank' >Coomunity Guidelines</Link>
-                </li>          
-            </ul>   
-        </footer>
-
+        <LogSignInFooter />
     </div>
   )
 }

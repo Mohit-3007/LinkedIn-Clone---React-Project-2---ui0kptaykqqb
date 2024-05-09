@@ -4,6 +4,7 @@ import Link from 'next/link';
 import linke from '@/public/linke.png'
 
 const LogSignInFooter = ({style}) => {
+    
   return (
     <footer style={style} className='w-full h-fit res-992:h-[50px] bg-white'>
         <ul className='w-full px-4 res-992:px-0 py-6 res-992:py-0 flex-wrap res-992:flex-nowrap res-992:w-[1128px] 

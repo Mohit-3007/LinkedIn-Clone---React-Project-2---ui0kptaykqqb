@@ -176,7 +176,7 @@ const Feed =  () => {
                     <div className="w-full h-fit bg-white mb-2 outline outline-1 outline-[#E8E8E8] dark:outline-none shadow-lg overflow-hidden rounded-xl flex flex-col">
                       <LeftTopBar showMore={showMore} />
                     </div>
-                    {/* right-top */}
+                    {/* left-bottom */}
                     <div className="w-full h-fit bg-white outline outline-1 outline-[#E8E8E8] dark:outline-none shadow-lg overflow-hidden rounded-xl">
                       <LeftBottomBar showMore={showMore} />
                     </div>                  
@@ -319,7 +319,7 @@ const Feed =  () => {
                   {/* Right aside bar- top */}
                   <section className='w-full h-fit mb-2 bg-white dark:bg-[#1B1F23] dark:outline-none outline outline-1 outline-[#E8E8E8] shadow-lg overflow-hidden rounded-xl'>
                     <h3 className='w-full h-[52px] p-4 flex items-center text-base dark:text-[rgba(255,255,255,0.9)] text-[#191919] 
-                    font-semibold'>Groups you might be interested in</h3>
+                    font-semibold'>People you might be interested in</h3>
                     {/* groups ul */}
                     <ul className='w-full h-fit px-4'>
                       {/* GroupContainer */}
@@ -413,6 +413,9 @@ const Feed =  () => {
 }
 
 function GroupContainer({index, e}){
+  const name = e.author?.name;
+  const firstLetter = name?.charAt(0);
+  console.log("group ", e)
   const [members, setMembers] = useState('');
   useEffect( () => {
     const member = (Math.floor(Math.random() * (1599999 - 200000 + 1)) + 200000).toLocaleString();
@@ -420,10 +423,14 @@ function GroupContainer({index, e}){
   },[])
   return (
     <li key={index} className='w-full h-fit py-4'>
-      <Link href={`/groups/${e.channel?._id}`} className='w-full h-fit flex'>
+      <Link href={`/user/${e.author?._id}`} className='w-full h-fit flex'>
         <div className='w-12 h-full'>
           <div className='w-full h-12 flex justify-center items-center'>
-            <Image src={e?.images ? e?.images?.[0] : e?.author?.profileImage} alt='group-pic' objectFit='cover' width={48} height={48} className='w-full h-full rounded-sm' />
+            { e?.author?.profileImage ? <Image src={e.author.profileImage} alt='group-pic' objectFit='cover' width={48} height={48} className='w-full h-full rounded-sm' />
+            : <span className='w-full h-full dark:bg-[rgb(27,31,35)] dark:text-[rgb(255,255,255,0.9)] bg-[#7A1CA4] flex justify-center
+              items-center uppercase text-[26px] font-semibold dark:shadow-sm dark:shadow-[rgb(139,141,143)] text-white rounded-[50%] outline outline-1
+            dark:outline-[rgb(96,99,101)]'>{firstLetter}</span>
+            } 
           </div>
         </div>
         <div className='w-[calc(100%-48px)] pl-2 h-fit t'>

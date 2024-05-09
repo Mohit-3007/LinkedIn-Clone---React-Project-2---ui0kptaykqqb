@@ -13,7 +13,7 @@ const page = () => {
   const router = useRouter();
   const [recentSearch, setRecentSearch] = useState('')
   const [fetch, setFetch] = useState(false);
-  const { handleSearchInput, isInputSlct, setSearchContent, setSearchTitle } = useContextProvider()
+  const { setSearchContent, setSearchTitle } = useContextProvider()
 
   const logWindowWidth = () => {
     if(window?.innerWidth > 620 ){
@@ -55,7 +55,6 @@ const page = () => {
         }
       }
       if(searchTitle.status === 'success'){
-        // checkLocalData()
         setSearchTitle(searchTitle.data)
         router.push('/searchresult')
       }
@@ -78,18 +77,15 @@ const page = () => {
     if(input) handleSearchFetch()
   },[fetch])
 
-
   // checking in local data
   function checkLocalData(){
     if(localStorage.getItem('recent')){
       console.log('recent searches is presnt in local storage')
       let keyWord = JSON.parse(localStorage.getItem('recent'));
-      // console.log("keyWord ", keyWord)
       const isPresnt = keyWord.find( e => {
         return e === input
       } )
       if(isPresnt) {
-        // console.log("isPresnt ", isPresnt)
         const newArr = keyWord.filter( e => {
           return e != isPresnt
         })
@@ -136,13 +132,12 @@ const page = () => {
     setInput('')
   } 
 
-
   return (
-    <div className='w-full h-screen z-20 bg-white'>
+    <div className='w-full h-screen z-20 dark:bg-[rgb(27,31,35)] bg-white'>
       {/* nav  search*/}
       <nav className='w-full h-12 flex items-center  '>
         <button onClick={()=> router.back()} className='w-12 h-12 pl-4 flex items-center justify-center'>
-          <IoIosArrowRoundBack className='w-6 h-6 text-[#666666]' />
+          <IoIosArrowRoundBack className='w-6 h-6 dark:text-[rgb(255,255,255,0.6)] text-[#666666]' />
         </button>
         <input onKeyDown={(e) => {
           if(e.key === 'Enter'){
@@ -153,12 +148,12 @@ const page = () => {
           value = {input}
           onChange={(e) => setInput(e.target.value)}
           placeholder='Search' 
-          className='w-[calc(100%-48px-48px)] h-6 focus:outline outline-2 outline-[#101010] placeholder:text-[#666666]
-          placeholder:text-base rounded-sm pl-6 pr-2 text-base font-semibold' 
+          className='w-[calc(100%-48px-48px)] h-6 focus:outline outline-2 dark:bg-[#38434F] dark:placeholder:text-[rgb(205,208,211)]
+         outline-[#101010] placeholder:text-[#666666] dark:outline-white placeholder:text-base rounded-sm pl-6 pr-2 text-base font-semibold' 
         />
         {input &&  input.length >0 && (
           <button onClick={() => setInput('')} className='w-12 h-12 flex items-center justify-center'>
-            <RxCross1 className='w-6 h-6 text-[#666666]' />
+            <RxCross1 className='w-6 h-6 dark:text-[rgb(255,255,255,0.6)] text-[#666666]' />
           </button>
         )}
       </nav>     
@@ -171,7 +166,7 @@ const page = () => {
               {/*  */}
               <div className="w-full h-[42px] pt-2 flex items-center">
                 <div className="w-[calc(100%-66px)] h-full flex items-center">
-                  <h1 className="w-full px-4 h-4 text-sm font-semibold text-[#191919]">Recent searches</h1>
+                  <h1 className="w-full px-4 h-4 text-sm font-semibold dark:text-[rgb(255,255,255,0.6)] text-[#191919]">Recent searches</h1>
                 </div>
                 <div onClick={handleClearRecent} className="w-[66px] h-full py-2 px-4 text-sm cursor-pointer text-[#0A6FCD]">Clear</div>
               </div>
@@ -180,9 +175,11 @@ const page = () => {
                 <ul className='w-full h-fit list-none'>
                   {recentSearch.map( (eh, index) => {
                     return(
-                      <li key={index} className='w-full h-11 flex items-center px-4 hover:bg-[#E8E8E8] cursor-pointer text-base'>
+                      <li onClick={(e) => handleSearchSuggestion(e)} key={index} 
+                      className='w-full h-11 flex items-center px-4  dark:hover:bg-[rgb(78,71,75)] hover:bg-[#E8E8E8]
+                      cursor-pointer text-base'>
                         <div className='w-6 h-full flex items-center justify-center'><IoIosTimer className='w-[20px] h-5 mr-1.5 flex justify-center items-center' /></div>
-                        <span onClick={(e) => handleSearchSuggestion(e)} className=''>{eh}</span>
+                        <span className=''>{eh}</span>
                       </li>
                     )
                   })}

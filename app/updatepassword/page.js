@@ -3,7 +3,6 @@ import React, { useLayoutEffect } from 'react'
 import UpdatePassword from '../_components/UpdatePassword'
 import { useRouter } from 'next/navigation';
 
-
 const page = () => {
   const router = useRouter();
 
@@ -14,7 +13,6 @@ const page = () => {
     }
   },[])
 
-  
 
   return (
     <UpdatePassword />

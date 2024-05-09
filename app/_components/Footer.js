@@ -14,75 +14,58 @@ const Footer = () => {
                 {/* left panel */}
                 <div className='w-[50%] h-fit'>
                     <ul className='w-full h-[134px] flex flex-row flex-wrap dark:text-[rgb(255,255,255,0.6)] text-[#62615F] text-xs font-semibold'>
-
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://about.linkedin.com/"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2]'>About</Link>
                         </li>
-  
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://www.linkedin.com/accessibility?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B%2FsqeDHhHReySxNr7d0ZwSA%3D%3D"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Accessibility</Link>
                         </li>
-
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://www.linkedin.com/uas/login-cap?session_redirect=https%3A%2F%2Fwww.linkedin.com%2Ftalent%2Fpost-a-job%3Flipi%3Durn%253Ali%253Apage%253Ad_flagship3_profile_view_base%253B%252FsqeDHhHReySxNr7d0ZwSA%253D%253D%26src%3Dli-footer%26trk%3Dfooter_jobs_home&source_app=tsweb&trk=tsweb_signin"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Talent Solutions</Link>
                         </li>
-
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://www.linkedin.com/legal/professional-community-policies"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Community Guidelines</Link>
                         </li>
-
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://careers.linkedin.com/"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Careers</Link>
                         </li>
-
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://business.linkedin.com/marketing-solutions?trk=n_nav_lms_f&src=li-footer"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Marketing Solutions</Link>
                         </li>
-                        
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"#"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Privacy & Terms</Link>
-                        </li>
-                                            
+                        </li>                                     
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://business.linkedin.com/marketing-solutions/ads?trk=n_nav_ads_f"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Ad Choices</Link>
-                        </li>
-                                            
+                        </li>                                      
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://www.linkedin.com/help/linkedin/answer/a1342443"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Advertising</Link>
-                        </li>
-                                            
+                        </li>                                         
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://business.linkedin.com/sales-solutions?trk=flagship_nav&veh=li-footer-lss-control&src=li-footer"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Solutions</Link>
-                        </li>
-                                            
+                        </li>                                         
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://mobile.linkedin.com/"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Mobile</Link>
-                        </li>
-                                            
+                        </li>                                      
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://business.linkedin.com/grow?&src=li-footer"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Small Buisness</Link>
-                        </li>
-                                            
+                        </li>                                         
                         <li className='w-1/3 h-4 mb-3'>
                         <Link href={"https://about.linkedin.com/transparency"} 
                         target='_blank' className='h-full flex items-center hover:underline hover:text-[#0a66c2] '>Safety Center</Link>
                         </li>
-
-
-
-
                     </ul>
                 </div>
                 {/* right panel */}

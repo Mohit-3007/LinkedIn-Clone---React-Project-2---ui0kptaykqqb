@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   const pathname = usePathname()
   const [hideScroll, setHideScroll] = useState(false)
   const [popUp, setPopUp] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState('');
 
   const logWindowWidth = () => {
     setWindowWidth(window?.innerWidth);
@@ -31,22 +31,23 @@ export default function RootLayout({ children }) {
   useEffect( () => {
     if(popUp) setHideScroll(true)
     else setHideScroll(false)
-
   },[popUp])
 
   return (
     <html lang="en">
       <body className={"max-w-full w-screen relative bg-[#F4F2EE] dark:bg-black overflow-x-hidden scrollbar-stable "
        + ( inter.className && (hideScroll ? 'overflow-y-hidden' : 'overflow-y-scroll' ) )}>
-        <Providers>  
+        <Providers >  
           <GlobalContextProvider>
             <AlertGlobalContextProvider>
               {( (pathname != '/signup')  && (pathname != '/') && (pathname != '/updatepassword') ) 
                 && windowWidth > 620 && (
-                  <NavBar popUp={popUp} setPopUp={setPopUp} />
+                  <NavBar popUp={popUp} setPopUp={setPopUp}/>
                 )}  
-                {windowWidth <= 620 && (pathname != '/feed/overlay/post') && (pathname != '/searchresult/mobile-nav-search') && (
-                  < TopBottomNav />
+                {windowWidth <= 620 && (pathname != '/signup') && (pathname != '/') &&
+                (pathname != '/feed/overlay/post') && (pathname != '/updatepassword') &&
+                (pathname != '/searchresult/mobile-nav-search') && (
+                  <TopBottomNav />
               )} 
               {children}
             </AlertGlobalContextProvider>

@@ -13,7 +13,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
-    const { login, setToken, setUserName, setUserEmail, setOwner, handleLoginState } = useContextProvider()
+    const { setToken, setUserName, setUserEmail, setOwner, handleLoginState } = useContextProvider()
     const [showPass, setShowPass] = useState(false)
     const [emailErrorMess, setEmailErrorMess] = useState("");
     const [passwordErrorMess, setPasswordErrorMess] = useState("");
@@ -102,9 +102,10 @@ const Login = () => {
     }
 
   return (
-    <div className='w-[calc(100vw-17px)] bg-white pt-[80px] flex flex-col res-1162:items-center '>
+    <div className='w-[calc(100vw-17px)] h-fit bg-white pt-[80px] flex flex-col res-1162:items-center '>
         {/* main */}
-        <section className='w-full res-1128:w-[1128px] px-4 res-1162:px-0 h-max pt-10 res-768:flex res-768:flex-row flex flex-col items-center relative overflow-hidden'>
+        <section className='w-full res-1128:w-[1128px] px-4 res-1162:px-0 h-full pt-10 res-768:flex res-768:flex-row
+         flex flex-col items-center relative overflow-hidden'>
             {/* form div */}
             <div className='w-full res-768:w-[460px] res-1000::w-[550px] res-768:pr-[42px] px-1 h-full'>
                 {/* h1 */}

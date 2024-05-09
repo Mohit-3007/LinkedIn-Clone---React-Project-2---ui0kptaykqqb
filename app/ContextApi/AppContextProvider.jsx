@@ -20,7 +20,6 @@ const GlobalContextProvider = ({children}) => {
   const [page, setPage] = useState(1)
   const [groupPosts, setGroupPosts] = useState('')
 
-  // console.log("1st line ,", login);
   function handleLoginState(){
     if(login){
       console.log("Now user is not login")
